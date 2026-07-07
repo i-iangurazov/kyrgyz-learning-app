@@ -8,10 +8,14 @@ import {
   LessonStepProgress,
   type LessonStep,
 } from "@/components/lesson/lesson-step-progress";
-import { ExerciseRenderer } from "@/components/lesson/exercise-renderer";
+import {
+  getSupportedPracticeItemCount,
+  PracticeSection,
+} from "@/components/lesson/practice-section";
 import { SectionCard } from "@/components/lesson/section-card";
 import type { Lesson } from "@/content/schemas";
 import { useLocalProgress } from "@/hooks/use-local-progress";
+import { emptyLessonPracticeProgress } from "@/lib/progress";
 
 const lessonSteps = [
   { id: "story", label: "Story", sectionId: "lesson-story" },
@@ -38,23 +42,30 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
     dialogue.breakdownItems.length > 0
       ? dialogue.breakdownItems
       : (readingText?.breakdownItems ?? []);
-  const practiceProgress = progress.lessonPractice[lesson.id] ?? {
-    attemptedCount: 0,
-    completedCount: 0,
-    correctCount: 0,
-    incorrectCount: 0,
-  };
-  const totalPracticeItems = lesson.exercises.reduce(
-    (count, exercise) => count + exercise.items.length,
-    0,
+  const totalSupportedPracticeItems = getSupportedPracticeItemCount(
+    lesson.exercises,
   );
-  const practiceResult =
-    practiceProgress.completedCount > 0
-      ? `${practiceProgress.correctCount} of ${practiceProgress.completedCount} practice answers correct.`
+  const storedPracticeProgress = progress.lessonPractice[lesson.id];
+  const practiceProgress = {
+    ...emptyLessonPracticeProgress,
+    ...(storedPracticeProgress ?? {}),
+    totalCount: storedPracticeProgress?.totalCount || totalSupportedPracticeItems,
+  };
+  const totalPracticeItems =
+    practiceProgress.totalCount || totalSupportedPracticeItems;
+  const practiceComplete =
+    practiceProgress.practiceComplete ||
+    (totalPracticeItems > 0 &&
+      practiceProgress.completedCount >= totalPracticeItems);
+  const practiceResult = practiceComplete
+    ? `Practice complete: ${practiceProgress.correctCount} of ${totalPracticeItems} correct.`
+    : practiceProgress.completedCount > 0
+      ? `${practiceProgress.completedCount} of ${totalPracticeItems} practice items complete. ${practiceProgress.correctCount} correct so far.`
       : "Complete practice to see your result here.";
-  const practiceNextStep =
-    practiceProgress.completedCount >= totalPracticeItems
-      ? "Review the phrases once more, then mark the lesson complete."
+  const practiceNextStep = practiceComplete
+    ? "Review the phrases once more, then mark the lesson complete."
+    : totalPracticeItems === 0
+      ? "Practice activities are being prepared for this lesson."
       : "Finish the practice card, then come back to this review.";
 
   return (
@@ -244,19 +255,16 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         id="lesson-practice"
         eyebrow="Practice"
         title="Practice this phrase"
-        description="Answer and get instant feedback."
+        description="Work through a short guided set."
         testId="section-exercise"
       >
-        <div className="space-y-5">
-          {lesson.exercises.map((exercise) => (
-            <ExerciseRenderer
-              key={exercise.id}
-              exercise={exercise}
-              lessonId={lesson.id}
-              onAttempt={recordExerciseAttempt}
-            />
-          ))}
-        </div>
+        <PracticeSection
+          exerciseAttempts={progress.exerciseAttempts}
+          exercises={lesson.exercises}
+          lessonId={lesson.id}
+          onAttempt={recordExerciseAttempt}
+          practiceProgress={practiceProgress}
+        />
       </SectionCard>
 
       <SectionCard

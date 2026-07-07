@@ -16,16 +16,19 @@ type SubmittedAnswer = {
   correct: boolean;
 };
 
+export type ExerciseAttemptPayload = {
+  lessonId: string;
+  exerciseId: string;
+  itemId: string;
+  answer: string;
+  correct: boolean;
+  totalPracticeItems?: number;
+};
+
 type ExerciseRendererProps = {
   exercise: Exercise;
   lessonId: string;
-  onAttempt: (attempt: {
-    lessonId: string;
-    exerciseId: string;
-    itemId: string;
-    answer: string;
-    correct: boolean;
-  }) => void;
+  onAttempt: (attempt: ExerciseAttemptPayload) => void;
 };
 
 function normalizeAnswer(answer: string) {

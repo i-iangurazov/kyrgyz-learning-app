@@ -13,10 +13,12 @@ export type ExerciseAttempt = {
 };
 
 export type LessonPracticeProgress = {
+  totalCount: number;
   attemptedCount: number;
   completedCount: number;
   correctCount: number;
   incorrectCount: number;
+  practiceComplete: boolean;
 };
 
 export type LocalProgress = {
@@ -45,6 +47,15 @@ export const defaultProgress: LocalProgress = {
 
 export const progressStorageKey = "kyrgyz-learning-progress-v1";
 
+export const emptyLessonPracticeProgress: LessonPracticeProgress = {
+  totalCount: 0,
+  attemptedCount: 0,
+  completedCount: 0,
+  correctCount: 0,
+  incorrectCount: 0,
+  practiceComplete: false,
+};
+
 export function getExerciseAttemptKey(
   lessonId: string,
   exerciseId: string,
@@ -56,18 +67,22 @@ export function getExerciseAttemptKey(
 export function summarizeLessonPractice(
   exerciseAttempts: Record<string, ExerciseAttempt>,
   lessonId: string,
+  totalCount = 0,
 ): LessonPracticeProgress {
   const attempts = Object.values(exerciseAttempts).filter(
     (attempt) => attempt.lessonId === lessonId,
   );
+  const completedCount = attempts.filter((attempt) => attempt.completed).length;
 
   return {
+    totalCount,
     attemptedCount: attempts.filter((attempt) => attempt.attempted).length,
-    completedCount: attempts.filter((attempt) => attempt.completed).length,
+    completedCount,
     correctCount: attempts.filter((attempt) => attempt.correct).length,
     incorrectCount: attempts.filter(
       (attempt) => attempt.completed && !attempt.correct,
     ).length,
+    practiceComplete: totalCount > 0 && completedCount >= totalCount,
   };
 }
 

@@ -37,6 +37,9 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
 
   const practice = page.getByTestId("section-exercise");
   await practice.scrollIntoViewIfNeeded();
+  await expect(practice.getByTestId("practice-progress")).toContainText(
+    "Practice 1 of 2",
+  );
   await practice.getByRole("button", { name: "thank you" }).click();
   await expect(practice.getByTestId("exercise-feedback")).toContainText(
     "Good. That fits this lesson.",
@@ -44,6 +47,20 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
   await expect(practice.getByTestId("exercise-feedback")).toContainText(
     "Rahmat means thank you.",
   );
+  await expect(practice.getByTestId("practice-progress")).toContainText(
+    "Practice 2 of 2",
+  );
+
+  await practice.getByLabel("Жакшы, ___.").fill("рахмат");
+  await practice.getByRole("button", { name: "Check answer" }).click();
+  await expect(practice.getByTestId("practice-complete")).toContainText(
+    "You're ready for the next step",
+  );
+  await expect(practice.getByTestId("practice-complete")).toContainText(
+    "2 of 2 answers correct",
+  );
+  await practice.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByTestId("section-mini-game")).toBeVisible();
 
   await page.getByTestId("section-review").scrollIntoViewIfNeeded();
   await expect(page.getByTestId("lesson-step-progress")).toContainText(
@@ -51,7 +68,7 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
   );
   await expect(page.getByTestId("lesson-step-progress")).toContainText("Review");
   await expect(page.getByTestId("practice-summary")).toContainText(
-    "1 of 1 practice answers correct.",
+    "Practice complete: 2 of 2 correct.",
   );
 
   await expect(page.locator("body")).not.toContainText(

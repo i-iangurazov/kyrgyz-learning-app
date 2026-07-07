@@ -57,6 +57,10 @@ describe("LessonPlayer", () => {
     const user = userEvent.setup();
     render(<LessonPlayer lesson={lessons[0]} />);
 
+    expect(screen.getByTestId("practice-progress")).toHaveTextContent(
+      "Practice 1 of 2",
+    );
+
     await user.click(
       within(screen.getByTestId("section-exercise")).getByRole("button", {
         name: "thank you",
@@ -64,8 +68,23 @@ describe("LessonPlayer", () => {
     );
 
     await waitFor(() => {
+      expect(screen.getByTestId("practice-progress")).toHaveTextContent(
+        "Practice 2 of 2",
+      );
+      expect(screen.getByTestId("practice-progress")).toHaveTextContent(
+        "1 completed",
+      );
+    });
+
+    await user.type(screen.getByLabelText("Жакшы, ___."), "рахмат");
+    await user.click(screen.getByRole("button", { name: "Check answer" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("practice-complete")).toHaveTextContent(
+        "You're ready for the next step",
+      );
       expect(screen.getByTestId("practice-summary")).toHaveTextContent(
-        "1 of 1 practice answers correct.",
+        "Practice complete: 2 of 2 correct.",
       );
     });
 
@@ -73,8 +92,12 @@ describe("LessonPlayer", () => {
       const storedProgress = JSON.parse(
         window.localStorage.getItem(progressStorageKey) ?? "{}",
       );
-      expect(storedProgress.lessonPractice["k0-u1-l1"].completedCount).toBe(1);
-      expect(storedProgress.lessonPractice["k0-u1-l1"].correctCount).toBe(1);
+      expect(storedProgress.lessonPractice["k0-u1-l1"].totalCount).toBe(2);
+      expect(storedProgress.lessonPractice["k0-u1-l1"].completedCount).toBe(2);
+      expect(storedProgress.lessonPractice["k0-u1-l1"].correctCount).toBe(2);
+      expect(storedProgress.lessonPractice["k0-u1-l1"].practiceComplete).toBe(
+        true,
+      );
     });
   });
 });

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   type LocalProgress,
   defaultProgress,
+  emptyLessonPracticeProgress,
   getExerciseAttemptKey,
   progressStorageKey,
   summarizeLessonPractice,
@@ -19,7 +20,17 @@ function mergeStoredProgress(stored: Partial<LocalProgress>): LocalProgress {
       ...(stored.lessonStatus ?? {}),
     },
     exerciseAttempts: stored.exerciseAttempts ?? {},
-    lessonPractice: stored.lessonPractice ?? {},
+    lessonPractice: Object.fromEntries(
+      Object.entries(stored.lessonPractice ?? {}).map(
+        ([lessonId, lessonPractice]) => [
+          lessonId,
+          {
+            ...emptyLessonPracticeProgress,
+            ...lessonPractice,
+          },
+        ],
+      ),
+    ),
   };
 }
 
@@ -79,12 +90,14 @@ export function useLocalProgress() {
         itemId,
         answer,
         correct,
+        totalPracticeItems,
       }: {
         lessonId: string;
         exerciseId: string;
         itemId: string;
         answer: string;
         correct: boolean;
+        totalPracticeItems?: number;
       }) => {
         setProgress((current) => {
           const attemptKey = getExerciseAttemptKey(lessonId, exerciseId, itemId);
@@ -109,7 +122,13 @@ export function useLocalProgress() {
             exerciseAttempts,
             lessonPractice: {
               ...current.lessonPractice,
-              [lessonId]: summarizeLessonPractice(exerciseAttempts, lessonId),
+              [lessonId]: summarizeLessonPractice(
+                exerciseAttempts,
+                lessonId,
+                totalPracticeItems ??
+                  current.lessonPractice[lessonId]?.totalCount ??
+                  0,
+              ),
             },
             lessonStatus: {
               ...current.lessonStatus,

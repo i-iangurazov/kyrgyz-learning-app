@@ -383,7 +383,7 @@ export const lessonSeedData = [
             feedback: text("Рахмат - ыраазычылык.", "Rahmat means thank you.", "Рахмат значит спасибо."),
           },
         ],
-        linkedExerciseIds: ["ex-greeting-match"],
+        linkedExerciseIds: ["ex-greeting-match", "ex-greeting-fill"],
         methodologyRefs,
         sourceNotes:
           "Original demo grammar note drafted for K0 greeting practice; grammar reference check required.",
@@ -422,6 +422,35 @@ export const lessonSeedData = [
         hskInspiredComponent: ["workbook_exercise"],
         sourceNotes:
           "Original demo multiple-choice item. Distractors and translations require methodist validation.",
+        methodistReviewStatus: "not_reviewed",
+      },
+      {
+        id: "ex-greeting-fill",
+        kind: "fill_blank",
+        prompt: text("Сөздү толукта.", "Complete the phrase.", "Дополните фразу."),
+        helperTextByTrack: {
+          RU_KY: "Впишите слово из короткого ответа.",
+          EN_KY: "Type the missing word from the short reply.",
+          KY_KY: "Кыска жооптогу жетишпеген сөздү жаз.",
+        },
+        linkedVocabularyIds: ["rahmat", "jakshy"],
+        linkedGrammarPointIds: ["sample-short-replies"],
+        items: [
+          {
+            id: "item-jakshy-rahmat",
+            question: text("Жакшы, ___.", "Жакшы, ___.", "Жакшы, ___."),
+            correctAnswerData: { kind: "text", value: "рахмат" },
+            explanation: text(
+              "Жакшы, рахмат - кыска сылык жооп.",
+              "Jakshy, rahmat is a short polite reply.",
+              "Жакшы, рахмат - короткий вежливый ответ.",
+            ),
+            feedback: exerciseFeedback(),
+          },
+        ],
+        hskInspiredComponent: ["workbook_exercise"],
+        sourceNotes:
+          "Original demo fill-blank item using lesson vocabulary. Phrase and translation require methodist validation.",
         methodistReviewStatus: "not_reviewed",
       },
     ],
