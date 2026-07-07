@@ -97,6 +97,8 @@ Use this checklist before any lesson is treated as final learner-facing content.
 - [ ] Synthetic/TTS audio is marked internally as synthetic and needs review until approved.
 - [ ] TTS audio follows `docs/TTS_AUDIO_PIPELINE.md`, including no voice cloning and no real-person or character imitation.
 - [ ] TTS audio has been reviewed by a Kyrgyz speaker or qualified reviewer before any beta-approved use.
+- [ ] Attachment map links generated audio files only to known stable audio IDs.
+- [ ] Missing generated audio files are tracked rather than silently ignored.
 - [ ] Pronunciation coaching text is approved.
 
 ## AI Roleplay Safety

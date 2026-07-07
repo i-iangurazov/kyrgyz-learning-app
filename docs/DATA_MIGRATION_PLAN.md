@@ -213,6 +213,8 @@ Actions:
 - Keep TTS-generated audio metadata aligned with `docs/TTS_AUDIO_PIPELINE.md`.
 - Do not migrate generated TTS files into production storage until they are reviewed and intentionally approved for the target release stage.
 - Keep generated audio traceable to stable lesson, vocabulary, dialogue, reading, grammar, or future listening IDs.
+- Use `pnpm audio:attachment-map` to review which generated files match known audio IDs before any seed or database metadata update.
+- Do not apply generated audio attachments to seed or database content automatically; attachment updates require an explicit reviewed task.
 
 Exit criteria:
 

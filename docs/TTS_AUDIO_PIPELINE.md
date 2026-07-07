@@ -111,6 +111,48 @@ test-results/audio/files/
 
 Generated files are ignored by Git unless the team intentionally chooses to ship a small reviewed fixture later.
 
+## Attachment Map
+
+After manifest generation, dry-run review, and any intentional audio generation, create a reviewable attachment map:
+
+```bash
+pnpm audio:attachment-map
+```
+
+The attachment map is written to:
+
+```text
+test-results/audio/audio-attachment-map.json
+```
+
+This generated file is ignored by Git.
+
+The attachment map:
+
+- reads `test-results/audio/tts-manifest.json` when present
+- generates the manifest in memory if the manifest file is missing
+- checks for generated files under `test-results/audio/files/`
+- records matching and missing files
+- keeps `voiceType: synthetic`
+- keeps `reviewStatus: needs_audio_review`
+- does not mark anything approved
+- does not mutate seed lessons
+
+Missing files are expected before paid generation is intentionally run. They must be visible in the map rather than silently treated as success.
+
+## End-To-End Offline Workflow
+
+Recommended local workflow:
+
+1. Run `pnpm audio:manifest`.
+2. Run `pnpm audio:generate:dry-run`.
+3. Run `pnpm audio:generate` only when intentionally generating audio with a provider key.
+4. Run `pnpm audio:attachment-map`.
+5. Review generated audio manually.
+6. Attach reviewed audio to seed or DB content only in a later explicit task.
+7. Keep synthetic audio marked as synthetic and in review until approved.
+8. Never label synthetic or unreviewed audio as native-quality.
+
 ## Metadata Update Strategy
 
 The current scripts do not automatically mutate seed lessons.
@@ -124,7 +166,7 @@ After generation, a future reviewed update step should:
 - keep source and rights notes internal
 - preserve TypeScript seed fallback and DB round-trip validation
 
-If an update script is added later, it must be idempotent, reviewed, and tested before use.
+An optional future command such as `audio:apply-attachments` may be added later, but it must be explicit, disabled by default, idempotent, reviewed, and tested before use. It must not silently mutate `src/content/seed/lessons.ts`.
 
 ## Runtime Boundary
 
