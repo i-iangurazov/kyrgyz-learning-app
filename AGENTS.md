@@ -13,6 +13,7 @@ Rules for future Codex tasks in this repository:
 - Future onboarding work must follow `docs/ONBOARDING_AND_PLACEMENT_PLAN.md`.
 - Future app shell changes must follow `docs/MOBILE_APP_SHELL_GUIDELINES.md`.
 - Future database/backend work must follow `docs/DATABASE_ARCHITECTURE.md`.
+- Future backend/database work must read `docs/POSTGRES_SCHEMA_PROPOSAL.md` before proposing tables, migrations, or backend code.
 - Future content knowledge-base work must follow `docs/CONTENT_KNOWLEDGE_BASE.md`.
 - Future flashcard or review-system work must follow `docs/FLASHCARDS_AND_SRS_PLAN.md`.
 - Future technology choices must check `docs/REUSABLE_TECH_STACK.md` before adding dependencies or custom infrastructure.
@@ -26,6 +27,9 @@ Rules for future Codex tasks in this repository:
 - Codex must avoid clutter and avoid exposing internal methodology/source metadata to learners unless it helps UX.
 - Before finishing any task, run typecheck, lint, tests, Playwright where relevant, and a production build.
 - If a check fails, report it honestly and include the failure context.
+- Do not add database migrations, Supabase clients, auth, backend storage, or schema-changing infrastructure unless the task explicitly asks to implement database/backend behavior.
+- Any schema change must update relevant docs and tests.
+- Learner-facing UI must not expose internal source, rights, review, audit, or methodist metadata.
 
 Content rules:
 

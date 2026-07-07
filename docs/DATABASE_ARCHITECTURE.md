@@ -4,6 +4,12 @@ This document defines the future database direction for the Kyrgyz learning app.
 
 The database should preserve the current schema-first discipline: content is structured, linked, validated, reviewable, and safe to render without exposing internal metadata to learners.
 
+Companion implementation-planning docs:
+
+- `docs/POSTGRES_SCHEMA_PROPOSAL.md` defines the first-pass relational table proposal.
+- `docs/SUPABASE_IMPLEMENTATION_PLAN.md` defines how Supabase/Postgres could be implemented later.
+- `docs/DATA_MIGRATION_PLAN.md` defines how current TypeScript seed content can migrate to database-backed content.
+
 ## Design Goals
 
 - Keep curriculum, language knowledge, media, exercises, review, and learner progress as connected domains.

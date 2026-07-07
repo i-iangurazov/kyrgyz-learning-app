@@ -2,6 +2,8 @@
 
 This document defines the long-term Kyrgyz language knowledge base for the app. The knowledge base is not a copied textbook. It is a structured, validated, reusable layer that connects sources, curriculum, language facts, examples, exercises, flashcards, audio, and review.
 
+For future relational storage, use `docs/POSTGRES_SCHEMA_PROPOSAL.md` as the first-pass table proposal and `docs/DATA_MIGRATION_PLAN.md` for seed-to-database migration sequencing.
+
 ## Purpose
 
 The knowledge base should let the product answer:

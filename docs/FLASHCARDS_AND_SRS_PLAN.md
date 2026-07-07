@@ -2,6 +2,8 @@
 
 Flashcards should become a core learning feature after lessons, practice, and review queue behavior are stable. The goal is not to build a custom spaced repetition algorithm from scratch. The goal is to connect lesson content and learner mistakes to a proven review model.
 
+For future backend storage, use the flashcard, flashcard review, and SRS state tables proposed in `docs/POSTGRES_SCHEMA_PROPOSAL.md`. Do not implement SRS migrations or scheduling until the task explicitly requests backend implementation.
+
 ## Product Role
 
 Flashcards should help learners:
