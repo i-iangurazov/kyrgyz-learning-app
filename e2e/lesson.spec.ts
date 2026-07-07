@@ -42,7 +42,7 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
   await expect(page.getByTestId("lesson-step-progress")).toContainText("Review");
 
   await expect(page.locator("body")).not.toContainText(
-    /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|mock state/i,
+    /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|mock state|sourceNotes|rightsNotes|validatedAgainst|not_reviewed/i,
   );
 
   await page.goto("/lesson/k0-u1-l1#lesson-review");

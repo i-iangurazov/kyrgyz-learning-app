@@ -33,6 +33,13 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   const readingText = lesson.texts[0];
   const grammarPoint = lesson.grammarPoints[0];
   const grammarExample = grammarPoint.examples[0];
+  const breakdownItems =
+    dialogue.breakdownItems.length > 0
+      ? dialogue.breakdownItems
+      : (readingText?.breakdownItems ?? []);
+  const exercise = lesson.exercises[0];
+  const exerciseItem = exercise.items[0];
+  const exerciseOptions = exerciseItem.options ?? [];
 
   return (
     <article className="space-y-4" data-testid="lesson-player">
@@ -78,7 +85,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         testId="section-goals"
       >
         <div className="space-y-2">
-          {lesson.objectives.slice(0, 4).map((objective) => (
+          {lesson.learningGoals.slice(0, 4).map((objective) => (
             <div
               key={objective.en}
               className="flex gap-2.5 rounded-lg bg-[#f5f8f2] p-2.5 text-[13px]"
@@ -115,7 +122,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                 ) : null}
               </div>
               <p className="shrink-0 text-sm font-semibold text-[#27645a]">
-                {item.english}
+                {item.translations.en}
               </p>
             </div>
           ))}
@@ -140,7 +147,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
               </p>
               <p className="mt-1 text-base font-semibold">{line.kyrgyz}</p>
               <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                {line.english}
+                {line.translations.en}
               </p>
             </div>
           ))}
@@ -153,10 +160,14 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           title={readingText.title.en}
           description="Simple reading practice."
         >
-          <p className="text-lg font-semibold leading-8">{readingText.kyrgyz}</p>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            {readingText.english}
-          </p>
+          {readingText.paragraphs.map((paragraph) => (
+            <div key={paragraph.id} className="space-y-2">
+              <p className="text-lg font-semibold leading-8">{paragraph.kyrgyz}</p>
+              <p className="text-sm leading-6 text-muted-foreground">
+                {paragraph.translations.en}
+              </p>
+            </div>
+          ))}
         </SectionCard>
       ) : null}
 
@@ -168,14 +179,14 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         testId="section-breakdown"
       >
         <div className="space-y-3">
-          {lesson.vocabulary.slice(0, 3).map((item) => (
+          {breakdownItems.slice(0, 3).map((item) => (
             <div
               key={item.id}
               className="flex items-center justify-between gap-3 rounded-lg bg-muted px-4 py-3"
             >
-              <span className="font-semibold">{item.kyrgyz}</span>
+              <span className="font-semibold">{item.phrase}</span>
               <span className="text-sm font-medium text-muted-foreground">
-                {item.english}
+                {item.meaningByTrack.EN_KY}
               </span>
             </div>
           ))}
@@ -185,7 +196,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
             </p>
             <p className="mt-2 font-semibold">{grammarExample.kyrgyz}</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              {grammarExample.english}
+              {grammarExample.translations.en}
             </p>
           </div>
         </div>
@@ -199,13 +210,15 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         testId="section-grammar"
       >
         <p className="text-sm leading-6 text-foreground">
-          {grammarPoint.explanation.en}
+          {grammarPoint.simpleRule.en}
         </p>
         <div className="mt-4 space-y-2">
           {grammarPoint.examples.map((example) => (
             <div key={example.kyrgyz} className="rounded-lg border border-border p-3">
               <p className="font-semibold">{example.kyrgyz}</p>
-              <p className="text-sm text-muted-foreground">{example.english}</p>
+              <p className="text-sm text-muted-foreground">
+                {example.translations.en}
+              </p>
             </div>
           ))}
         </div>
@@ -214,24 +227,22 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
       <SectionCard
         id="lesson-practice"
         eyebrow="Practice"
-        title={lesson.exercises[0].prompt.en}
+        title={exercise.prompt.en}
         description="Try a quick check before moving on."
         testId="section-exercise"
       >
         <div className="space-y-3">
           <p className="text-sm font-semibold">
-            {lesson.exercises[0].items[0].question.en}
+            {exerciseItem.question.en}
           </p>
           <div className="grid gap-2">
-            {(lesson.exercises[0].items[0].options ?? [
-              lesson.exercises[0].items[0].answer,
-            ]).map((option) => (
+            {exerciseOptions.map((option) => (
               <button
-                key={option.en}
+                key={option.id}
                 className="rounded-lg border border-border px-4 py-3 text-left text-sm font-medium transition hover:bg-accent"
                 type="button"
               >
-                {option.en}
+                {option.text.en}
               </button>
             ))}
           </div>
@@ -269,8 +280,8 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
       <SectionCard
         id="lesson-roleplay"
         eyebrow="AI Roleplay"
-        title={lesson.aiRoleplay.scenario.en}
-        description={lesson.aiRoleplay.learnerGoal.en}
+        title={lesson.aiRoleplay.title.en}
+        description={lesson.aiRoleplay.userGoal.en}
         testId="section-ai-roleplay"
       >
         <div className="rounded-lg border border-dashed border-[#66817b] p-4">

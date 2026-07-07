@@ -19,22 +19,35 @@ Recommended fields:
 ```ts
 aiRoleplay: {
   id: "roleplay-cafe-intro",
-  lessonId: "k1-u1-l1",
-  scenario: {
+  scenarioId: "k1-cafe-intro",
+  title: {
+    en: "Cafe introduction",
+    ru: "Знакомство в кафе",
+    ky: "..."
+  },
+  level: "K1",
+  situation: {
     en: "You meet someone new at a cafe.",
     ru: "Вы знакомитесь с новым человеком в кафе.",
     ky: "..."
   },
-  learnerGoal: {
+  userGoal: {
     en: "Greet them and say your name.",
     ru: "Поздоровайтесь и назовите свое имя.",
+    ky: "..."
+  },
+  aiCharacter: {
+    en: "Cafe guest",
+    ru: "Гость в кафе",
     ky: "..."
   },
   allowedVocabularyIds: ["salam", "at", "men"],
   allowedGrammarPointIds: ["sample-name-pattern"],
   allowedPhrases: ["Салам.", "Атым ..."],
-  correctionPolicy: "gentle-short",
-  reviewTags: ["demo", "needs-methodist-review"]
+  correctionStyle: "gentle_short",
+  uncertaintyRules: ["Tag grammar explanations for review."],
+  refusalRules: ["Redirect off-level requests back to the scenario."],
+  methodistReviewStatus: "not_reviewed"
 }
 ```
 

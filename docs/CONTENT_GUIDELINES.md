@@ -113,13 +113,13 @@ Exercises should:
 
 Recommended exercise types:
 
-- Multiple choice.
-- Matching.
-- Fill blank.
-- Translation.
-- Reading comprehension.
-- Word order.
-- Listening recognition later.
+- `multiple_choice`.
+- `fill_blank`.
+- `sentence_builder`.
+- `match_pairs`.
+- `error_correction`.
+- `listening_choice`.
+- `short_answer`.
 
 ## Mini-game Content Rules
 
@@ -154,6 +154,9 @@ Not allowed:
 Every demo lesson or sample item must include:
 
 - A visible or data-level demo marker.
+- `contentStatus: "demo"`.
+- `isDemoContent: true`.
+- `methodistReviewStatus: "not_reviewed"` until reviewed.
 - TODO notes for methodist/linguist validation.
 - Clear non-authoritative language.
 - No claim that grammar or pronunciation is final.
@@ -168,10 +171,20 @@ Future content models should include:
 - `validatedAgainst`
 - `hskInspiredComponent`
 - `kyrgyztestLevel`
+- `cefrLevelPlaceholder`
 - `readingSourceType`
-- `isOriginalText`
+- `isOriginalContent`
 - `requiresLicense`
 - `methodistReviewStatus`
+
+Schema v2 lesson records must also include:
+
+- `schemaVersion: "lesson-v2"`
+- `supportedTracks`: `RU_KY`, `EN_KY`, `KY_KY`
+- `learningGoals`
+- `targetSkills`
+- `estimatedDurationMinutes`
+- `prerequisites`
 
 Rules:
 

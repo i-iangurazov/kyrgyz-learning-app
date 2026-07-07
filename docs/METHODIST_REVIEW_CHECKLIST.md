@@ -5,14 +5,21 @@ Use this checklist before any lesson is treated as final learner-facing content.
 ## Lesson Metadata
 
 - [ ] Lesson ID is stable.
+- [ ] `schemaVersion` is `lesson-v2`.
 - [ ] Level, unit, and lesson order are correct.
 - [ ] Lesson goal is clear and observable.
-- [ ] Content status is correct: demo, in review, approved, or rejected.
+- [ ] `supportedTracks` are correct: `RU_KY`, `EN_KY`, `KY_KY`.
+- [ ] `targetSkills` match the lesson: reading, listening, speaking, grammar, vocabulary, writing.
+- [ ] Content status is correct: `demo`, `draft`, `in_review`, `approved`, `published`, or `archived`.
+- [ ] Methodist review status is correct: `not_reviewed`, `needs_revision`, `reviewed`, or `approved`.
 - [ ] Reviewer name and review date are recorded when applicable.
 - [ ] `methodologyRefs` are present where applicable.
 - [ ] `sourceNotes` are present.
+- [ ] `rightsNotes` are present.
+- [ ] `validatedAgainst` is present.
 - [ ] `methodistReviewStatus` is present.
 - [ ] `kyrgyztestLevel` is present or explicitly deferred.
+- [ ] `cefrLevelPlaceholder` is present when CEFR mapping is not validated.
 
 ## Vocabulary Accuracy
 
@@ -105,7 +112,7 @@ Use this checklist before any lesson is treated as final learner-facing content.
 - [ ] Kyrgyz textbook or Kyrgyz-as-foreign-language materials were not copied unless licensed.
 - [ ] Reading/literary content includes `rightsNotes`.
 - [ ] Reading/literary content includes `readingSourceType`.
-- [ ] `isOriginalText` is recorded where applicable.
+- [ ] `isOriginalContent` is recorded where applicable.
 - [ ] `requiresLicense` is recorded where applicable.
 - [ ] Any modern literary excerpt has license or explicit permission.
 

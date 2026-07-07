@@ -21,6 +21,26 @@ Canonical sequence:
 11. Review
 12. Progress update
 
+## Schema V2 Contract
+
+Lesson records use `schemaVersion: "lesson-v2"`.
+
+Required lesson-level fields:
+
+- Lifecycle: `contentStatus`, `methodistReviewStatus`, `isDemoContent`, `internalNotes`, `methodistNotes`.
+- Source and rights: `methodologyRefs`, `sourceNotes`, `rightsNotes`, `validatedAgainst`, `hskInspiredComponent`, `kyrgyztestLevel`, `cefrLevelPlaceholder`, `requiresLicense`, `isOriginalContent`.
+- Track support: `supportedTracks` using `RU_KY`, `EN_KY`, and `KY_KY`.
+- Lesson metadata: `stableLessonId`, `levelId`, `unitId`, `lessonNumber`, `estimatedDurationMinutes`, `prerequisites`, `learningGoals`, and `targetSkills`.
+
+Canonical enum values:
+
+- `contentStatus`: `demo`, `draft`, `in_review`, `approved`, `published`, `archived`.
+- `methodistReviewStatus`: `not_reviewed`, `needs_revision`, `reviewed`, `approved`.
+- Exercise `kind`: `multiple_choice`, `fill_blank`, `sentence_builder`, `match_pairs`, `error_correction`, `listening_choice`, `short_answer`.
+- Mini-game `type`: `crossword`, `word_match`, `sentence_puzzle`, `find_mistake`, `kyrgyz_wordle`.
+
+Internal source, rights, validation, and methodist fields must not be displayed in normal learner-facing lesson cards.
+
 ## 1. Story Card
 
 Purpose:
@@ -61,7 +81,7 @@ story: {
   contextTags: ["cafe", "introduction"],
   sourceNotes: "Original demo text inspired by K1 cafe theme.",
   rightsNotes: "Original app-authored text; no external passage copied.",
-  methodistReviewStatus: "needs review",
+  methodistReviewStatus: "not_reviewed",
 }
 ```
 
@@ -74,9 +94,9 @@ Purpose:
 
 Content fields needed:
 
-- `objectives`
+- `learningGoals`
 - `canDoStatements`
-- `targetSkill`
+- `targetSkills`
 - `kyrgyztestLevel`
 - `hskInspiredComponent`
 
@@ -108,7 +128,7 @@ Content fields needed:
 - `notes`
 - `tags`
 - `audioAssetId` later
-- `validationStatus`
+- `audio.status`
 - `sourceNotes`
 - `validatedAgainst`
 - `methodistReviewStatus`
@@ -144,7 +164,7 @@ Content fields needed:
 - optional context note
 - optional audio asset references later
 - `readingSourceType`
-- `isOriginalText`
+- `isOriginalContent`
 - `requiresLicense`
 - `sourceNotes`
 - `rightsNotes`
@@ -234,10 +254,10 @@ Purpose:
 Content fields needed:
 
 - `id`
-- `type`
+- `kind`
 - `prompt`
 - `items`
-- `answer`
+- `correctAnswerData`
 - `options`
 - `feedback`
 - `linkedVocabularyIds`
@@ -324,13 +344,15 @@ Purpose:
 Content fields needed:
 
 - `scenario`
-- `learnerGoal`
+- `userGoal`
+- `aiCharacter`
 - `allowedVocabularyIds`
 - `allowedGrammarPointIds`
 - `allowedPhrases`
-- `correctionPolicy`
+- `correctionStyle`
+- `uncertaintyRules`
+- `refusalRules`
 - `systemPromptPlaceholder`
-- `reviewTags`
 - `sourceNotes`
 - `methodistReviewStatus`
 
@@ -402,21 +424,19 @@ Validation rules:
 
 ## Lesson-level Source Metadata
 
-Every future lesson record should include a source metadata block:
+Every future lesson record should include these source metadata fields directly on the lesson record:
 
 ```ts
-sourceMetadata: {
-  methodologyRefs: ["HSK structure analysis", "Kyrgyz source base"],
-  sourceNotes: "Original app-authored lesson using HSK-inspired sequence and K1 cafe theme.",
-  rightsNotes: "No external learner-facing text copied. Requires review before production.",
-  validatedAgainst: ["pending Kyrgyz grammar reference review"],
-  hskInspiredComponent: ["vocabulary list", "dialogue", "workbook-style exercise"],
-  kyrgyztestLevel: "A1-placeholder",
-  readingSourceType: "original",
-  isOriginalText: true,
-  requiresLicense: false,
-  methodistReviewStatus: "needs review",
-}
+methodologyRefs: ["docs/HSK_STRUCTURE_ANALYSIS.md", "docs/KYRGYZ_SOURCE_BASE.md"],
+sourceNotes: "Original app-authored lesson using HSK-inspired sequence and K1 cafe theme.",
+rightsNotes: "No external learner-facing text copied. Requires review before production.",
+validatedAgainst: ["pending Kyrgyz grammar reference review"],
+hskInspiredComponent: ["vocabulary_list", "dialogue_or_reading_text", "workbook_exercise"],
+kyrgyztestLevel: "A1-placeholder",
+cefrLevelPlaceholder: "A1 internal placeholder",
+requiresLicense: false,
+isOriginalContent: true,
+methodistReviewStatus: "not_reviewed",
 ```
 
 For source-derived readings, `requiresLicense` must be true unless the source is confirmed public-domain or already licensed for this use.

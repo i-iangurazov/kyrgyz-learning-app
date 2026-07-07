@@ -43,7 +43,7 @@ describe("LessonPlayer", () => {
     render(<LessonPlayer lesson={lessons[0]} />);
 
     expect(screen.getByTestId("lesson-player").textContent).not.toMatch(
-      /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO/i,
+      /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|sourceNotes|rightsNotes|validatedAgainst|not_reviewed/i,
     );
   });
 });
