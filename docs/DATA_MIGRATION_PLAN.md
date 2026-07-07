@@ -2,6 +2,8 @@
 
 This document defines how to migrate from current TypeScript seed content to database-backed curriculum and progress later. It is not an implementation plan for the current task and does not authorize migrations.
 
+For the first actual migration, use `docs/BACKEND_VERTICAL_SLICE_PLAN.md` to limit scope and `docs/FIRST_MIGRATION_CHECKLIST.md` to verify readiness.
+
 ## Current State
 
 The app currently uses:
@@ -66,7 +68,8 @@ Goal:
 
 Actions:
 
-- Start with levels, units, lessons, vocabulary, dialogues/readings, exercises, audio assets, and source metadata needed for current seed lessons.
+- Start with the slice 1 tables defined in `docs/BACKEND_VERTICAL_SLICE_PLAN.md`.
+- Preserve placeholder audio data where needed, but do not add full media/audio storage tables in the first slice unless explicitly requested.
 - Add migrations in a dedicated backend implementation task.
 - Add RLS from the beginning for user-owned tables if any user data exists.
 - Keep admin-only tables private.
@@ -296,7 +299,7 @@ Content statuses:
 
 ## Open Decisions
 
-- How much of the schema to implement in the first migration.
+- How much of the schema to implement after the first vertical slice is proven.
 - Whether DB lesson reads should use direct table joins, views, or RPC.
 - How to represent content versions in the admin UI.
 - Whether anonymous local progress should merge into accounts after sign-in.

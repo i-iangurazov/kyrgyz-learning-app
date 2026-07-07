@@ -9,6 +9,9 @@ Companion implementation-planning docs:
 - `docs/POSTGRES_SCHEMA_PROPOSAL.md` defines the first-pass relational table proposal.
 - `docs/SUPABASE_IMPLEMENTATION_PLAN.md` defines how Supabase/Postgres could be implemented later.
 - `docs/DATA_MIGRATION_PLAN.md` defines how current TypeScript seed content can migrate to database-backed content.
+- `docs/BACKEND_VERTICAL_SLICE_PLAN.md` defines the smallest safe first migration slice.
+- `docs/SCHEMA_REVIEW_NOTES.md` reviews over-engineering risks in the broader schema.
+- `docs/FIRST_MIGRATION_CHECKLIST.md` defines readiness checks for the first actual migration.
 
 ## Design Goals
 

@@ -2,6 +2,8 @@
 
 This document explains how the Postgres schema proposal could be implemented with Supabase later. It is not an implementation task and should not be treated as authorization to create migrations, clients, auth, storage, or backend code.
 
+For the first actual backend migration, use `docs/BACKEND_VERTICAL_SLICE_PLAN.md` as the implementation boundary and `docs/FIRST_MIGRATION_CHECKLIST.md` as the readiness checklist.
+
 ## Why Supabase/Postgres Is A Good Candidate
 
 Supabase gives the product a pragmatic path to:
@@ -35,6 +37,8 @@ First implementation should be intentionally narrow:
 5. Keep local progress unchanged until content reads are stable.
 
 Avoid implementing user progress, flashcards, SRS, admin workflow, or storage uploads in the first slice unless explicitly requested.
+
+The detailed slice 1 table boundary is defined in `docs/BACKEND_VERTICAL_SLICE_PLAN.md`. If that document conflicts with this high-level summary, use the vertical slice plan for the first migration.
 
 ## Auth Plan Later
 
@@ -297,3 +301,4 @@ When implementation is requested:
 - Whether content versions use normalized rows, JSONB snapshots, or both.
 - Whether Supabase Storage is final or an S3-compatible provider is preferred.
 - How local progress should merge into backend accounts.
+- When to expand beyond the slice 1 schema into media, progress, SRS, AI roleplay, and admin/CMS domains.

@@ -4,6 +4,13 @@ This is a first-pass relational schema proposal for a future Supabase/Postgres b
 
 The proposal mirrors the current `lesson-v2` TypeScript/Zod model while separating reusable language knowledge, lesson presentation, exercises, media, progress, and admin review.
 
+Implementation boundary:
+
+- Use `docs/BACKEND_VERTICAL_SLICE_PLAN.md` before creating the first actual migration.
+- Use `docs/SCHEMA_REVIEW_NOTES.md` to identify over-engineering risks in this broader proposal.
+- Use `docs/FIRST_MIGRATION_CHECKLIST.md` when a future task explicitly asks for the first migration.
+- Do not implement this entire proposal in one pass.
+
 ## Design Principles
 
 - Use stable text IDs for curriculum/content records where they already exist, such as `k0-u1-l1`, `salam`, or `ex-greeting-fill`.
@@ -820,6 +827,7 @@ Admin/editor/reviewer tables:
 ## Risks And Unknowns
 
 - The proposal is broad; first implementation should select a thin vertical slice.
+- The current recommended first slice is documented in `docs/BACKEND_VERTICAL_SLICE_PLAN.md`.
 - Polymorphic links are convenient but need admin/import validation to avoid broken references.
 - Exercise answers may need server-side checking for placement/exams later.
 - Content versioning strategy needs a decision: full snapshots, diffs, or both.
