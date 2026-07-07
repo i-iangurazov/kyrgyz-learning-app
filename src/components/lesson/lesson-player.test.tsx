@@ -53,7 +53,7 @@ describe("LessonPlayer", () => {
     );
   });
 
-  it("renders audio-ready controls on vocabulary cards and dialogue lines", () => {
+  it("renders audio-ready controls on vocabulary, dialogue, and reading items", () => {
     render(<LessonPlayer lesson={lessons[0]} />);
 
     expect(screen.getAllByTestId("vocabulary-audio-control")).toHaveLength(
@@ -62,10 +62,15 @@ describe("LessonPlayer", () => {
     expect(screen.getAllByTestId("dialogue-audio-control")).toHaveLength(
       lessons[0].dialogues[0].lines.length,
     );
+    expect(screen.getAllByTestId("reading-audio-control")).toHaveLength(
+      lessons[0].texts[0].paragraphs.length,
+    );
     expect(
       screen.getAllByRole("button", { name: "Audio coming soon" }).length,
     ).toBeGreaterThanOrEqual(
-      lessons[0].vocabulary.length + lessons[0].dialogues[0].lines.length,
+      lessons[0].vocabulary.length +
+        lessons[0].dialogues[0].lines.length +
+        lessons[0].texts[0].paragraphs.length,
     );
   });
 

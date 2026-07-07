@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { lessons, levels, units } from "@/content/curriculum";
 import { lessonSeedData } from "@/content/seed/lessons";
-import { audioAssetSchema, lessonSchema } from "@/content/schemas";
+import { audioAssetSchema, exerciseSchema, lessonSchema } from "@/content/schemas";
 
 describe("curriculum content schemas", () => {
   it("validates all seeded lessons against schema v2", () => {
@@ -114,6 +114,83 @@ describe("curriculum content schemas", () => {
         rightsNotes: "Test fixture rights note.",
         methodistReviewStatus: "not_reviewed",
         audioReviewStatus: "not_recorded",
+      }),
+    ).not.toThrow();
+  });
+
+  it("supports audio references for future listening exercises", () => {
+    expect(() =>
+      exerciseSchema.parse({
+        id: "ex-listening-future",
+        kind: "listening_choice",
+        prompt: {
+          ky: "Ук жана танда.",
+          en: "Listen and choose.",
+          ru: "Послушайте и выберите.",
+        },
+        helperTextByTrack: {
+          RU_KY: "Уккан сөздү тандаңыз.",
+          EN_KY: "Choose the word you hear.",
+          KY_KY: "Уккан сөздү танда.",
+        },
+        linkedVocabularyIds: ["salam"],
+        linkedGrammarPointIds: [],
+        items: [
+          {
+            id: "item-listen-salam",
+            question: {
+              ky: "Кайсы сөз угулду?",
+              en: "Which word did you hear?",
+              ru: "Какое слово прозвучало?",
+            },
+            options: [
+              {
+                id: "option-salam",
+                text: { ky: "Салам", en: "hello", ru: "привет" },
+              },
+              {
+                id: "option-rahmat",
+                text: { ky: "Рахмат", en: "thank you", ru: "спасибо" },
+              },
+            ],
+            correctAnswerData: {
+              kind: "choice_id",
+              value: "option-salam",
+            },
+            audio: {
+              id: "audio-future-listening-salam",
+              storageKey: "pending/future-listening-salam.mp3",
+              transcript: "Салам",
+              language: "ky",
+              voiceType: "placeholder",
+              sourceNotes: "Future listening exercise audio placeholder.",
+              rightsNotes: "No audio asset has been recorded or approved yet.",
+              methodistReviewStatus: "not_reviewed",
+              audioReviewStatus: "not_recorded",
+            },
+            explanation: {
+              ky: "Бул сөз салам.",
+              en: "The word is salam.",
+              ru: "Это слово салам.",
+            },
+            feedback: {
+              correct: { ky: "Туура.", en: "Correct.", ru: "Верно." },
+              incorrect: {
+                ky: "Кайра ук.",
+                en: "Listen again later.",
+                ru: "Послушайте ещё раз позже.",
+              },
+              hint: {
+                ky: "Саламдашуу сөзүн ук.",
+                en: "Listen for the greeting word.",
+                ru: "Слушайте слово приветствия.",
+              },
+            },
+          },
+        ],
+        hskInspiredComponent: ["listening_task"],
+        sourceNotes: "Test fixture for future listening exercise structure.",
+        methodistReviewStatus: "not_reviewed",
       }),
     ).not.toThrow();
   });

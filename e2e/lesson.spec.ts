@@ -28,11 +28,15 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
   );
   await expect(page.getByTestId("vocabulary-audio-control")).toHaveCount(4);
   await expect(page.getByTestId("dialogue-audio-control")).toHaveCount(3);
+  await expect(page.getByTestId("reading-audio-control")).toHaveCount(1);
   await expect(
     page.getByTestId("vocabulary-audio-control").first(),
   ).toContainText("Audio coming soon");
   await expect(
     page.getByTestId("dialogue-audio-control").first(),
+  ).toContainText("Audio coming soon");
+  await expect(
+    page.getByTestId("reading-audio-control").first(),
   ).toContainText("Audio coming soon");
   await expect(
     page.getByRole("button", { name: "Audio coming soon" }).first(),

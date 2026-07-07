@@ -220,8 +220,18 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           description="Simple reading practice."
         >
           {readingText.paragraphs.map((paragraph) => (
-            <div key={paragraph.id} className="space-y-2">
-              <p className="text-lg font-semibold leading-8">{paragraph.kyrgyz}</p>
+            <div key={paragraph.id} className="space-y-3">
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-lg font-semibold leading-8">
+                  {paragraph.kyrgyz}
+                </p>
+                <AudioButton
+                  audio={paragraph.audio}
+                  className="w-[166px] shrink-0"
+                  label={`Play text ${paragraph.kyrgyz}`}
+                  testId="reading-audio-control"
+                />
+              </div>
               <p className="text-sm leading-6 text-muted-foreground">
                 {paragraph.translations.en}
               </p>

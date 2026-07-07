@@ -156,6 +156,51 @@ describe("Slice 1 DB seed mappers", () => {
     });
   });
 
+  it("preserves audio placeholders for words, dialogue, readings, and exercise items", () => {
+    const rows = createRows();
+    const roundTrippedLessons = mapDbRowsToLessons(rows);
+
+    sourceLessons.forEach((sourceLesson) => {
+      const roundTrippedLesson = roundTrippedLessons.find(
+        (lesson) => lesson.id === sourceLesson.id,
+      );
+
+      expect(roundTrippedLesson?.vocabulary.map((item) => item.audio)).toEqual(
+        sourceLesson.vocabulary.map((item) => item.audio),
+      );
+      expect(roundTrippedLesson?.dialogues.map((dialogue) => dialogue.audio)).toEqual(
+        sourceLesson.dialogues.map((dialogue) => dialogue.audio),
+      );
+      expect(
+        roundTrippedLesson?.dialogues.flatMap((dialogue) =>
+          dialogue.lines.map((line) => line.audio),
+        ),
+      ).toEqual(
+        sourceLesson.dialogues.flatMap((dialogue) =>
+          dialogue.lines.map((line) => line.audio),
+        ),
+      );
+      expect(
+        roundTrippedLesson?.texts.flatMap((text) =>
+          text.paragraphs.map((paragraph) => paragraph.audio),
+        ),
+      ).toEqual(
+        sourceLesson.texts.flatMap((text) =>
+          text.paragraphs.map((paragraph) => paragraph.audio),
+        ),
+      );
+      expect(
+        roundTrippedLesson?.exercises.flatMap((exercise) =>
+          exercise.items.map((item) => item.audio ?? null),
+        ),
+      ).toEqual(
+        sourceLesson.exercises.flatMap((exercise) =>
+          exercise.items.map((item) => item.audio ?? null),
+        ),
+      );
+    });
+  });
+
   it("keeps the app runtime seed export unchanged", () => {
     expect(runtimeLessons).toEqual(sourceLessons);
   });

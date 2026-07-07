@@ -186,6 +186,7 @@ UX behavior:
 - Text should be short and chunked.
 - Translation display may become toggleable by track.
 - Dialogue lines should include a compact audio control when audio is available or reserved.
+- Reading paragraphs should use the same compact audio control when an audio record is available or reserved.
 - Missing audio should not block the lesson.
 - Keep dialogue/text before detailed grammar.
 
