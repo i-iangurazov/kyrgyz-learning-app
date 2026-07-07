@@ -7,8 +7,8 @@ export default function PracticePage() {
     <AppPlaceholder
       icon={Dumbbell}
       title="Practice"
-      body="A focused queue for spaced review, listening checks, translation, and reading drills will live here."
-      chips={["Spaced review", "Listening", "Reading", "Translation"]}
+      body="Your review queue will help you revisit words, phrases, listening, and reading at the right time."
+      chips={["Review", "Listening", "Reading", "Translation"]}
     />
   );
 }

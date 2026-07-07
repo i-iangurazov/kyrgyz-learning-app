@@ -7,8 +7,8 @@ export default function ProfilePage() {
     <AppPlaceholder
       icon={UserRound}
       title="Profile"
-      body="Account, track preference, progress history, and learning settings will be connected after the MVP shell."
-      chips={["Mock progress", "Track settings", "Daily goal", "History"]}
+      body="Your learning track, daily goal, progress history, and account settings will live here."
+      chips={["Progress", "Track settings", "Daily goal", "History"]}
     />
   );
 }

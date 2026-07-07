@@ -14,5 +14,16 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
   await expect(page.getByTestId("section-speaking")).toBeVisible();
   await expect(page.getByTestId("section-ai-roleplay")).toBeVisible();
   await expect(page.getByTestId("section-review")).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+
+  const bottomNav = page.getByRole("navigation", { name: "Primary" });
+  await expect(bottomNav).toBeVisible();
+  await expect(bottomNav.getByRole("link", { name: "Home" })).toBeVisible();
+  await expect(bottomNav.getByRole("link", { name: "Learn" })).toBeVisible();
+  await expect(bottomNav.getByRole("link", { name: "Practice" })).toBeVisible();
+  await expect(bottomNav.getByRole("link", { name: "Games" })).toBeVisible();
+  await expect(bottomNav.getByRole("link", { name: "Profile" })).toBeVisible();
+
+  await expect(page.locator("body")).not.toContainText(
+    /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|mock state/i,
+  );
 });

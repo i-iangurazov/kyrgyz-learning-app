@@ -19,7 +19,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         <div className="mb-4 flex items-start justify-between gap-3">
           <div className="min-w-0">
             <Badge className="mb-3 bg-[#c9f269] text-[#152016] hover:bg-[#c9f269]">
-              {lesson.levelId} demo lesson
+              Today&apos;s lesson
             </Badge>
             <h2 className="text-2xl font-bold tracking-normal">{lesson.title.en}</h2>
             <p className="mt-2 text-sm leading-6 text-white/76">{lesson.subtitle.en}</p>
@@ -29,7 +29,9 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           </div>
         </div>
         <Progress value={isComplete ? 100 : 42} className="bg-white/18" />
-        <p className="mt-3 text-xs leading-5 text-white/68">{lesson.sampleNotice}</p>
+        <p className="mt-3 text-xs leading-5 text-white/68">
+          A short session for building everyday Kyrgyz.
+        </p>
       </div>
 
       <SectionCard
@@ -44,7 +46,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
       <SectionCard
         eyebrow="Vocabulary"
         title="Core words"
-        description="Seeded from typed lesson data, not React copy."
+        description="Start with the words you will see in this lesson."
         testId="section-vocabulary"
       >
         <div className="grid gap-3">
@@ -109,7 +111,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
       <SectionCard
         eyebrow="Grammar"
         title={lesson.grammarPoints[0].title.en}
-        description="Demo explanation pending expert validation."
+        description="Why this phrase works."
         testId="section-grammar"
       >
         <p className="text-sm leading-6 text-foreground">
@@ -123,15 +125,12 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
             </div>
           ))}
         </div>
-        <p className="mt-4 text-xs leading-5 text-amber-800">
-          {lesson.grammarPoints[0].validationTodo}
-        </p>
       </SectionCard>
 
       <SectionCard
         eyebrow="Practice"
         title={lesson.exercises[0].prompt.en}
-        description="Exercise data is schema-driven and ready for richer renderers."
+        description="Try a quick check before moving on."
         testId="section-exercise"
       >
         <div className="space-y-3">
@@ -163,7 +162,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         <div className="flex items-center gap-3 rounded-lg bg-[#eaf6f1] p-4 text-[#1d5c50]">
           <Sparkles className="h-5 w-5 shrink-0" aria-hidden="true" />
           <p className="text-sm font-semibold">
-            Placeholder for {lesson.miniGame.type} interaction.
+            Quick practice with today&apos;s words.
           </p>
         </div>
       </SectionCard>
@@ -176,7 +175,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
       >
         <Button className="w-full" type="button">
           <Mic2 className="h-4 w-4" aria-hidden="true" />
-          Record placeholder
+          Try speaking
         </Button>
       </SectionCard>
 
@@ -189,10 +188,10 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         <div className="rounded-lg border border-dashed border-[#66817b] p-4">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <MessageCircle className="h-4 w-4" aria-hidden="true" />
-            Roleplay model placeholder
+            Guided scenario practice
           </div>
           <p className="mt-2 text-xs leading-5 text-muted-foreground">
-            {lesson.aiRoleplay.systemPromptPlaceholder}
+            Use the words from this lesson to respond in a short, safe exchange.
           </p>
         </div>
       </SectionCard>

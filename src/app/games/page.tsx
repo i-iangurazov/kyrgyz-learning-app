@@ -7,7 +7,7 @@ export default function GamesPage() {
     <AppPlaceholder
       icon={Gamepad2}
       title="Games"
-      body="Mini-games will reuse lesson data for sound matching, quick picks, word order, and memory practice."
+      body="Mini-games unlock from lesson words and phrases, so every round reinforces what you are learning."
       chips={["Sound match", "Quick pick", "Word order", "Memory"]}
     />
   );

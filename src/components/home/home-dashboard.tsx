@@ -27,7 +27,7 @@ export function HomeDashboard({ lessons }: { lessons: Lesson[] }) {
           Build your Kyrgyz base
         </h2>
         <p className="mt-3 text-sm leading-6 text-white/72">
-          HSK-style levels, short lessons, and practice loops for K0 and K1.
+          Short lessons, practical phrases, and steady daily progress.
         </p>
         <Button asChild className="mt-5 bg-white text-[#16231f] hover:bg-white/90">
           <Link href={`/lesson/${activeLesson.id}`}>
@@ -42,27 +42,27 @@ export function HomeDashboard({ lessons }: { lessons: Lesson[] }) {
           <CardContent className="p-4">
             <BookMarked className="h-5 w-5 text-[#27645a]" aria-hidden="true" />
             <p className="mt-3 text-2xl font-bold">{lessons.length}</p>
-            <p className="text-sm text-muted-foreground">Seed lessons</p>
+            <p className="text-sm text-muted-foreground">Lessons ready</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <Trophy className="h-5 w-5 text-[#936600]" aria-hidden="true" />
             <p className="mt-3 text-2xl font-bold">{progress.xp}</p>
-            <p className="text-sm text-muted-foreground">Mock XP</p>
+            <p className="text-sm text-muted-foreground">Practice XP</p>
           </CardContent>
         </Card>
       </section>
 
       <Card>
         <CardHeader>
-          <CardTitle>Progress foundation</CardTitle>
+          <CardTitle>Your progress</CardTitle>
         </CardHeader>
         <CardContent>
           <Progress value={completion} />
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            {completion}% complete across local demo lessons. This is mock local
-            state and will be replaced by account-backed progress later.
+            {completion}% complete across your current starter path. Keep going
+            one short lesson at a time.
           </p>
         </CardContent>
       </Card>

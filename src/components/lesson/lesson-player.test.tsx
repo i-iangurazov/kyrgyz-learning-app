@@ -20,11 +20,11 @@ describe("LessonPlayer", () => {
     expect(screen.getByTestId("section-review")).toBeInTheDocument();
   });
 
-  it("shows the seeded demo notice", () => {
+  it("does not expose implementation or validation copy to learners", () => {
     render(<LessonPlayer lesson={lessons[0]} />);
 
-    expect(
-      screen.getByText(/Sample\/demo content only/i),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("lesson-player").textContent).not.toMatch(
+      /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO/i,
+    );
   });
 });

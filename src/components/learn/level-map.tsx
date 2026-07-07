@@ -17,7 +17,7 @@ export function LevelMap() {
       <div>
         <h2 className="text-2xl font-bold tracking-normal">Level map</h2>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Level to unit to lesson to practice loop, structured for future tracks.
+          Follow a clear path from first sounds to everyday phrases.
         </p>
       </div>
 
@@ -30,7 +30,7 @@ export function LevelMap() {
                 <CardTitle className="mt-3">{level.title.en}</CardTitle>
               </div>
               <span className="rounded-full bg-[#e8f7ee] px-3 py-1 text-xs font-semibold text-[#27645a]">
-                Demo
+                Starter
               </span>
             </div>
             <p className="text-sm leading-6 text-muted-foreground">

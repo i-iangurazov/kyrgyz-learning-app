@@ -43,9 +43,9 @@ export const lessonSeedData = [
         ru: "Первая встреча",
       },
       body: {
-        ky: "Айжан менен Тимур сабакта биринчи жолу саламдашат. Бул кыска окуя демо гана.",
-        en: "Aijan and Timur greet each other for the first time in class. This short story is demo-only.",
-        ru: "Айжан и Тимур впервые здороваются на уроке. Этот короткий текст только демо.",
+        ky: "Айжан менен Тимур сабакта биринчи жолу саламдашат.",
+        en: "Aijan and Timur greet each other for the first time in class.",
+        ru: "Айжан и Тимур впервые здороваются на уроке.",
       },
     },
     vocabulary: [
@@ -147,9 +147,9 @@ export const lessonSeedData = [
           ru: "Короткие ответы",
         },
         explanation: {
-          ky: "Демо түшүндүрмө: саламдашууда кыска жооптор көп колдонулат.",
-          en: "Demo explanation: short replies are common in greetings.",
-          ru: "Демо-объяснение: в приветствиях часто используются короткие ответы.",
+          ky: "Саламдашууда кыска жооптор көп колдонулат.",
+          en: "Short replies are common in greetings.",
+          ru: "В приветствиях часто используются короткие ответы.",
         },
         examples: [
           {
@@ -314,9 +314,9 @@ export const lessonSeedData = [
         ru: "Карточки звуков",
       },
       body: {
-        ky: "Бүгүн окуучу үч жаңы тамганы көрөт: ө, ү, ң. Бул демо сүрөттөмө гана.",
-        en: "Today the learner sees three new letters: ө, ү, ң. This is a demo description only.",
-        ru: "Сегодня ученик видит три новые буквы: ө, ү, ң. Это только демо-описание.",
+        ky: "Бүгүн окуучу үч жаңы тамганы көрөт: ө, ү, ң.",
+        en: "Today the learner sees three new letters: ө, ү, ң.",
+        ru: "Сегодня ученик видит три новые буквы: ө, ү, ң.",
       },
     },
     vocabulary: [
@@ -400,9 +400,9 @@ export const lessonSeedData = [
           ru: "Буква и звук",
         },
         explanation: {
-          ky: "Демо түшүндүрмө: бул сабак грамматика эмес, окуу көндүмүнө даярдык.",
-          en: "Demo explanation: this lesson is not grammar; it prepares reading skill.",
-          ru: "Демо-объяснение: этот урок не грамматика, а подготовка к чтению.",
+          ky: "Бул сабак грамматика эмес, окуу көндүмүнө даярдык.",
+          en: "This lesson prepares reading skill before heavier grammar.",
+          ru: "Этот урок готовит навык чтения перед более сложной грамматикой.",
         },
         examples: [
           {
@@ -567,9 +567,9 @@ export const lessonSeedData = [
         ru: "Знакомство в кафе",
       },
       body: {
-        ky: "Демо окуя: эки адам кафеден чай алып, аттарын сурашат.",
-        en: "Demo story: two people buy tea at a cafe and ask each other's names.",
-        ru: "Демо-история: два человека покупают чай в кафе и спрашивают имена.",
+        ky: "Эки адам кафеден чай алып, аттарын сурашат.",
+        en: "Two people buy tea at a cafe and ask each other's names.",
+        ru: "Два человека покупают чай в кафе и спрашивают имена.",
       },
     },
     vocabulary: [
@@ -666,9 +666,9 @@ export const lessonSeedData = [
           ru: "Модель Атым ...",
         },
         explanation: {
-          ky: "Демо түшүндүрмө: Атым ... үлгүсү өз атыңды айтууга колдонулат.",
-          en: "Demo explanation: the pattern Atym ... is used to give your name.",
-          ru: "Демо-объяснение: модель Атым ... используется, чтобы назвать свое имя.",
+          ky: "Атым ... үлгүсү өз атыңды айтууга колдонулат.",
+          en: "The pattern Atym ... is used to give your name.",
+          ru: "Модель Атым ... используется, чтобы назвать свое имя.",
         },
         examples: [
           {
