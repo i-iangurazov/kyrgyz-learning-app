@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 72 18% 97%;
+  --foreground: 155 15% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 155 15% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 155 15% 12%;
+  --primary: 164 42% 30%;
+  --primary-foreground: 80 44% 98%;
+  --secondary: 76 22% 90%;
+  --secondary-foreground: 155 15% 12%;
+  --muted: 78 18% 92%;
+  --muted-foreground: 158 8% 42%;
+  --accent: 166 28% 90%;
+  --accent-foreground: 155 20% 18%;
+  --destructive: 0 72% 50%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 78 16% 86%;
+  --input: 78 16% 86%;
+  --ring: 164 42% 30%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #101714;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    linear-gradient(90deg, rgba(201, 242, 105, 0.12), transparent 34%),
+    linear-gradient(180deg, #0f1714 0%, #17201c 100%);
+  color: hsl(var(--foreground));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}

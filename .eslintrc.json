@@ -1,0 +1,10 @@
+{
+  "ignorePatterns": [
+    "next-env.d.ts",
+    ".next/",
+    "node_modules/",
+    "playwright-report/",
+    "test-results/"
+  ],
+  "extends": ["next/core-web-vitals", "next/typescript"]
+}
