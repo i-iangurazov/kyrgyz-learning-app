@@ -4,6 +4,13 @@ This document defines how to migrate from current TypeScript seed content to dat
 
 For the first actual migration, use `docs/BACKEND_VERTICAL_SLICE_PLAN.md` to limit scope and `docs/FIRST_MIGRATION_CHECKLIST.md` to verify readiness.
 
+Current Slice 1 migration and validation utilities:
+
+- Migration: `supabase/migrations/20260708000100_slice_1_content_schema.sql`
+- Export current seed content to DB-shaped JSON: `pnpm content:export-db-json`
+- Validate DB-shaped round trip back to `lesson-v2`: `pnpm content:validate-db-roundtrip`
+- Generated JSON is written under `test-results/` and should not be committed.
+
 ## Current State
 
 The app currently uses:
@@ -73,6 +80,7 @@ Actions:
 - Add migrations in a dedicated backend implementation task.
 - Add RLS from the beginning for user-owned tables if any user data exists.
 - Keep admin-only tables private.
+- Keep learner runtime reads on TypeScript seed content until a separate feature-flagged DB read task is requested.
 
 Exit criteria:
 
@@ -94,6 +102,7 @@ Actions:
 - Insert source records, levels, units, lessons, content blocks, knowledge items, exercises, and audio placeholders.
 - Run post-import validation queries.
 - Export DB lesson payload back into `lesson-v2` shape and compare with seed output.
+- Reuse the current Slice 1 mapper and `pnpm content:validate-db-roundtrip` as the offline baseline before connecting to a live database.
 
 Validation:
 

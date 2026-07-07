@@ -4,6 +4,15 @@ This checklist is for a future implementation task that explicitly asks for the 
 
 Do not create migrations in docs-only tasks.
 
+Current Slice 1 migration:
+
+- `supabase/migrations/20260708000100_slice_1_content_schema.sql`
+
+Current offline validation commands:
+
+- `pnpm content:export-db-json`
+- `pnpm content:validate-db-roundtrip`
+
 ## Before Migration
 
 - [ ] Confirm Supabase/Postgres is still the chosen backend.
@@ -58,6 +67,7 @@ Do not create migrations in docs-only tasks.
 ## During Migration
 
 - [ ] Create source/curriculum/content tables from the approved slice.
+- [ ] Confirm the migration includes only the Slice 1 content tables.
 - [ ] Add primary keys.
 - [ ] Add foreign keys where targets are concrete.
 - [ ] Add check constraints for status/kind fields.
@@ -75,6 +85,8 @@ Do not create migrations in docs-only tasks.
 - [ ] Add seed import script.
 - [ ] Make seed import idempotent.
 - [ ] Seed K0/K1 content from current TypeScript lessons.
+- [ ] Run `pnpm content:export-db-json` to inspect generated DB-shaped rows.
+- [ ] Run `pnpm content:validate-db-roundtrip` to prove mapper reversibility.
 - [ ] Validate all inserted rows have required source, rights, and review fields.
 - [ ] Export DB rows back into a `lesson-v2` object.
 - [ ] Validate exported lessons with Zod.
@@ -84,6 +96,7 @@ Do not create migrations in docs-only tasks.
 
 - [ ] Keep TypeScript seed fallback.
 - [ ] Keep runtime content source set to seed by default.
+- [ ] Confirm learner-facing routes still import lessons from the TypeScript seed path unless a separate feature-flagged DB read task is in scope.
 - [ ] Add or prepare a feature flag for DB lessons later.
 - [ ] Add tests for import, export, and schema validation.
 - [ ] Test lesson rendering from DB only if that task explicitly includes the DB read path.
@@ -133,4 +146,3 @@ The first migration is ready for review only when:
 - Seed and DB lesson outputs match for learner-facing fields.
 - The TypeScript seed fallback remains intact.
 - Required checks pass.
-

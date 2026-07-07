@@ -4,6 +4,13 @@ This document defines the smallest safe backend slice for the first actual Postg
 
 This is planning documentation only. Do not create migrations from this document unless a future task explicitly asks for backend implementation.
 
+Implementation status:
+
+- Initial migration file: `supabase/migrations/20260708000100_slice_1_content_schema.sql`
+- Offline export script: `pnpm content:export-db-json`
+- Offline round-trip validation script: `pnpm content:validate-db-roundtrip`
+- Runtime app content source remains the TypeScript seed path.
+
 ## Goal
 
 Slice 1 should prove that the app can store and later load the current K0/K1 `lesson-v2` seed lessons from Postgres without replacing the current TypeScript seed path.
@@ -117,6 +124,38 @@ Notes:
 - `exercise_links` is the only generic link table in slice 1. Keep import validation strict so it cannot point to missing records.
 - Learner clients currently need answer data for local checking. Later exam/placement flows should gate answer checking server-side.
 
+## Implemented Slice 1 Tables
+
+The first migration contains these content-only tables:
+
+- `sources`
+- `levels`
+- `units`
+- `lessons`
+- `lesson_learning_goals`
+- `lesson_tracks`
+- `lesson_target_skills`
+- `lesson_prerequisites`
+- `lesson_methodology_refs`
+- `vocabulary_items`
+- `lesson_vocabulary`
+- `grammar_points`
+- `lesson_grammar_points`
+- `dialogues`
+- `dialogue_lines`
+- `breakdown_items`
+- `breakdown_vocabulary`
+- `breakdown_grammar_points`
+- `exercises`
+- `exercise_items`
+- `exercise_options`
+- `exercise_answers`
+- `exercise_feedback`
+- `exercise_vocabulary`
+- `exercise_grammar_points`
+
+The migration preserves current `lesson-v2` review, mini-game, speaking prompt, AI roleplay, reading text, and placeholder audio data as JSONB where needed for round-trip validation. It does not create future-only runtime tables for those domains.
+
 ## Explicitly Excluded From Slice 1
 
 | Domain | Why It Can Wait | Trigger To Add Later |
@@ -182,3 +221,22 @@ Slice 1 is complete only when:
 5. Add a feature-flagged read path in a later task.
 6. Keep local progress unchanged until content reads are stable.
 
+## Local Validation Commands
+
+Use these commands after changing seed content or the Slice 1 mapper:
+
+```bash
+pnpm content:export-db-json
+pnpm content:validate-db-roundtrip
+```
+
+`content:export-db-json` writes generated DB-shaped rows to `test-results/db-seed/slice-1-db-rows.json`, which is ignored by Git. `content:validate-db-roundtrip` maps current seed lessons into DB rows, maps them back to `lesson-v2`, validates with Zod, and fails if learner content changes during the round trip.
+
+## Next Backend Step
+
+The next backend task should either:
+
+- run the migration against local Supabase/Postgres and seed it from the generated row groups, or
+- add a feature-flagged DB read path after local migration/import/export validation is proven.
+
+Do not remove the TypeScript seed fallback in either step.
