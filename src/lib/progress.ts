@@ -5,10 +5,27 @@ export type ExerciseAttempt = {
   exerciseId: string;
   itemId: string;
   answer: string;
+  answerDisplay: string;
   attempted: boolean;
   completed: boolean;
   correct: boolean;
   attempts: number;
+  updatedAt: string;
+};
+
+export type MissedPracticeItem = {
+  lessonId: string;
+  exerciseId: string;
+  itemId: string;
+  submittedAnswer: string;
+  submittedAnswerDisplay: string;
+  correctAnswerDisplay: string;
+  explanation: string;
+  feedback: string;
+  corrected: boolean;
+  retryAnswer?: string;
+  retryAnswerDisplay?: string;
+  retryAttempts: number;
   updatedAt: string;
 };
 
@@ -18,7 +35,10 @@ export type LessonPracticeProgress = {
   completedCount: number;
   correctCount: number;
   incorrectCount: number;
+  missedCount: number;
+  correctedMissedCount: number;
   practiceComplete: boolean;
+  missedReviewComplete: boolean;
 };
 
 export type LocalProgress = {
@@ -28,6 +48,7 @@ export type LocalProgress = {
   completedLessonIds: string[];
   lessonStatus: Record<string, LessonProgressStatus>;
   exerciseAttempts: Record<string, ExerciseAttempt>;
+  missedPractice: Record<string, MissedPracticeItem>;
   lessonPractice: Record<string, LessonPracticeProgress>;
 };
 
@@ -42,6 +63,7 @@ export const defaultProgress: LocalProgress = {
     "k1-u1-l1": "not-started",
   },
   exerciseAttempts: {},
+  missedPractice: {},
   lessonPractice: {},
 };
 
@@ -53,7 +75,10 @@ export const emptyLessonPracticeProgress: LessonPracticeProgress = {
   completedCount: 0,
   correctCount: 0,
   incorrectCount: 0,
+  missedCount: 0,
+  correctedMissedCount: 0,
   practiceComplete: false,
+  missedReviewComplete: false,
 };
 
 export function getExerciseAttemptKey(
@@ -68,11 +93,17 @@ export function summarizeLessonPractice(
   exerciseAttempts: Record<string, ExerciseAttempt>,
   lessonId: string,
   totalCount = 0,
+  missedPractice: Record<string, MissedPracticeItem> = {},
 ): LessonPracticeProgress {
   const attempts = Object.values(exerciseAttempts).filter(
     (attempt) => attempt.lessonId === lessonId,
   );
+  const missedItems = Object.values(missedPractice).filter(
+    (item) => item.lessonId === lessonId,
+  );
   const completedCount = attempts.filter((attempt) => attempt.completed).length;
+  const missedCount = missedItems.length;
+  const correctedMissedCount = missedItems.filter((item) => item.corrected).length;
 
   return {
     totalCount,
@@ -82,7 +113,11 @@ export function summarizeLessonPractice(
     incorrectCount: attempts.filter(
       (attempt) => attempt.completed && !attempt.correct,
     ).length,
+    missedCount,
+    correctedMissedCount,
     practiceComplete: totalCount > 0 && completedCount >= totalCount,
+    missedReviewComplete:
+      missedCount === 0 || correctedMissedCount >= missedCount,
   };
 }
 

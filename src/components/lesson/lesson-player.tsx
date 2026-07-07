@@ -32,7 +32,8 @@ const lessonSteps = [
 ] satisfies LessonStep[];
 
 export function LessonPlayer({ lesson }: { lesson: Lesson }) {
-  const { markLessonComplete, progress, recordExerciseAttempt } = useLocalProgress();
+  const { markLessonComplete, progress, recordExerciseAttempt, recordMissedRetry } =
+    useLocalProgress();
   const isComplete = progress.completedLessonIds.includes(lesson.id);
   const dialogue = lesson.dialogues[0];
   const readingText = lesson.texts[0];
@@ -57,13 +58,22 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
     practiceProgress.practiceComplete ||
     (totalPracticeItems > 0 &&
       practiceProgress.completedCount >= totalPracticeItems);
+  const missedCount = practiceProgress.missedCount;
+  const correctedMissedCount = practiceProgress.correctedMissedCount;
+  const missedReviewRemaining = Math.max(missedCount - correctedMissedCount, 0);
   const practiceResult = practiceComplete
-    ? `Practice complete: ${practiceProgress.correctCount} of ${totalPracticeItems} correct.`
+    ? missedCount > 0 && missedReviewRemaining === 0
+      ? `You completed ${practiceProgress.completedCount} practice items, got ${practiceProgress.correctCount} correct on the first try, and corrected ${correctedMissedCount} missed answer${correctedMissedCount === 1 ? "" : "s"}.`
+      : missedCount > 0
+        ? `You completed ${practiceProgress.completedCount} practice items. ${missedReviewRemaining} missed answer${missedReviewRemaining === 1 ? "" : "s"} ready for review.`
+        : `Practice complete: ${practiceProgress.correctCount} of ${totalPracticeItems} correct.`
     : practiceProgress.completedCount > 0
       ? `${practiceProgress.completedCount} of ${totalPracticeItems} practice items complete. ${practiceProgress.correctCount} correct so far.`
       : "Complete practice to see your result here.";
   const practiceNextStep = practiceComplete
-    ? "Review the phrases once more, then mark the lesson complete."
+    ? missedReviewRemaining > 0
+      ? "Review missed items before moving on, or continue if you need to."
+      : "Review the phrases once more, then mark the lesson complete."
     : totalPracticeItems === 0
       ? "Practice activities are being prepared for this lesson."
       : "Finish the practice card, then come back to this review.";
@@ -262,7 +272,9 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           exerciseAttempts={progress.exerciseAttempts}
           exercises={lesson.exercises}
           lessonId={lesson.id}
+          missedPractice={progress.missedPractice}
           onAttempt={recordExerciseAttempt}
+          onMissedRetry={recordMissedRetry}
           practiceProgress={practiceProgress}
         />
       </SectionCard>

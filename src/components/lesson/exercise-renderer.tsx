@@ -21,7 +21,11 @@ export type ExerciseAttemptPayload = {
   exerciseId: string;
   itemId: string;
   answer: string;
+  answerDisplay?: string;
   correct: boolean;
+  correctAnswerDisplay?: string;
+  explanation?: string;
+  feedback?: string;
   totalPracticeItems?: number;
 };
 
@@ -31,7 +35,7 @@ type ExerciseRendererProps = {
   onAttempt: (attempt: ExerciseAttemptPayload) => void;
 };
 
-function normalizeAnswer(answer: string) {
+export function normalizeAnswer(answer: string) {
   return answer.trim().replace(/\s+/g, " ").toLocaleLowerCase();
 }
 
@@ -39,7 +43,7 @@ function getOptionById(item: ExerciseItem, optionId: string) {
   return item.options?.find((option) => option.id === optionId);
 }
 
-function getCorrectAnswerText(item: ExerciseItem) {
+export function getCorrectAnswerText(item: ExerciseItem) {
   const value = item.correctAnswerData.value;
 
   if (typeof value !== "string") {
@@ -54,7 +58,7 @@ function getCorrectAnswerText(item: ExerciseItem) {
   return value;
 }
 
-function isCorrectOption(item: ExerciseItem, option: ExerciseOption) {
+export function isCorrectOption(item: ExerciseItem, option: ExerciseOption) {
   const value = item.correctAnswerData.value;
 
   if (typeof value !== "string") {
@@ -72,7 +76,7 @@ function isCorrectOption(item: ExerciseItem, option: ExerciseOption) {
   return acceptedAnswers.includes(normalizeAnswer(value));
 }
 
-function isCorrectTextAnswer(item: ExerciseItem, answer: string) {
+export function isCorrectTextAnswer(item: ExerciseItem, answer: string) {
   const value = item.correctAnswerData.value;
 
   if (typeof value !== "string") {
@@ -173,7 +177,12 @@ export function ExerciseRenderer({
   >({});
   const [draftAnswers, setDraftAnswers] = useState<Record<string, string>>({});
 
-  const submitAnswer = (item: ExerciseItem, answer: string, correct: boolean) => {
+  const submitAnswer = (
+    item: ExerciseItem,
+    answer: string,
+    correct: boolean,
+    answerDisplay = answer,
+  ) => {
     if (submittedAnswers[item.id]) {
       return;
     }
@@ -187,7 +196,11 @@ export function ExerciseRenderer({
       exerciseId: exercise.id,
       itemId: item.id,
       answer,
+      answerDisplay,
       correct,
+      correctAnswerDisplay: getCorrectAnswerText(item),
+      explanation: item.explanation.en,
+      feedback: correct ? item.feedback.correct.en : item.feedback.incorrect.en,
     });
   };
 
@@ -245,7 +258,12 @@ export function ExerciseRenderer({
                       )}
                       disabled={Boolean(submittedAnswer)}
                       onClick={() =>
-                        submitAnswer(item, option.id, isCorrectOption(item, option))
+                        submitAnswer(
+                          item,
+                          option.id,
+                          isCorrectOption(item, option),
+                          option.text.en,
+                        )
                       }
                       type="button"
                     >

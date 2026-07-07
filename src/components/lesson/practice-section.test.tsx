@@ -11,6 +11,7 @@ import {
   type ExerciseAttempt,
   getExerciseAttemptKey,
   type LessonPracticeProgress,
+  type MissedPracticeItem,
   summarizeLessonPractice,
 } from "@/lib/progress";
 
@@ -21,54 +22,119 @@ function StatefulPracticeSection({
 }: {
   exercises?: Lesson["exercises"];
 }) {
-  const [exerciseAttempts, setExerciseAttempts] = useState<
-    Record<string, ExerciseAttempt>
-  >({});
-  const [practiceProgress, setPracticeProgress] = useState<LessonPracticeProgress>({
-    ...emptyLessonPracticeProgress,
-    totalCount: 2,
+  const [state, setState] = useState<{
+    exerciseAttempts: Record<string, ExerciseAttempt>;
+    missedPractice: Record<string, MissedPracticeItem>;
+    practiceProgress: LessonPracticeProgress;
+  }>({
+    exerciseAttempts: {},
+    missedPractice: {},
+    practiceProgress: {
+      ...emptyLessonPracticeProgress,
+      totalCount: 2,
+    },
   });
 
   return (
     <>
       <PracticeSection
-        exerciseAttempts={exerciseAttempts}
+        exerciseAttempts={state.exerciseAttempts}
         exercises={exercises}
         lessonId={lesson.id}
+        missedPractice={state.missedPractice}
         onAttempt={(attempt) => {
-          setExerciseAttempts((current) => {
+          setState((current) => {
             const attemptKey = getExerciseAttemptKey(
               attempt.lessonId,
               attempt.exerciseId,
               attempt.itemId,
             );
             const nextAttempts = {
-              ...current,
+              ...current.exerciseAttempts,
               [attemptKey]: {
                 lessonId: attempt.lessonId,
                 exerciseId: attempt.exerciseId,
                 itemId: attempt.itemId,
                 answer: attempt.answer,
+                answerDisplay: attempt.answerDisplay ?? attempt.answer,
                 attempted: true,
                 completed: true,
                 correct: attempt.correct,
-                attempts: 1,
+                attempts:
+                  (current.exerciseAttempts[attemptKey]?.attempts ?? 0) + 1,
+                updatedAt: "2026-07-08T00:00:00.000Z",
+              },
+            };
+            const nextMissed = {
+              ...current.missedPractice,
+            };
+
+            if (!attempt.correct) {
+              nextMissed[attemptKey] = {
+                lessonId: attempt.lessonId,
+                exerciseId: attempt.exerciseId,
+                itemId: attempt.itemId,
+                submittedAnswer: attempt.answer,
+                submittedAnswerDisplay: attempt.answerDisplay ?? attempt.answer,
+                correctAnswerDisplay: attempt.correctAnswerDisplay ?? "",
+                explanation: attempt.explanation ?? "",
+                feedback: attempt.feedback ?? "",
+                corrected: false,
+                retryAttempts: 0,
+                updatedAt: "2026-07-08T00:00:00.000Z",
+              };
+            }
+
+            return {
+              exerciseAttempts: nextAttempts,
+              missedPractice: nextMissed,
+              practiceProgress: summarizeLessonPractice(
+                nextAttempts,
+                lesson.id,
+                attempt.totalPracticeItems ?? 0,
+                nextMissed,
+              ),
+            };
+          });
+        }}
+        onMissedRetry={(attempt) => {
+          setState((current) => {
+            const attemptKey = getExerciseAttemptKey(
+              attempt.lessonId,
+              attempt.exerciseId,
+              attempt.itemId,
+            );
+            const missedItem = current.missedPractice[attemptKey];
+
+            if (!missedItem) {
+              return current;
+            }
+
+            const nextMissed = {
+              ...current.missedPractice,
+              [attemptKey]: {
+                ...missedItem,
+                corrected: missedItem.corrected || attempt.correct,
+                retryAnswer: attempt.answer,
+                retryAnswerDisplay: attempt.answerDisplay ?? attempt.answer,
+                retryAttempts: missedItem.retryAttempts + 1,
                 updatedAt: "2026-07-08T00:00:00.000Z",
               },
             };
 
-            setPracticeProgress(
-              summarizeLessonPractice(
-                nextAttempts,
+            return {
+              ...current,
+              missedPractice: nextMissed,
+              practiceProgress: summarizeLessonPractice(
+                current.exerciseAttempts,
                 lesson.id,
-                attempt.totalPracticeItems ?? 0,
+                current.practiceProgress.totalCount,
+                nextMissed,
               ),
-            );
-
-            return nextAttempts;
+            };
           });
         }}
-        practiceProgress={practiceProgress}
+        practiceProgress={state.practiceProgress}
       />
       <section id="lesson-game">Mini-game</section>
     </>
@@ -123,6 +189,81 @@ describe("PracticeSection", () => {
         name: "Continue",
       }),
     ).toBeInTheDocument();
+  });
+
+  it("shows missed review state after an incorrect answer", async () => {
+    const user = userEvent.setup();
+    render(<StatefulPracticeSection />);
+
+    await user.click(screen.getByRole("button", { name: "hello" }));
+    await user.type(screen.getByLabelText("Жакшы, ___."), "рахмат");
+    await user.click(screen.getByRole("button", { name: "Check answer" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "Review missed items",
+      );
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "You missed 1 item",
+      );
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "Your answer: hello",
+      );
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "Answer to remember: ыраазычылык",
+      );
+    });
+    expect(screen.queryByTestId("practice-continue")).not.toBeInTheDocument();
+    expect(screen.getByTestId("practice-continue-anyway")).toBeInTheDocument();
+  });
+
+  it("marks a missed multiple choice item corrected after a correct retry", async () => {
+    const user = userEvent.setup();
+    render(<StatefulPracticeSection />);
+
+    await user.click(screen.getByRole("button", { name: "hello" }));
+    await user.type(screen.getByLabelText("Жакшы, ___."), "рахмат");
+    await user.click(screen.getByRole("button", { name: "Check answer" }));
+
+    await user.click(
+      within(screen.getByTestId("missed-review")).getByRole("button", {
+        name: "thank you",
+      }),
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("missed-corrected")).toHaveTextContent(
+        "Nice - corrected",
+      );
+      expect(screen.getByTestId("missed-corrected")).toHaveTextContent(
+        "You corrected 1 missed answer",
+      );
+    });
+    expect(screen.getByTestId("practice-continue")).toBeInTheDocument();
+  });
+
+  it("marks a missed fill blank item corrected after a correct retry", async () => {
+    const user = userEvent.setup();
+    render(<StatefulPracticeSection />);
+
+    await user.click(screen.getByRole("button", { name: "thank you" }));
+    await user.type(screen.getByLabelText("Жакшы, ___."), "салам");
+    await user.click(screen.getByRole("button", { name: "Check answer" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "Your answer: салам",
+      );
+    });
+
+    await user.type(screen.getByLabelText("Try the missing word again"), "рахмат");
+    await user.click(screen.getByRole("button", { name: "Try again" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("missed-corrected")).toHaveTextContent(
+        "Nice - corrected",
+      );
+    });
   });
 
   it("keeps unsupported exercise fallback learner-friendly", () => {

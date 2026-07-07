@@ -100,4 +100,79 @@ describe("LessonPlayer", () => {
       );
     });
   });
+
+  it("tracks missed answers and corrected retries in local progress", async () => {
+    const user = userEvent.setup();
+    render(<LessonPlayer lesson={lessons[0]} />);
+
+    await user.click(
+      within(screen.getByTestId("section-exercise")).getByRole("button", {
+        name: "hello",
+      }),
+    );
+    await user.type(screen.getByLabelText("Жакшы, ___."), "рахмат");
+    await user.click(screen.getByRole("button", { name: "Check answer" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "Review missed items",
+      );
+    });
+
+    await waitFor(() => {
+      const storedProgress = JSON.parse(
+        window.localStorage.getItem(progressStorageKey) ?? "{}",
+      );
+      const missedItem =
+        storedProgress.missedPractice["k0-u1-l1:ex-greeting-match:item-rahmat"];
+
+      expect(missedItem.exerciseId).toBe("ex-greeting-match");
+      expect(missedItem.submittedAnswer).toBe("hello");
+      expect(missedItem.submittedAnswerDisplay).toBe("hello");
+      expect(missedItem.correctAnswerDisplay).toBe("ыраазычылык");
+      expect(missedItem.explanation).toBe("Rahmat means thank you.");
+      expect(missedItem.feedback).toBe(
+        "Not quite. Look at the lesson words again.",
+      );
+      expect(missedItem.corrected).toBe(false);
+      expect(storedProgress.lessonPractice["k0-u1-l1"].missedCount).toBe(1);
+      expect(storedProgress.lessonPractice["k0-u1-l1"].correctedMissedCount).toBe(
+        0,
+      );
+    });
+
+    await user.click(
+      within(screen.getByTestId("missed-review")).getByRole("button", {
+        name: "thank you",
+      }),
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("missed-corrected")).toHaveTextContent(
+        "Nice - corrected",
+      );
+      expect(screen.getByTestId("practice-summary")).toHaveTextContent(
+        "You completed 2 practice items, got 1 correct on the first try, and corrected 1 missed answer.",
+      );
+    });
+
+    await waitFor(() => {
+      const storedProgress = JSON.parse(
+        window.localStorage.getItem(progressStorageKey) ?? "{}",
+      );
+      const missedItem =
+        storedProgress.missedPractice["k0-u1-l1:ex-greeting-match:item-rahmat"];
+
+      expect(missedItem.corrected).toBe(true);
+      expect(missedItem.retryAnswer).toBe("thank-you");
+      expect(missedItem.retryAnswerDisplay).toBe("thank you");
+      expect(missedItem.retryAttempts).toBe(1);
+      expect(storedProgress.lessonPractice["k0-u1-l1"].correctedMissedCount).toBe(
+        1,
+      );
+      expect(storedProgress.lessonPractice["k0-u1-l1"].missedReviewComplete).toBe(
+        true,
+      );
+    });
+  });
 });
