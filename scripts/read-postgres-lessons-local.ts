@@ -1,6 +1,9 @@
 import { mapDbRowsToCurriculum } from "../src/content/db/curriculum-mappers.ts";
 import { getDbRowCounts } from "../src/content/db/mappers.ts";
 import { readSlice1RowsFromPostgres } from "../src/content/db/postgres-reader.ts";
+import { loadLocalEnvFiles } from "./lib/load-local-env.ts";
+
+loadLocalEnvFiles();
 
 const rows = readSlice1RowsFromPostgres();
 const { levels, units, lessons } = mapDbRowsToCurriculum(rows);

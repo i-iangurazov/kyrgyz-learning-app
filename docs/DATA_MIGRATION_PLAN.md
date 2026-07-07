@@ -13,6 +13,7 @@ Current Slice 1 migration and validation utilities:
 - Import seed rows into local Postgres: `DATABASE_URL=... pnpm content:db:import-local`
 - Validate local Postgres round trip: `DATABASE_URL=... pnpm content:db:validate-local`
 - Validate the feature-flagged local DB read path: `DATABASE_URL=... pnpm content:db:read-local`
+- Run DB-backed learner route smoke E2E: `pnpm test:e2e:db`
 - Generated JSON is written under `test-results/` and should not be committed.
 
 ## Current State
@@ -141,6 +142,7 @@ DATABASE_URL=... pnpm content:db:apply-local
 DATABASE_URL=... pnpm content:db:import-local
 DATABASE_URL=... pnpm content:db:validate-local
 DATABASE_URL=... pnpm content:db:read-local
+pnpm test:e2e:db
 ```
 
 Expected output:
@@ -150,6 +152,7 @@ Expected output:
 - Local DB import prints upsert counts by table.
 - Local DB validation confirms the database reconstructs valid `lesson-v2` content.
 - Local DB read validation confirms the runtime reconstruction layer reads and validates levels, units, lessons, and supported exercise kinds.
+- DB-backed E2E builds and starts the app with `CONTENT_SOURCE=postgres`, then verifies Home, Learn, Lesson, and Practice render at a 390px mobile viewport.
 
 Troubleshooting:
 
@@ -163,6 +166,7 @@ Runtime reminder:
 - The learner app still uses TypeScript seed content.
 - The DB import/export scripts do not change learner-facing routes.
 - The feature-flagged DB path is server-side only and falls back to seed content on failure.
+- Normal `pnpm test:e2e`, `pnpm test`, and `pnpm build` do not require a database.
 
 ### Phase 4: Read Lessons From DB Behind Feature Flag
 
@@ -180,6 +184,7 @@ Actions:
 - Validate DB payload with Zod before rendering.
 - If DB read, validation, or configuration fails, log a server-side warning and render seed content.
 - Run the lesson player against DB and seed payloads.
+- For route smoke validation, run `pnpm test:e2e:db` after migration/import/read validation succeeds.
 
 Feature flag example:
 

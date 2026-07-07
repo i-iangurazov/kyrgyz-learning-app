@@ -1,5 +1,9 @@
 import { spawnSync } from "node:child_process";
 
+import { loadLocalEnvFiles } from "./load-local-env.ts";
+
+loadLocalEnvFiles();
+
 export function getRequiredDatabaseUrl() {
   const databaseUrl = process.env.DATABASE_URL;
 

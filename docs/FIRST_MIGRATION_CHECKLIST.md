@@ -19,6 +19,7 @@ Current local DB validation commands:
 - `DATABASE_URL=... pnpm content:db:import-local`
 - `DATABASE_URL=... pnpm content:db:validate-local`
 - `DATABASE_URL=... pnpm content:db:read-local`
+- `pnpm test:e2e:db`
 
 ## Before Migration
 
@@ -100,6 +101,7 @@ Current local DB validation commands:
 - [ ] Run `DATABASE_URL=... pnpm content:db:import-local`.
 - [ ] Run `DATABASE_URL=... pnpm content:db:validate-local`.
 - [ ] Run `DATABASE_URL=... pnpm content:db:read-local` after the feature-flagged read path exists.
+- [ ] Run `pnpm test:e2e:db` after DB read validation succeeds.
 - [ ] Validate all inserted rows have required source, rights, and review fields.
 - [ ] Export DB rows back into a `lesson-v2` object.
 - [ ] Validate exported lessons with Zod.
@@ -113,6 +115,8 @@ Current local DB validation commands:
 - [ ] Require `DATABASE_URL` only when explicitly running `CONTENT_SOURCE=postgres` or local DB validation commands.
 - [ ] Confirm learner-facing routes use the repository layer and never call DB code from client components.
 - [ ] Confirm DB read failures log server-side warnings and fall back to TypeScript seed content.
+- [ ] Confirm normal `pnpm test:e2e` does not require a database.
+- [ ] Confirm `pnpm test:e2e:db` builds and starts the app with `CONTENT_SOURCE=postgres`.
 - [ ] Add tests for import, export, and schema validation.
 - [ ] Test lesson rendering from DB only if that task explicitly includes the DB read path.
 - [ ] Add E2E for DB-backed lesson only after the read path exists.

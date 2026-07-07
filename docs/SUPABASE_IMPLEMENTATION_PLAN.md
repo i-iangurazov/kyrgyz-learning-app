@@ -332,12 +332,19 @@ Validate the feature-flagged DB reconstruction layer:
 DATABASE_URL=... pnpm content:db:read-local
 ```
 
+Run DB-backed learner route smoke validation:
+
+```bash
+pnpm test:e2e:db
+```
+
 Expected result:
 
 - Migration applies cleanly to a fresh local DB.
 - Import can be safely rerun and uses `insert ... on conflict ... do update`.
 - Validation reconstructs the same 3 seed lessons.
 - Read validation reconstructs app-ready levels, units, and lessons through the runtime mapper.
+- DB-backed E2E builds and starts the app with `CONTENT_SOURCE=postgres` and verifies Home, Learn, Lesson, and Practice render without exposing internal metadata.
 - Supported exercise kinds remain `multiple_choice`, `fill_blank`, `sentence_builder`, `match_pairs`, and `error_correction`.
 
 Troubleshooting:
@@ -346,6 +353,8 @@ Troubleshooting:
 - If `psql` is not on `PATH`, set `PSQL_BIN=/absolute/path/to/psql`.
 - If migration tables already exist, use a fresh local DB or reset the local dev database before applying the migration.
 - If validation fails, keep runtime reads on seed content and inspect imported rows before adding any DB read path.
+- If `pnpm test:e2e:db` fails before tests start, confirm `DATABASE_URL` is available in the environment or `.env.local`.
+- Normal `pnpm test:e2e`, `pnpm test`, and `pnpm build` must continue to work without a database.
 
 ## What Not To Implement Yet
 
