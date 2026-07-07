@@ -15,6 +15,9 @@ const sentenceBuilderExercise = lessons
 const matchPairsExercise = lessons
   .find((lesson) => lesson.id === "k1-u1-l1")!
   .exercises.find((exercise) => exercise.id === "ex-intro-match")!;
+const errorCorrectionExercise = lessons
+  .find((lesson) => lesson.id === "k1-u1-l1")!
+  .exercises.find((exercise) => exercise.id === "ex-name-correction")!;
 
 function renderExercise(exercise: Lesson["exercises"][number]) {
   const onAttempt = vi.fn();
@@ -287,10 +290,69 @@ describe("ExerciseRenderer", () => {
     );
   });
 
+  it("renders error correction with the incorrect Kyrgyz phrase and input", () => {
+    renderExercise(errorCorrectionExercise);
+
+    expect(screen.getByText("Fix the sentence")).toBeInTheDocument();
+    expect(screen.getByTestId("error-correction-source")).toHaveTextContent(
+      "Атым ким?",
+    );
+    expect(screen.getByLabelText("Correct version")).toBeInTheDocument();
+  });
+
+  it("accepts a correct error correction answer", async () => {
+    const user = userEvent.setup();
+    const { onAttempt } = renderExercise(errorCorrectionExercise);
+
+    await user.type(screen.getByLabelText("Correct version"), "  атың ким? ");
+    await user.click(screen.getByRole("button", { name: "Check" }));
+
+    expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
+      "Nice - you fixed it.",
+    );
+    expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
+      "Atym means my name. Atyn means your name.",
+    );
+    expect(onAttempt).toHaveBeenCalledWith(
+      expect.objectContaining({
+        answer: "атың ким?",
+        answerDisplay: "атың ким?",
+        correct: true,
+        correctAnswerDisplay: "Атың ким?",
+        exerciseId: "ex-name-correction",
+        itemId: "item-correct-atyn-kim",
+      }),
+    );
+  });
+
+  it("shows the correct version after an incorrect error correction answer", async () => {
+    const user = userEvent.setup();
+    const { onAttempt } = renderExercise(errorCorrectionExercise);
+
+    await user.type(screen.getByLabelText("Correct version"), "Атым ким?");
+    await user.click(screen.getByRole("button", { name: "Check" }));
+
+    expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
+      "Not quite yet.",
+    );
+    expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
+      "Almost. Look at the ending.",
+    );
+    expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
+      "Correct version: Атың ким?",
+    );
+    expect(onAttempt).toHaveBeenCalledWith(
+      expect.objectContaining({
+        answer: "Атым ким?",
+        correct: false,
+      }),
+    );
+  });
+
   it("renders a clean fallback for unsupported exercise types", () => {
     renderExercise({
       ...multipleChoiceExercise,
-      kind: "error_correction",
+      kind: "listening_choice",
     });
 
     expect(screen.getByTestId("unsupported-exercise")).toHaveTextContent(

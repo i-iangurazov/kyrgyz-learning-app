@@ -4,6 +4,7 @@ import {
   getCorrectAnswerText,
   getMatchPairsDisplay,
   getSelectedAnswerText,
+  isCorrectErrorCorrection,
   isCorrectMatchPairs,
   isCorrectOption,
   isCorrectSentenceBuilder,
@@ -30,6 +31,10 @@ const matchPairsExercise = k1Lesson.exercises.find(
   (exercise) => exercise.id === "ex-intro-match",
 )!;
 const matchPairsItem = matchPairsExercise.items[0];
+const errorCorrectionExercise = k1Lesson.exercises.find(
+  (exercise) => exercise.id === "ex-name-correction",
+)!;
+const errorCorrectionItem = errorCorrectionExercise.items[0];
 
 describe("exercise checking", () => {
   it("normalizes whitespace and casing for text answers", () => {
@@ -89,5 +94,13 @@ describe("exercise checking", () => {
     expect(getCorrectAnswerText(matchPairsItem)).toBe(
       "Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
     );
+  });
+
+  it("checks error correction answers with normalized text", () => {
+    expect(isCorrectErrorCorrection(errorCorrectionItem, "  атың ким? ")).toBe(
+      true,
+    );
+    expect(isCorrectErrorCorrection(errorCorrectionItem, "Атым ким?")).toBe(false);
+    expect(getCorrectAnswerText(errorCorrectionItem)).toBe("Атың ким?");
   });
 });

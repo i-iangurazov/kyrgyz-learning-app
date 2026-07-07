@@ -25,6 +25,7 @@ function makeProgress({
     | "fill_blank"
     | "sentence_builder"
     | "match_pairs"
+    | "error_correction"
     | "fallback";
 } = {}): LocalProgress {
   const missedItem =
@@ -85,6 +86,23 @@ function makeProgress({
             retryAttempts: corrected ? 1 : 0,
             updatedAt: "2026-07-08T00:00:00.000Z",
           }
+      : missedKind === "error_correction"
+        ? {
+            lessonId: "k1-u1-l1",
+            exerciseId: "ex-name-correction",
+            itemId: "item-correct-atyn-kim",
+            submittedAnswer: "Атым ким?",
+            submittedAnswerDisplay: "Атым ким?",
+            correctAnswerDisplay: "Атың ким?",
+            explanation:
+              "Atym means my name. Atyn means your name. For the question, use Atyn kim?",
+            feedback: "Almost. Look at the ending.",
+            corrected,
+            retryAnswer: corrected ? "Атың ким?" : undefined,
+            retryAnswerDisplay: corrected ? "Атың ким?" : undefined,
+            retryAttempts: corrected ? 1 : 0,
+            updatedAt: "2026-07-08T00:00:00.000Z",
+          }
       : {
           lessonId: "k0-u1-l1",
           exerciseId:
@@ -110,11 +128,15 @@ function makeProgress({
         ? "k1-u1-l1:ex-name-build:item-build-atym-elina"
       : missedKind === "match_pairs"
         ? "k1-u1-l1:ex-intro-match:item-intro-pairs"
+      : missedKind === "error_correction"
+        ? "k1-u1-l1:ex-name-correction:item-correct-atyn-kim"
       : missedKind === "fallback"
         ? "k0-u1-l1:ex-review-later:item-review-later"
         : "k0-u1-l1:ex-greeting-match:item-rahmat";
   const lessonId =
-    missedKind === "sentence_builder" || missedKind === "match_pairs"
+    missedKind === "sentence_builder" ||
+    missedKind === "match_pairs" ||
+    missedKind === "error_correction"
       ? "k1-u1-l1"
       : "k0-u1-l1";
 
@@ -415,6 +437,57 @@ describe("PracticeReviewQueue", () => {
     await user.click(
       within(item).getByRole("button", { name: "My name is ..." }),
     );
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+
+    await waitFor(() => {
+      expect(item).toHaveTextContent(
+        "Not quite yet. Use the answer above and try once more.",
+      );
+      expect(item).toHaveTextContent("Needs review");
+      expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
+        "1",
+      );
+    });
+  });
+
+  it("retries a missed error correction item directly and marks it corrected", async () => {
+    const user = userEvent.setup();
+
+    seedProgress(makeProgress({ missedKind: "error_correction" }));
+    render(<PracticeReviewQueue lessons={lessons} />);
+
+    const queue = await screen.findByTestId("review-queue");
+    const item = await screen.findByTestId("review-queue-item");
+
+    expect(queue).toHaveTextContent("Introductions");
+    expect(item).toHaveTextContent("Атым ким?");
+    expect(item).toHaveTextContent("Атың ким?");
+
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.type(within(item).getByLabelText("Correct version"), "Атың ким?");
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+
+    await waitFor(() => {
+      expect(item).toHaveTextContent("Nice - corrected");
+      expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
+        "0",
+      );
+      expect(screen.getByTestId("practice-summary-corrected")).toHaveTextContent(
+        "1",
+      );
+    });
+  });
+
+  it("keeps an error correction item in review after an incorrect direct retry", async () => {
+    const user = userEvent.setup();
+
+    seedProgress(makeProgress({ missedKind: "error_correction" }));
+    render(<PracticeReviewQueue lessons={lessons} />);
+
+    const item = await screen.findByTestId("review-queue-item");
+
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.type(within(item).getByLabelText("Correct version"), "Атым ким?");
     await user.click(within(item).getByRole("button", { name: "Try again" }));
 
     await waitFor(() => {

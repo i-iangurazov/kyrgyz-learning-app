@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
 
+import { ErrorCorrectionControl } from "@/components/lesson/error-correction-control";
 import { MatchPairsControl } from "@/components/lesson/match-pairs-control";
 import { Button } from "@/components/ui/button";
 import type { Lesson } from "@/content/schemas";
@@ -44,9 +45,11 @@ type ExerciseRendererProps = {
 };
 
 function FeedbackPanel({
+  correctAnswerLabel = "Answer",
   item,
   submittedAnswer,
 }: {
+  correctAnswerLabel?: string;
   item: ExerciseItem;
   submittedAnswer: SubmittedAnswer;
 }) {
@@ -87,7 +90,7 @@ function FeedbackPanel({
           <p className="leading-6 text-muted-foreground">{item.explanation.en}</p>
           {!submittedAnswer.correct && correctAnswerText ? (
             <p className="font-medium text-foreground">
-              Answer: {correctAnswerText}
+              {correctAnswerLabel}: {correctAnswerText}
             </p>
           ) : null}
         </div>
@@ -154,7 +157,8 @@ export function ExerciseRenderer({
     exercise.kind !== "multiple_choice" &&
     exercise.kind !== "fill_blank" &&
     exercise.kind !== "sentence_builder" &&
-    exercise.kind !== "match_pairs"
+    exercise.kind !== "match_pairs" &&
+    exercise.kind !== "error_correction"
   ) {
     return <UnsupportedPractice />;
   }
@@ -408,6 +412,32 @@ export function ExerciseRenderer({
               />
               {submittedAnswer ? (
                 <FeedbackPanel item={item} submittedAnswer={submittedAnswer} />
+              ) : null}
+            </div>
+          );
+        }
+
+        if (exercise.kind === "error_correction") {
+          return (
+            <div
+              key={item.id}
+              className="space-y-3"
+              data-testid={`exercise-item-${item.id}`}
+            >
+              <p className="text-sm font-semibold">{item.question.en}</p>
+              <ErrorCorrectionControl
+                disabled={Boolean(submittedAnswer)}
+                item={item}
+                onSubmit={({ answer, answerDisplay, correct }) =>
+                  submitAnswer(item, answer, correct, answerDisplay)
+                }
+              />
+              {submittedAnswer ? (
+                <FeedbackPanel
+                  correctAnswerLabel="Correct version"
+                  item={item}
+                  submittedAnswer={submittedAnswer}
+                />
               ) : null}
             </div>
           );

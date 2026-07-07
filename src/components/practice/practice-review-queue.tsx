@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { BookOpen, CheckCircle2, Dumbbell, RotateCcw } from "lucide-react";
 
+import { ErrorCorrectionControl } from "@/components/lesson/error-correction-control";
 import { MatchPairsControl } from "@/components/lesson/match-pairs-control";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -70,6 +71,10 @@ function canRetryDirectly(exercise?: Exercise, item?: ExerciseItem) {
 
   if (exercise.kind === "match_pairs") {
     return Boolean(item.options?.length);
+  }
+
+  if (exercise.kind === "error_correction") {
+    return true;
   }
 
   return exercise.kind === "fill_blank";
@@ -392,6 +397,16 @@ function ReviewQueueCard({
 
             {exercise?.kind === "match_pairs" ? (
               <MatchPairsControl
+                item={exerciseItem}
+                onSubmit={({ answer, answerDisplay, correct }) =>
+                  submitRetry(answer, answerDisplay, correct)
+                }
+                submitLabel="Try again"
+              />
+            ) : null}
+
+            {exercise?.kind === "error_correction" ? (
+              <ErrorCorrectionControl
                 item={exerciseItem}
                 onSubmit={({ answer, answerDisplay, correct }) =>
                   submitRetry(answer, answerDisplay, correct)

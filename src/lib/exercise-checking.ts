@@ -102,7 +102,7 @@ export function getCorrectAnswerText(item: ExerciseItem) {
       return getSelectedAnswerText(item, value);
     }
 
-    return value.join(" ");
+    return value[0];
   }
 
   if (typeof value !== "string") {
@@ -142,6 +142,14 @@ export function isCorrectOption(item: ExerciseItem, option: ExerciseOption) {
 export function isCorrectTextAnswer(item: ExerciseItem, answer: string) {
   const value = item.correctAnswerData.value;
 
+  if (
+    Array.isArray(value) &&
+    (item.correctAnswerData.kind === "text" ||
+      item.correctAnswerData.kind === "free_text")
+  ) {
+    return value.map(normalizeAnswer).includes(normalizeAnswer(answer));
+  }
+
   if (typeof value !== "string") {
     return false;
   }
@@ -161,6 +169,10 @@ export function isCorrectTextAnswer(item: ExerciseItem, answer: string) {
   }
 
   return normalizeAnswer(answer) === normalizeAnswer(value);
+}
+
+export function isCorrectErrorCorrection(item: ExerciseItem, answer: string) {
+  return isCorrectTextAnswer(item, answer);
 }
 
 export function isCorrectSentenceBuilder(

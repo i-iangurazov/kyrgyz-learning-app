@@ -1141,7 +1141,12 @@ export const lessonSeedData = [
             feedback: text("Атым Нур.", "Atym Nur.", "Атым Нур."),
           },
         ],
-        linkedExerciseIds: ["ex-name-pattern", "ex-name-build", "ex-intro-match"],
+        linkedExerciseIds: [
+          "ex-name-pattern",
+          "ex-name-build",
+          "ex-intro-match",
+          "ex-name-correction",
+        ],
         methodologyRefs,
         sourceNotes:
           "Original demo grammar point for K1 introductions; validate against Kyrgyz grammar references.",
@@ -1308,6 +1313,58 @@ export const lessonSeedData = [
         hskInspiredComponent: ["workbook_exercise"],
         sourceNotes:
           "Original demo match-pairs item for K1 introduction phrases. Requires methodist validation.",
+        methodistReviewStatus: "not_reviewed",
+      },
+      {
+        id: "ex-name-correction",
+        kind: "error_correction",
+        prompt: text("Сүйлөмдү оңдо.", "Fix the sentence.", "Исправьте фразу."),
+        helperTextByTrack: {
+          RU_KY: "Исправьте короткую кыргызскую фразу.",
+          EN_KY: "Correct the Kyrgyz phrase.",
+          KY_KY: "Кыска кыргызча фразаны оңдо.",
+        },
+        linkedVocabularyIds: ["at", "kim"],
+        linkedGrammarPointIds: ["sample-name-pattern"],
+        items: [
+          {
+            id: "item-correct-atyn-kim",
+            question: text(
+              "Атым ким?",
+              "Fix this question phrase.",
+              "Исправьте эту вопросительную фразу.",
+            ),
+            correctAnswerData: {
+              kind: "text",
+              value: "Атың ким?",
+            },
+            explanation: text(
+              "Атым - менин атым. Атың - сенин атың. Суроо бергенде Атың ким? деп айтылат.",
+              "Atym means my name. Atyn means your name. For the question, use Atyn kim?",
+              "Атым значит мое имя. Атың значит твое имя. В вопросе используйте Атың ким?",
+            ),
+            feedback: {
+              correct: text(
+                "Туура.",
+                "Nice - you fixed it.",
+                "Верно. Вы исправили фразу.",
+              ),
+              incorrect: text(
+                "Аягын кайра кара.",
+                "Almost. Look at the ending.",
+                "Почти. Посмотрите на окончание.",
+              ),
+              hint: text(
+                "Сенин атың жөнүндө сурап жатасың.",
+                "Use the form for your name.",
+                "Используйте форму для твоего имени.",
+              ),
+            },
+          },
+        ],
+        hskInspiredComponent: ["workbook_exercise"],
+        sourceNotes:
+          "Original demo error-correction item for the K1 name question pattern. Requires methodist validation.",
         methodistReviewStatus: "not_reviewed",
       },
     ],
