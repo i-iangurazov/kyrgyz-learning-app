@@ -1,10 +1,16 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { LessonPlayer } from "@/components/lesson/lesson-player";
 import { lessons } from "@/content/curriculum";
+import { progressStorageKey } from "@/lib/progress";
 
 describe("LessonPlayer", () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
   it("renders the required lesson sections from lesson data", () => {
     render(<LessonPlayer lesson={lessons[0]} />);
 
@@ -45,5 +51,30 @@ describe("LessonPlayer", () => {
     expect(screen.getByTestId("lesson-player").textContent).not.toMatch(
       /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|sourceNotes|rightsNotes|validatedAgainst|not_reviewed/i,
     );
+  });
+
+  it("updates local practice progress after answering an exercise", async () => {
+    const user = userEvent.setup();
+    render(<LessonPlayer lesson={lessons[0]} />);
+
+    await user.click(
+      within(screen.getByTestId("section-exercise")).getByRole("button", {
+        name: "thank you",
+      }),
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("practice-summary")).toHaveTextContent(
+        "1 of 1 practice answers correct.",
+      );
+    });
+
+    await waitFor(() => {
+      const storedProgress = JSON.parse(
+        window.localStorage.getItem(progressStorageKey) ?? "{}",
+      );
+      expect(storedProgress.lessonPractice["k0-u1-l1"].completedCount).toBe(1);
+      expect(storedProgress.lessonPractice["k0-u1-l1"].correctCount).toBe(1);
+    });
   });
 });

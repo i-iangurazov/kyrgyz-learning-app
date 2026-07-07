@@ -8,6 +8,7 @@ import {
   LessonStepProgress,
   type LessonStep,
 } from "@/components/lesson/lesson-step-progress";
+import { ExerciseRenderer } from "@/components/lesson/exercise-renderer";
 import { SectionCard } from "@/components/lesson/section-card";
 import type { Lesson } from "@/content/schemas";
 import { useLocalProgress } from "@/hooks/use-local-progress";
@@ -27,7 +28,7 @@ const lessonSteps = [
 ] satisfies LessonStep[];
 
 export function LessonPlayer({ lesson }: { lesson: Lesson }) {
-  const { markLessonComplete, progress } = useLocalProgress();
+  const { markLessonComplete, progress, recordExerciseAttempt } = useLocalProgress();
   const isComplete = progress.completedLessonIds.includes(lesson.id);
   const dialogue = lesson.dialogues[0];
   const readingText = lesson.texts[0];
@@ -37,9 +38,24 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
     dialogue.breakdownItems.length > 0
       ? dialogue.breakdownItems
       : (readingText?.breakdownItems ?? []);
-  const exercise = lesson.exercises[0];
-  const exerciseItem = exercise.items[0];
-  const exerciseOptions = exerciseItem.options ?? [];
+  const practiceProgress = progress.lessonPractice[lesson.id] ?? {
+    attemptedCount: 0,
+    completedCount: 0,
+    correctCount: 0,
+    incorrectCount: 0,
+  };
+  const totalPracticeItems = lesson.exercises.reduce(
+    (count, exercise) => count + exercise.items.length,
+    0,
+  );
+  const practiceResult =
+    practiceProgress.completedCount > 0
+      ? `${practiceProgress.correctCount} of ${practiceProgress.completedCount} practice answers correct.`
+      : "Complete practice to see your result here.";
+  const practiceNextStep =
+    practiceProgress.completedCount >= totalPracticeItems
+      ? "Review the phrases once more, then mark the lesson complete."
+      : "Finish the practice card, then come back to this review.";
 
   return (
     <article className="space-y-4" data-testid="lesson-player">
@@ -227,25 +243,19 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
       <SectionCard
         id="lesson-practice"
         eyebrow="Practice"
-        title={exercise.prompt.en}
-        description="Try a quick check before moving on."
+        title="Practice this phrase"
+        description="Answer and get instant feedback."
         testId="section-exercise"
       >
-        <div className="space-y-3">
-          <p className="text-sm font-semibold">
-            {exerciseItem.question.en}
-          </p>
-          <div className="grid gap-2">
-            {exerciseOptions.map((option) => (
-              <button
-                key={option.id}
-                className="rounded-lg border border-border px-4 py-3 text-left text-sm font-medium transition hover:bg-accent"
-                type="button"
-              >
-                {option.text.en}
-              </button>
-            ))}
-          </div>
+        <div className="space-y-5">
+          {lesson.exercises.map((exercise) => (
+            <ExerciseRenderer
+              key={exercise.id}
+              exercise={exercise}
+              lessonId={lesson.id}
+              onAttempt={recordExerciseAttempt}
+            />
+          ))}
         </div>
       </SectionCard>
 
@@ -302,6 +312,16 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         description={lesson.review.summary.en}
         testId="section-review"
       >
+        <div
+          className="mb-5 rounded-lg bg-[#f4f8f4] p-4 text-sm"
+          data-testid="practice-summary"
+        >
+          <p className="font-semibold">Practice progress</p>
+          <p className="mt-1 leading-6 text-muted-foreground">{practiceResult}</p>
+          <p className="mt-2 text-xs font-medium text-[#27645a]">
+            {practiceNextStep}
+          </p>
+        </div>
         <div className="space-y-2">
           {lesson.review.canDo.map((item) => (
             <div key={item.en} className="flex gap-2 text-sm">

@@ -35,11 +35,24 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
   await expect(bottomNav.getByRole("link", { name: "Games" })).toBeVisible();
   await expect(bottomNav.getByRole("link", { name: "Profile" })).toBeVisible();
 
+  const practice = page.getByTestId("section-exercise");
+  await practice.scrollIntoViewIfNeeded();
+  await practice.getByRole("button", { name: "thank you" }).click();
+  await expect(practice.getByTestId("exercise-feedback")).toContainText(
+    "Good. That fits this lesson.",
+  );
+  await expect(practice.getByTestId("exercise-feedback")).toContainText(
+    "Rahmat means thank you.",
+  );
+
   await page.getByTestId("section-review").scrollIntoViewIfNeeded();
   await expect(page.getByTestId("lesson-step-progress")).toContainText(
     "Step 11 of 11",
   );
   await expect(page.getByTestId("lesson-step-progress")).toContainText("Review");
+  await expect(page.getByTestId("practice-summary")).toContainText(
+    "1 of 1 practice answers correct.",
+  );
 
   await expect(page.locator("body")).not.toContainText(
     /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|mock state|sourceNotes|rightsNotes|validatedAgainst|not_reviewed/i,

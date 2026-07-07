@@ -44,7 +44,7 @@ export function LessonStepProgress({ steps }: { steps: LessonStep[] }) {
           return;
         }
 
-        const activeOffset = 170;
+        const activeOffset = 220;
         let currentStep = firstStep;
 
         for (const step of steps) {

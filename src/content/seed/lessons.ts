@@ -1128,9 +1128,9 @@ export const lessonSeedData = [
         kind: "fill_blank",
         prompt: text("Бош жерди толтур.", "Fill the blank.", "Заполните пропуск."),
         helperTextByTrack: {
-          RU_KY: "Выберите форму из урока.",
-          EN_KY: "Choose the lesson phrase.",
-          KY_KY: "Сабактагы үлгүнү танда.",
+          RU_KY: "Введите форму из урока.",
+          EN_KY: "Type the lesson phrase.",
+          KY_KY: "Сабактагы үлгүнү жаз.",
         },
         linkedVocabularyIds: ["at"],
         linkedGrammarPointIds: ["sample-name-pattern"],
@@ -1138,12 +1138,7 @@ export const lessonSeedData = [
           {
             id: "item-atym",
             question: text("___ Элина.", "___ Elina.", "___ Элина."),
-            options: [
-              { id: "atym", text: text("Атым", "Atym", "Атым") },
-              { id: "kim", text: text("Ким", "Kim", "Ким") },
-              { id: "chai", text: text("Чай", "Chai", "Чай") },
-            ],
-            correctAnswerData: { kind: "choice_id", value: "atym" },
+            correctAnswerData: { kind: "text", value: "Атым" },
             explanation: text("Атым Элина.", "Atym Elina.", "Атым Элина."),
             feedback: exerciseFeedback(),
           },
