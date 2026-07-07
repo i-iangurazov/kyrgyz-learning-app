@@ -88,3 +88,54 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
   );
   await expect(page.getByTestId("lesson-step-progress")).toContainText("Review");
 });
+
+test("practice tab shows missed item review queue at mobile viewport", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/lesson/k0-u1-l1");
+
+  const practice = page.getByTestId("section-exercise");
+  await practice.scrollIntoViewIfNeeded();
+  await practice.getByRole("button", { name: "hello" }).click();
+  await practice.getByLabel("Жакшы, ___.").fill("рахмат");
+  await practice.getByRole("button", { name: "Check answer" }).click();
+
+  await expect(practice.getByTestId("missed-review")).toContainText(
+    "Review missed items",
+  );
+  await practice.getByRole("button", { name: "Continue anyway" }).click();
+  await expect(page.getByTestId("section-mini-game")).toBeVisible();
+
+  await page
+    .getByRole("navigation", { name: "Primary" })
+    .getByRole("link", { name: "Practice" })
+    .click();
+
+  await expect(page).toHaveURL(/\/practice$/);
+  await expect(page.getByTestId("practice-review-page")).toBeVisible();
+  await expect(page.getByTestId("practice-review-page")).toContainText(
+    "Review your weak spots",
+  );
+  await expect(page.getByTestId("practice-progress-summary")).toContainText(
+    "Missed items",
+  );
+  await expect(page.getByTestId("review-queue")).toContainText("Keep it fresh");
+  await expect(page.getByTestId("review-queue-item")).toContainText(
+    "Needs review",
+  );
+  await expect(page.getByTestId("review-queue-item")).toContainText(
+    "Your answer",
+  );
+  await expect(page.getByTestId("review-queue-item")).toContainText("hello");
+  await expect(page.getByTestId("review-queue-item")).toContainText(
+    "Answer to remember",
+  );
+  await expect(page.getByTestId("review-queue-item")).toContainText(
+    "ыраазычылык",
+  );
+  await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+  await expect(page.locator("body")).not.toContainText(
+    /localStorage|exercise IDs?|schema|progress object|sourceNotes|rightsNotes|methodist|validation|not_reviewed/i,
+  );
+});

@@ -52,6 +52,18 @@ export type LocalProgress = {
   lessonPractice: Record<string, LessonPracticeProgress>;
 };
 
+export type ReviewQueueItem = MissedPracticeItem & {
+  key: string;
+  needsReview: boolean;
+};
+
+export type PracticeSummary = {
+  completedPracticeItems: number;
+  missedItemsCount: number;
+  correctedMissedItemsCount: number;
+  needsReviewCount: number;
+};
+
 export const defaultProgress: LocalProgress = {
   activeLessonId: "k0-u1-l1",
   streakDays: 2,
@@ -118,6 +130,44 @@ export function summarizeLessonPractice(
     practiceComplete: totalCount > 0 && completedCount >= totalCount,
     missedReviewComplete:
       missedCount === 0 || correctedMissedCount >= missedCount,
+  };
+}
+
+export function getMissedItems(progress: Pick<LocalProgress, "missedPractice">) {
+  return Object.entries(progress.missedPractice)
+    .map(([key, item]) => ({
+      ...item,
+      key,
+      needsReview: !item.corrected,
+    }))
+    .sort((first, second) => {
+      if (first.needsReview !== second.needsReview) {
+        return first.needsReview ? -1 : 1;
+      }
+
+      return (
+        new Date(second.updatedAt).getTime() - new Date(first.updatedAt).getTime()
+      );
+    });
+}
+
+export function getReviewQueue(progress: Pick<LocalProgress, "missedPractice">) {
+  return getMissedItems(progress);
+}
+
+export function getPracticeSummary(
+  progress: Pick<LocalProgress, "lessonPractice" | "missedPractice">,
+): PracticeSummary {
+  const missedItems = getMissedItems(progress);
+
+  return {
+    completedPracticeItems: Object.values(progress.lessonPractice).reduce(
+      (total, lessonPractice) => total + lessonPractice.completedCount,
+      0,
+    ),
+    missedItemsCount: missedItems.length,
+    correctedMissedItemsCount: missedItems.filter((item) => item.corrected).length,
+    needsReviewCount: missedItems.filter((item) => item.needsReview).length,
   };
 }
 

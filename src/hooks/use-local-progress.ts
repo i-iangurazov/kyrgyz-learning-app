@@ -37,6 +37,7 @@ function mergeStoredProgress(stored: Partial<LocalProgress>): LocalProgress {
 
 export function useLocalProgress() {
   const [progress, setProgress] = useState<LocalProgress>(defaultProgress);
+  const [hasLoadedProgress, setHasLoadedProgress] = useState(false);
 
   useEffect(() => {
     try {
@@ -46,12 +47,18 @@ export function useLocalProgress() {
       }
     } catch {
       setProgress(defaultProgress);
+    } finally {
+      setHasLoadedProgress(true);
     }
   }, []);
 
   useEffect(() => {
+    if (!hasLoadedProgress) {
+      return;
+    }
+
     window.localStorage.setItem(progressStorageKey, JSON.stringify(progress));
-  }, [progress]);
+  }, [hasLoadedProgress, progress]);
 
   return useMemo(
     () => ({

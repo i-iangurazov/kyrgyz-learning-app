@@ -1,14 +1,12 @@
-import { Dumbbell } from "lucide-react";
+import { PracticeReviewQueue } from "@/components/practice/practice-review-queue";
+import { lessons } from "@/content/curriculum";
 
-import { AppPlaceholder } from "@/components/placeholders/app-placeholder";
+const lessonSummaries = lessons.map((lesson) => ({
+  id: lesson.id,
+  title: lesson.title.en,
+  levelId: lesson.levelId,
+}));
 
 export default function PracticePage() {
-  return (
-    <AppPlaceholder
-      icon={Dumbbell}
-      title="Practice"
-      body="Your review queue will help you revisit words, phrases, listening, and reading at the right time."
-      chips={["Review", "Listening", "Reading", "Translation"]}
-    />
-  );
+  return <PracticeReviewQueue lessons={lessonSummaries} />;
 }
