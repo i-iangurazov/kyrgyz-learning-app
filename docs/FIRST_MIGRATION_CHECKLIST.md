@@ -18,6 +18,7 @@ Current local DB validation commands:
 - `DATABASE_URL=... pnpm content:db:apply-local`
 - `DATABASE_URL=... pnpm content:db:import-local`
 - `DATABASE_URL=... pnpm content:db:validate-local`
+- `DATABASE_URL=... pnpm content:db:read-local`
 
 ## Before Migration
 
@@ -98,6 +99,7 @@ Current local DB validation commands:
 - [ ] Run `pnpm content:validate-db-roundtrip` to prove mapper reversibility.
 - [ ] Run `DATABASE_URL=... pnpm content:db:import-local`.
 - [ ] Run `DATABASE_URL=... pnpm content:db:validate-local`.
+- [ ] Run `DATABASE_URL=... pnpm content:db:read-local` after the feature-flagged read path exists.
 - [ ] Validate all inserted rows have required source, rights, and review fields.
 - [ ] Export DB rows back into a `lesson-v2` object.
 - [ ] Validate exported lessons with Zod.
@@ -107,8 +109,10 @@ Current local DB validation commands:
 
 - [ ] Keep TypeScript seed fallback.
 - [ ] Keep runtime content source set to seed by default.
-- [ ] Confirm learner-facing routes still import lessons from the TypeScript seed path unless a separate feature-flagged DB read task is in scope.
-- [ ] Add or prepare a feature flag for DB lessons later.
+- [ ] Keep `CONTENT_SOURCE` missing or set to `seed` as the normal default.
+- [ ] Require `DATABASE_URL` only when explicitly running `CONTENT_SOURCE=postgres` or local DB validation commands.
+- [ ] Confirm learner-facing routes use the repository layer and never call DB code from client components.
+- [ ] Confirm DB read failures log server-side warnings and fall back to TypeScript seed content.
 - [ ] Add tests for import, export, and schema validation.
 - [ ] Test lesson rendering from DB only if that task explicitly includes the DB read path.
 - [ ] Add E2E for DB-backed lesson only after the read path exists.

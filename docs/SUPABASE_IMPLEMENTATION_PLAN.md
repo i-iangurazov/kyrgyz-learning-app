@@ -243,8 +243,11 @@ Phase 3: seed import.
 
 Phase 4: feature-flagged DB read path.
 
-- Add environment flag such as `NEXT_PUBLIC_CONTENT_SOURCE=db`.
+- Add server-only environment flag such as `CONTENT_SOURCE=postgres`.
 - Keep seed fallback.
+- Require `DATABASE_URL` only when the Postgres content source is explicitly enabled.
+- Validate reconstructed lessons with Zod before rendering.
+- Fall back to TypeScript seed content if DB read or validation fails.
 - Run E2E against both paths if practical.
 
 Phase 5: backend progress.
@@ -260,13 +263,14 @@ Likely variables:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
-- `SUPABASE_DB_URL`
-- `NEXT_PUBLIC_CONTENT_SOURCE`
+- `DATABASE_URL` or `SUPABASE_DB_URL` for server-side content reads and scripts
+- `CONTENT_SOURCE`
 - `AUDIO_BUCKET_NAME`
 
 Rules:
 
 - Service role key is server-only.
+- `DATABASE_URL` and `CONTENT_SOURCE` are server-side runtime concerns and must not be required for normal builds.
 - Do not expose admin credentials to browser code.
 - Use `.env.local` for local development and deployment secrets for production.
 
@@ -322,11 +326,18 @@ Validate local DB rows back into `lesson-v2`:
 DATABASE_URL=... pnpm content:db:validate-local
 ```
 
+Validate the feature-flagged DB reconstruction layer:
+
+```bash
+DATABASE_URL=... pnpm content:db:read-local
+```
+
 Expected result:
 
 - Migration applies cleanly to a fresh local DB.
 - Import can be safely rerun and uses `insert ... on conflict ... do update`.
 - Validation reconstructs the same 3 seed lessons.
+- Read validation reconstructs app-ready levels, units, and lessons through the runtime mapper.
 - Supported exercise kinds remain `multiple_choice`, `fill_blank`, `sentence_builder`, `match_pairs`, and `error_correction`.
 
 Troubleshooting:

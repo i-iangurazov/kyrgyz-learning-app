@@ -16,6 +16,7 @@
     "content:db:apply-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/apply-slice-1-migration-local.ts",
     "content:db:import-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-seed-db-json-to-postgres.ts",
     "content:db:validate-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-postgres-seed-roundtrip.ts",
+    "content:db:read-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/read-postgres-lessons-local.ts",
     "format": "prettier --write ."
   },
   "dependencies": {

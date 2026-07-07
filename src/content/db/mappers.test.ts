@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { mapDbRowsToCurriculum } from "@/content/db/curriculum-mappers";
 import {
   getDbRowCounts,
   mapDbRowsToLessons,
@@ -113,6 +114,15 @@ describe("Slice 1 DB seed mappers", () => {
     const roundTrippedLessons = lessonSchema.array().parse(mapDbRowsToLessons(rows));
 
     expect(roundTrippedLessons).toEqual(sourceLessons);
+  });
+
+  it("reconstructs the curriculum hierarchy from DB-shaped rows", () => {
+    const rows = createRows();
+    const curriculum = mapDbRowsToCurriculum(rows);
+
+    expect(curriculum.levels).toEqual(levels);
+    expect(curriculum.units).toEqual(units);
+    expect(curriculum.lessons).toEqual(sourceLessons);
   });
 
   it("preserves answer and feedback data for all supported exercise kinds", () => {

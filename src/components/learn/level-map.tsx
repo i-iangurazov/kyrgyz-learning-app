@@ -5,12 +5,24 @@ import { Check, Lock, Play } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { levels, units, getLessonsForUnit } from "@/content/curriculum";
+import type { Lesson, Level, Unit } from "@/content/schemas";
 import { useLocalProgress } from "@/hooks/use-local-progress";
 import { cn } from "@/lib/utils";
 
-export function LevelMap() {
+type LevelMapProps = {
+  levels: Level[];
+  units: Unit[];
+  lessons: Lesson[];
+};
+
+export function LevelMap({ levels, units, lessons }: LevelMapProps) {
   const { progress, setActiveLesson } = useLocalProgress();
+
+  function getLessonsForUnit(unitId: Unit["id"]) {
+    return lessons
+      .filter((lesson) => lesson.unitId === unitId)
+      .sort((lessonA, lessonB) => lessonA.order - lessonB.order);
+  }
 
   return (
     <div className="space-y-5">

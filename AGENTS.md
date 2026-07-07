@@ -32,6 +32,8 @@ Rules for future Codex tasks in this repository:
 - Do not add database migrations, Supabase clients, auth, backend storage, or schema-changing infrastructure unless the task explicitly asks to implement database/backend behavior.
 - Migrations must not be created in docs-only tasks.
 - Current TypeScript seed content must remain available as fallback until the DB read path is verified.
+- Runtime lesson reads must default to TypeScript seed content unless `CONTENT_SOURCE=postgres` is explicitly set.
+- Postgres lesson reads must be server-side only, validate reconstructed lessons with Zod, and fall back to seed content without exposing database errors to learners.
 - Any schema change must update relevant docs and tests.
 - Learner-facing UI must not expose internal source, rights, review, audit, or methodist metadata.
 

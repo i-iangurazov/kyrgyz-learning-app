@@ -12,7 +12,8 @@ Implementation status:
 - Local DB migration script: `DATABASE_URL=... pnpm content:db:apply-local`
 - Local DB import script: `DATABASE_URL=... pnpm content:db:import-local`
 - Local DB validation script: `DATABASE_URL=... pnpm content:db:validate-local`
-- Runtime app content source remains the TypeScript seed path.
+- Local DB read validation script: `DATABASE_URL=... pnpm content:db:read-local`
+- Runtime app content source remains the TypeScript seed path unless `CONTENT_SOURCE=postgres` is explicitly set.
 
 ## Goal
 
@@ -196,11 +197,14 @@ Do not expose raw relational rows directly to React lesson components.
 The first implementation should keep runtime content source controlled by a flag such as:
 
 ```txt
-NEXT_PUBLIC_CONTENT_SOURCE=seed
-NEXT_PUBLIC_CONTENT_SOURCE=db
+CONTENT_SOURCE=seed
+CONTENT_SOURCE=postgres
 ```
 
-Default should remain `seed` until DB import, export, validation, and lesson rendering are proven.
+Default must remain `seed` when the flag is missing. `DATABASE_URL` is
+required only when `CONTENT_SOURCE=postgres`. If the Postgres read path fails,
+returns invalid lesson data, or is missing configuration, the app must log a
+server-side warning and render TypeScript seed content instead.
 
 ## Slice 1 Acceptance Criteria
 
@@ -221,7 +225,8 @@ Slice 1 is complete only when:
 2. Add import utilities from `lessonSeedData`.
 3. Add DB export utility that rebuilds `lesson-v2` payloads.
 4. Add schema validation and fixture comparison tests.
-5. Add a feature-flagged read path in a later task.
+5. Add a feature-flagged read path that reconstructs `lesson-v2`, validates
+   with Zod, and keeps seed fallback.
 6. Keep local progress unchanged until content reads are stable.
 
 ## Local Validation Commands
@@ -241,6 +246,7 @@ For live local Postgres validation:
 DATABASE_URL=... pnpm content:db:apply-local
 DATABASE_URL=... pnpm content:db:import-local
 DATABASE_URL=... pnpm content:db:validate-local
+DATABASE_URL=... pnpm content:db:read-local
 ```
 
 These commands require a local Postgres-compatible database and `psql`. They are not required for normal app build or tests.
@@ -250,6 +256,6 @@ These commands require a local Postgres-compatible database and `psql`. They are
 The next backend task should either:
 
 - run the migration against local Supabase/Postgres and seed it from the generated row groups, or
-- add a feature-flagged DB read path after local migration/import/export validation is proven.
+- harden the feature-flagged DB read path after local migration/import/export validation is proven.
 
 Do not remove the TypeScript seed fallback in either step.

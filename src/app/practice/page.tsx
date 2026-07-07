@@ -1,6 +1,8 @@
 import { PracticeReviewQueue } from "@/components/practice/practice-review-queue";
-import { lessons } from "@/content/curriculum";
+import { listLessons } from "@/content/repository";
 
-export default function PracticePage() {
+export default async function PracticePage() {
+  const lessons = await listLessons();
+
   return <PracticeReviewQueue lessons={lessons} />;
 }

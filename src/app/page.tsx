@@ -1,6 +1,8 @@
 import { HomeDashboard } from "@/components/home/home-dashboard";
-import { lessons } from "@/content/curriculum";
+import { listLessons } from "@/content/repository";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const lessons = await listLessons();
+
   return <HomeDashboard lessons={lessons} />;
 }

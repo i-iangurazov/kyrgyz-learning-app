@@ -12,6 +12,7 @@ Current Slice 1 migration and validation utilities:
 - Apply Slice 1 migration to local Postgres: `DATABASE_URL=... pnpm content:db:apply-local`
 - Import seed rows into local Postgres: `DATABASE_URL=... pnpm content:db:import-local`
 - Validate local Postgres round trip: `DATABASE_URL=... pnpm content:db:validate-local`
+- Validate the feature-flagged local DB read path: `DATABASE_URL=... pnpm content:db:read-local`
 - Generated JSON is written under `test-results/` and should not be committed.
 
 ## Current State
@@ -139,6 +140,7 @@ pnpm content:validate-db-roundtrip
 DATABASE_URL=... pnpm content:db:apply-local
 DATABASE_URL=... pnpm content:db:import-local
 DATABASE_URL=... pnpm content:db:validate-local
+DATABASE_URL=... pnpm content:db:read-local
 ```
 
 Expected output:
@@ -147,6 +149,7 @@ Expected output:
 - Offline validation confirms all 3 current seed lessons round-trip.
 - Local DB import prints upsert counts by table.
 - Local DB validation confirms the database reconstructs valid `lesson-v2` content.
+- Local DB read validation confirms the runtime reconstruction layer reads and validates levels, units, lessons, and supported exercise kinds.
 
 Troubleshooting:
 
@@ -159,6 +162,7 @@ Runtime reminder:
 
 - The learner app still uses TypeScript seed content.
 - The DB import/export scripts do not change learner-facing routes.
+- The feature-flagged DB path is server-side only and falls back to seed content on failure.
 
 ### Phase 4: Read Lessons From DB Behind Feature Flag
 
@@ -168,16 +172,19 @@ Goal:
 
 Actions:
 
-- Add content-source flag only when requested.
+- Use the server-only `CONTENT_SOURCE` flag.
+- Default to TypeScript seed content when `CONTENT_SOURCE` is missing or set to `seed`.
+- When `CONTENT_SOURCE=postgres`, require `DATABASE_URL` only for the server-side read path.
 - Add DB read path for lesson payloads.
 - Keep seed fallback.
 - Validate DB payload with Zod before rendering.
+- If DB read, validation, or configuration fails, log a server-side warning and render seed content.
 - Run the lesson player against DB and seed payloads.
 
 Feature flag example:
 
-- `NEXT_PUBLIC_CONTENT_SOURCE=seed`
-- `NEXT_PUBLIC_CONTENT_SOURCE=db`
+- `CONTENT_SOURCE=seed`
+- `CONTENT_SOURCE=postgres`
 
 Exit criteria:
 
