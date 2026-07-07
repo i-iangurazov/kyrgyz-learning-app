@@ -18,7 +18,10 @@ import { useLocalProgress } from "@/hooks/use-local-progress";
 import {
   findExerciseItem,
   getCorrectAnswerText,
+  getOptionDisplayText,
+  getSelectedAnswerText,
   isCorrectOption,
+  isCorrectSentenceBuilder,
   isCorrectTextAnswer,
   type Exercise,
   type ExerciseItem,
@@ -60,6 +63,10 @@ function canRetryDirectly(exercise?: Exercise, item?: ExerciseItem) {
     return Boolean(item.options?.length);
   }
 
+  if (exercise.kind === "sentence_builder") {
+    return Boolean(item.options?.length);
+  }
+
   return exercise.kind === "fill_blank";
 }
 
@@ -83,6 +90,7 @@ function ReviewQueueCard({
 }) {
   const [isRetryOpen, setIsRetryOpen] = useState(false);
   const [draftAnswer, setDraftAnswer] = useState("");
+  const [selectedSentenceTiles, setSelectedSentenceTiles] = useState<string[]>([]);
   const [retryFeedback, setRetryFeedback] = useState<RetryFeedback | null>(null);
   const supportsDirectRetry = canRetryDirectly(exercise, exerciseItem);
   const correctAnswerText =
@@ -112,6 +120,7 @@ function ReviewQueueCard({
       message: "Nice - corrected",
     });
     setDraftAnswer("");
+    setSelectedSentenceTiles([]);
   };
 
   const handleFillBlankRetry = (event: FormEvent<HTMLFormElement>) => {
@@ -131,6 +140,20 @@ function ReviewQueueCard({
       trimmedAnswer,
       trimmedAnswer,
       isCorrectTextAnswer(exerciseItem, trimmedAnswer),
+    );
+  };
+
+  const handleSentenceBuilderRetry = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!exerciseItem || selectedSentenceTiles.length === 0) {
+      return;
+    }
+
+    submitRetry(
+      selectedSentenceTiles.join(" "),
+      getSelectedAnswerText(exerciseItem, selectedSentenceTiles),
+      isCorrectSentenceBuilder(exerciseItem, selectedSentenceTiles),
     );
   };
 
@@ -269,6 +292,96 @@ function ReviewQueueCard({
                 >
                   Try again
                 </Button>
+              </form>
+            ) : null}
+
+            {exercise?.kind === "sentence_builder" && exerciseItem.options?.length ? (
+              <form className="space-y-3" onSubmit={handleSentenceBuilderRetry}>
+                <div>
+                  <p className="text-sm font-semibold">Build the sentence</p>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                    Tap the words in order.
+                  </p>
+                </div>
+                <div
+                  className="min-h-14 rounded-lg border border-dashed border-[#b6c6bf] bg-[#fbfcfa] p-3"
+                  data-testid="review-sentence-builder-answer"
+                >
+                  {selectedSentenceTiles.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {selectedSentenceTiles.map((optionId, index) => {
+                        const option = exerciseItem.options?.find(
+                          (candidate) => candidate.id === optionId,
+                        );
+                        const optionText = option
+                          ? getOptionDisplayText(option)
+                          : optionId;
+
+                        return (
+                          <button
+                            aria-label={`Remove ${optionText}`}
+                            className="min-h-10 rounded-full bg-[#27645a] px-3 py-2 text-sm font-semibold text-white"
+                            key={`${optionId}-${index}`}
+                            onClick={() =>
+                              setSelectedSentenceTiles((current) =>
+                                current.filter(
+                                  (_value, tileIndex) => tileIndex !== index,
+                                ),
+                              )
+                            }
+                            type="button"
+                          >
+                            {optionText}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Tap the words in order
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {exerciseItem.options.map((option) => {
+                    const optionText = getOptionDisplayText(option);
+
+                    return (
+                      <button
+                        aria-label={`Add ${optionText}`}
+                        className="min-h-11 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition hover:bg-accent disabled:cursor-default disabled:bg-muted disabled:text-muted-foreground"
+                        disabled={selectedSentenceTiles.includes(option.id)}
+                        key={option.id}
+                        onClick={() =>
+                          setSelectedSentenceTiles((current) => [
+                            ...current,
+                            option.id,
+                          ])
+                        }
+                        type="button"
+                      >
+                        {optionText}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="grid grid-cols-[1fr_auto] gap-2">
+                  <Button
+                    className="w-full"
+                    disabled={selectedSentenceTiles.length === 0}
+                    type="submit"
+                  >
+                    Try again
+                  </Button>
+                  <Button
+                    disabled={selectedSentenceTiles.length === 0}
+                    onClick={() => setSelectedSentenceTiles([])}
+                    type="button"
+                    variant="outline"
+                  >
+                    Clear
+                  </Button>
+                </div>
               </form>
             ) : null}
           </div>

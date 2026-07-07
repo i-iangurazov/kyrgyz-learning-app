@@ -12,8 +12,29 @@ export function getOptionById(item: ExerciseItem, optionId: string) {
   return item.options?.find((option) => option.id === optionId);
 }
 
+export function getOptionDisplayText(option: ExerciseOption) {
+  return option.text.ky ?? option.text.en;
+}
+
+export function getSelectedAnswerText(item: ExerciseItem, optionIds: string[]) {
+  return optionIds
+    .map((optionId) => {
+      const option = getOptionById(item, optionId);
+      return option ? getOptionDisplayText(option) : optionId;
+    })
+    .join(" ");
+}
+
 export function getCorrectAnswerText(item: ExerciseItem) {
   const value = item.correctAnswerData.value;
+
+  if (Array.isArray(value)) {
+    if (item.correctAnswerData.kind === "ordered_ids") {
+      return getSelectedAnswerText(item, value);
+    }
+
+    return value.join(" ");
+  }
 
   if (typeof value !== "string") {
     return "";
@@ -67,6 +88,32 @@ export function isCorrectTextAnswer(item: ExerciseItem, answer: string) {
   }
 
   return normalizeAnswer(answer) === normalizeAnswer(value);
+}
+
+export function isCorrectSentenceBuilder(
+  item: ExerciseItem,
+  selectedOptionIds: string[],
+) {
+  const value = item.correctAnswerData.value;
+
+  if (
+    item.correctAnswerData.kind === "ordered_ids" &&
+    Array.isArray(value)
+  ) {
+    return (
+      selectedOptionIds.length === value.length &&
+      selectedOptionIds.every((optionId, index) => optionId === value[index])
+    );
+  }
+
+  if (typeof value === "string") {
+    return (
+      normalizeAnswer(getSelectedAnswerText(item, selectedOptionIds)) ===
+      normalizeAnswer(value)
+    );
+  }
+
+  return false;
 }
 
 export function findExerciseItem(

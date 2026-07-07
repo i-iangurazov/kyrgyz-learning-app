@@ -9,6 +9,9 @@ import type { Lesson } from "@/content/schemas";
 const multipleChoiceExercise = lessons[0].exercises[0];
 const fillBlankExercise = lessons.find((lesson) => lesson.id === "k1-u1-l1")!
   .exercises[0];
+const sentenceBuilderExercise = lessons
+  .find((lesson) => lesson.id === "k1-u1-l1")!
+  .exercises.find((exercise) => exercise.id === "ex-name-build")!;
 
 function renderExercise(exercise: Lesson["exercises"][number]) {
   const onAttempt = vi.fn();
@@ -113,10 +116,95 @@ describe("ExerciseRenderer", () => {
     );
   });
 
+  it("renders sentence builder tiles and builds a selected sentence", async () => {
+    const user = userEvent.setup();
+    renderExercise(sentenceBuilderExercise);
+
+    expect(screen.getByTestId("exercise-renderer")).toBeInTheDocument();
+    expect(screen.getByText("Build: My name is Elina.")).toBeInTheDocument();
+    expect(screen.getByTestId("sentence-builder-answer")).toHaveTextContent(
+      "Tap the words in order",
+    );
+
+    await user.click(screen.getByRole("button", { name: "Add Атым" }));
+    await user.click(screen.getByRole("button", { name: "Add Элина" }));
+
+    expect(screen.getByTestId("sentence-builder-answer")).toHaveTextContent(
+      "Атым",
+    );
+    expect(screen.getByTestId("sentence-builder-answer")).toHaveTextContent(
+      "Элина",
+    );
+
+    await user.click(screen.getByRole("button", { name: "Remove Атым" }));
+
+    expect(screen.getByTestId("sentence-builder-answer")).not.toHaveTextContent(
+      "Атым",
+    );
+    expect(screen.getByTestId("sentence-builder-answer")).toHaveTextContent(
+      "Элина",
+    );
+
+    await user.click(screen.getByRole("button", { name: "Clear" }));
+
+    expect(screen.getByTestId("sentence-builder-answer")).toHaveTextContent(
+      "Tap the words in order",
+    );
+  });
+
+  it("accepts a correct sentence builder answer", async () => {
+    const user = userEvent.setup();
+    const { onAttempt } = renderExercise(sentenceBuilderExercise);
+
+    await user.click(screen.getByRole("button", { name: "Add Атым" }));
+    await user.click(screen.getByRole("button", { name: "Add Элина" }));
+    await user.click(screen.getByRole("button", { name: "Check" }));
+
+    expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
+      "Nice - that works.",
+    );
+    expect(onAttempt).toHaveBeenCalledWith(
+      expect.objectContaining({
+        answer: "tile-atym tile-elina",
+        answerDisplay: "Атым Элина",
+        correct: true,
+        correctAnswerDisplay: "Атым Элина",
+        exerciseId: "ex-name-build",
+        itemId: "item-build-atym-elina",
+      }),
+    );
+  });
+
+  it("shows the correct sentence after an incorrect sentence builder answer", async () => {
+    const user = userEvent.setup();
+    const { onAttempt } = renderExercise(sentenceBuilderExercise);
+
+    await user.click(screen.getByRole("button", { name: "Add Элина" }));
+    await user.click(screen.getByRole("button", { name: "Add Атым" }));
+    await user.click(screen.getByRole("button", { name: "Check" }));
+
+    expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
+      "Not quite yet.",
+    );
+    expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
+      "Almost. Check the order and try again.",
+    );
+    expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
+      "Answer: Атым Элина",
+    );
+    expect(onAttempt).toHaveBeenCalledWith(
+      expect.objectContaining({
+        answer: "tile-elina tile-atym",
+        answerDisplay: "Элина Атым",
+        correct: false,
+      }),
+    );
+  });
+
   it("renders a clean fallback for unsupported exercise types", () => {
     renderExercise({
       ...multipleChoiceExercise,
-      kind: "sentence_builder",
+      kind: "match_pairs",
     });
 
     expect(screen.getByTestId("unsupported-exercise")).toHaveTextContent(

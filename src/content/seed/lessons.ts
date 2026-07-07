@@ -1141,7 +1141,7 @@ export const lessonSeedData = [
             feedback: text("Атым Нур.", "Atym Nur.", "Атым Нур."),
           },
         ],
-        linkedExerciseIds: ["ex-name-pattern"],
+        linkedExerciseIds: ["ex-name-pattern", "ex-name-build"],
         methodologyRefs,
         sourceNotes:
           "Original demo grammar point for K1 introductions; validate against Kyrgyz grammar references.",
@@ -1175,6 +1175,66 @@ export const lessonSeedData = [
         hskInspiredComponent: ["workbook_exercise"],
         sourceNotes:
           "Original demo fill-blank item for the K1 name pattern. Requires methodist validation.",
+        methodistReviewStatus: "not_reviewed",
+      },
+      {
+        id: "ex-name-build",
+        kind: "sentence_builder",
+        prompt: text("Сүйлөм түз.", "Build the sentence.", "Составьте предложение."),
+        helperTextByTrack: {
+          RU_KY: "Нажимайте слова по порядку.",
+          EN_KY: "Tap the words in order.",
+          KY_KY: "Сөздөрдү ирети менен танда.",
+        },
+        linkedVocabularyIds: ["at"],
+        linkedGrammarPointIds: ["sample-name-pattern"],
+        items: [
+          {
+            id: "item-build-atym-elina",
+            question: text(
+              "Атым Элина сүйлөмүн түз.",
+              "Build: My name is Elina.",
+              "Составьте: Меня зовут Элина.",
+            ),
+            options: [
+              { id: "tile-kim", text: text("ким", "ким", "ким") },
+              { id: "tile-elina", text: text("Элина", "Элина", "Элина") },
+              { id: "tile-atym", text: text("Атым", "Атым", "Атым") },
+            ],
+            correctAnswerData: {
+              kind: "ordered_ids",
+              value: ["tile-atym", "tile-elina"],
+            },
+            explanation: text(
+              "Атым Элина - өз атыңды айтуучу кыска сүйлөм.",
+              "Atym Elina is a short sentence for giving your name.",
+              "Атым Элина - короткое предложение, чтобы назвать свое имя.",
+            ),
+            feedback: {
+              correct: text(
+                "Туура.",
+                "Nice - that works.",
+                "Верно. Так подходит.",
+              ),
+              incorrect: text(
+                "Сөз тартибин кайра кара.",
+                "Almost. Check the order and try again.",
+                "Почти. Проверьте порядок слов и попробуйте ещё раз.",
+              ),
+              hint: text(
+                "Сөздөрдү ирети менен танда.",
+                "Tap the words in order.",
+                "Нажимайте слова по порядку.",
+              ),
+            },
+          },
+        ],
+        hskInspiredComponent: [
+          "workbook_exercise",
+          "writing_reconstruction_task",
+        ],
+        sourceNotes:
+          "Original demo sentence-builder item for the K1 name pattern. Requires methodist validation.",
         methodistReviewStatus: "not_reviewed",
       },
     ],

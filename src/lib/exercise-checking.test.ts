@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   getCorrectAnswerText,
+  getSelectedAnswerText,
   isCorrectOption,
+  isCorrectSentenceBuilder,
   isCorrectTextAnswer,
   normalizeAnswer,
 } from "@/lib/exercise-checking";
@@ -17,6 +19,11 @@ const fillBlankExercise = lesson.exercises.find(
   (exercise) => exercise.id === "ex-greeting-fill",
 )!;
 const fillBlankItem = fillBlankExercise.items[0];
+const k1Lesson = lessons.find((candidate) => candidate.id === "k1-u1-l1")!;
+const sentenceBuilderExercise = k1Lesson.exercises.find(
+  (exercise) => exercise.id === "ex-name-build",
+)!;
+const sentenceBuilderItem = sentenceBuilderExercise.items[0];
 
 describe("exercise checking", () => {
   it("normalizes whitespace and casing for text answers", () => {
@@ -41,5 +48,18 @@ describe("exercise checking", () => {
     expect(isCorrectTextAnswer(fillBlankItem, "  РАХМАТ ")).toBe(true);
     expect(isCorrectTextAnswer(fillBlankItem, "салам")).toBe(false);
     expect(getCorrectAnswerText(fillBlankItem)).toBe("рахмат");
+  });
+
+  it("checks sentence builder answers by selected tile order", () => {
+    expect(
+      isCorrectSentenceBuilder(sentenceBuilderItem, ["tile-atym", "tile-elina"]),
+    ).toBe(true);
+    expect(
+      isCorrectSentenceBuilder(sentenceBuilderItem, ["tile-elina", "tile-atym"]),
+    ).toBe(false);
+    expect(
+      getSelectedAnswerText(sentenceBuilderItem, ["tile-atym", "tile-elina"]),
+    ).toBe("Атым Элина");
+    expect(getCorrectAnswerText(sentenceBuilderItem)).toBe("Атым Элина");
   });
 });

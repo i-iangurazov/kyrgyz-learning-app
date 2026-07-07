@@ -158,3 +158,64 @@ test("practice tab retries missed item directly at mobile viewport", async ({
     /localStorage|exercise IDs?|schema|progress object|sourceNotes|rightsNotes|methodist|validation|not_reviewed/i,
   );
 });
+
+test("sentence builder works inside a guided lesson flow at mobile viewport", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/lesson/k1-u1-l1");
+
+  const practice = page.getByTestId("section-exercise");
+  await practice.scrollIntoViewIfNeeded();
+
+  await expect(practice.getByTestId("practice-progress")).toContainText(
+    "Practice 1 of 2",
+  );
+  await practice.getByLabel("___ Elina.").fill("Атым");
+  await practice.getByRole("button", { name: "Check answer" }).click();
+  await expect(practice.getByTestId("exercise-feedback")).toContainText(
+    "Good. That fits this lesson.",
+  );
+  await expect(practice.getByTestId("practice-progress")).toContainText(
+    "Practice 2 of 2",
+  );
+
+  await expect(practice.getByTestId("sentence-builder-answer")).toContainText(
+    "Tap the words in order",
+  );
+  const sentenceBuilder = practice.getByTestId(
+    "exercise-item-item-build-atym-elina",
+  );
+  await sentenceBuilder.getByRole("button", { name: "Add Элина" }).click();
+  await sentenceBuilder.getByRole("button", { name: "Add Атым" }).click();
+  await sentenceBuilder.getByRole("button", { name: "Check", exact: true }).click();
+
+  await expect(sentenceBuilder.getByTestId("exercise-feedback")).toContainText(
+    "Almost. Check the order and try again.",
+  );
+  await expect(sentenceBuilder.getByTestId("exercise-feedback")).toContainText(
+    "Answer: Атым Элина",
+  );
+  await expect(practice.getByTestId("missed-review")).toContainText(
+    "Review missed items",
+  );
+
+  const missedReview = practice.getByTestId("missed-review");
+  await missedReview.getByRole("button", { name: "Add Атым" }).click();
+  await missedReview.getByRole("button", { name: "Add Элина" }).click();
+  await missedReview.getByRole("button", { name: "Try again" }).click();
+
+  await expect(practice.getByTestId("missed-corrected")).toContainText(
+    "Nice - corrected",
+  );
+  await practice.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByTestId("section-mini-game")).toBeVisible();
+
+  await page.getByTestId("section-review").scrollIntoViewIfNeeded();
+  await expect(page.getByTestId("practice-summary")).toContainText(
+    "You completed 2 practice items, got 1 correct on the first try, and corrected 1 missed answer.",
+  );
+  await expect(page.locator("body")).not.toContainText(
+    /array|tokens|schema|exercise ID|sourceNotes|rightsNotes|methodist|validation|not_reviewed/i,
+  );
+});

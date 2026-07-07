@@ -20,7 +20,7 @@ function makeProgress({
   missedKind = "multiple_choice",
 }: {
   corrected?: boolean;
-  missedKind?: "multiple_choice" | "fill_blank" | "fallback";
+  missedKind?: "multiple_choice" | "fill_blank" | "sentence_builder" | "fallback";
 } = {}): LocalProgress {
   const missedItem =
     missedKind === "fill_blank"
@@ -39,6 +39,23 @@ function makeProgress({
           retryAttempts: corrected ? 1 : 0,
           updatedAt: "2026-07-08T00:00:00.000Z",
         }
+      : missedKind === "sentence_builder"
+        ? {
+            lessonId: "k1-u1-l1",
+            exerciseId: "ex-name-build",
+            itemId: "item-build-atym-elina",
+            submittedAnswer: "tile-elina tile-atym",
+            submittedAnswerDisplay: "Элина Атым",
+            correctAnswerDisplay: "Атым Элина",
+            explanation:
+              "Atym Elina is a short sentence for giving your name.",
+            feedback: "Almost. Check the order and try again.",
+            corrected,
+            retryAnswer: corrected ? "tile-atym tile-elina" : undefined,
+            retryAnswerDisplay: corrected ? "Атым Элина" : undefined,
+            retryAttempts: corrected ? 1 : 0,
+            updatedAt: "2026-07-08T00:00:00.000Z",
+          }
       : {
           lessonId: "k0-u1-l1",
           exerciseId:
@@ -60,9 +77,12 @@ function makeProgress({
   const missedKey =
     missedKind === "fill_blank"
       ? "k0-u1-l1:ex-greeting-fill:item-jakshy-rahmat"
+      : missedKind === "sentence_builder"
+        ? "k1-u1-l1:ex-name-build:item-build-atym-elina"
       : missedKind === "fallback"
         ? "k0-u1-l1:ex-review-later:item-review-later"
         : "k0-u1-l1:ex-greeting-match:item-rahmat";
+  const lessonId = missedKind === "sentence_builder" ? "k1-u1-l1" : "k0-u1-l1";
 
   return {
     ...defaultProgress,
@@ -70,7 +90,7 @@ function makeProgress({
       [missedKey]: missedItem,
     },
     lessonPractice: {
-      "k0-u1-l1": {
+      [lessonId]: {
         ...emptyLessonPracticeProgress,
         totalCount: 2,
         attemptedCount: 2,
@@ -239,6 +259,59 @@ describe("PracticeReviewQueue", () => {
 
     await user.click(within(item).getByRole("button", { name: "Try again" }));
     await user.type(within(item).getByLabelText("Try the answer again"), "салам");
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+
+    await waitFor(() => {
+      expect(item).toHaveTextContent(
+        "Not quite yet. Use the answer above and try once more.",
+      );
+      expect(item).toHaveTextContent("Needs review");
+      expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
+        "1",
+      );
+    });
+  });
+
+  it("retries a missed sentence builder item directly and marks it corrected", async () => {
+    const user = userEvent.setup();
+
+    seedProgress(makeProgress({ missedKind: "sentence_builder" }));
+    render(<PracticeReviewQueue lessons={lessons} />);
+
+    const queue = await screen.findByTestId("review-queue");
+    const item = await screen.findByTestId("review-queue-item");
+
+    expect(queue).toHaveTextContent("Introductions");
+    expect(item).toHaveTextContent("Элина Атым");
+    expect(item).toHaveTextContent("Атым Элина");
+
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Add Атым" }));
+    await user.click(within(item).getByRole("button", { name: "Add Элина" }));
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+
+    await waitFor(() => {
+      expect(item).toHaveTextContent("Nice - corrected");
+      expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
+        "0",
+      );
+      expect(screen.getByTestId("practice-summary-corrected")).toHaveTextContent(
+        "1",
+      );
+    });
+  });
+
+  it("keeps a sentence builder item in review after an incorrect direct retry", async () => {
+    const user = userEvent.setup();
+
+    seedProgress(makeProgress({ missedKind: "sentence_builder" }));
+    render(<PracticeReviewQueue lessons={lessons} />);
+
+    const item = await screen.findByTestId("review-queue-item");
+
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Add Элина" }));
+    await user.click(within(item).getByRole("button", { name: "Add Атым" }));
     await user.click(within(item).getByRole("button", { name: "Try again" }));
 
     await waitFor(() => {

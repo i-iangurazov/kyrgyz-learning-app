@@ -3,7 +3,10 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import { PracticeSection } from "@/components/lesson/practice-section";
+import {
+  getSupportedPracticeItemCount,
+  PracticeSection,
+} from "@/components/lesson/practice-section";
 import { lessons } from "@/content/curriculum";
 import type { Lesson } from "@/content/schemas";
 import {
@@ -16,12 +19,16 @@ import {
 } from "@/lib/progress";
 
 const lesson = lessons[0];
+const k1Lesson = lessons.find((candidate) => candidate.id === "k1-u1-l1")!;
 
 function StatefulPracticeSection({
   exercises = lesson.exercises,
+  activeLesson = lesson,
 }: {
   exercises?: Lesson["exercises"];
+  activeLesson?: Lesson;
 }) {
+  const totalCount = getSupportedPracticeItemCount(exercises);
   const [state, setState] = useState<{
     exerciseAttempts: Record<string, ExerciseAttempt>;
     missedPractice: Record<string, MissedPracticeItem>;
@@ -31,7 +38,7 @@ function StatefulPracticeSection({
     missedPractice: {},
     practiceProgress: {
       ...emptyLessonPracticeProgress,
-      totalCount: 2,
+      totalCount,
     },
   });
 
@@ -40,7 +47,7 @@ function StatefulPracticeSection({
       <PracticeSection
         exerciseAttempts={state.exerciseAttempts}
         exercises={exercises}
-        lessonId={lesson.id}
+        lessonId={activeLesson.id}
         missedPractice={state.missedPractice}
         onAttempt={(attempt) => {
           setState((current) => {
@@ -90,7 +97,7 @@ function StatefulPracticeSection({
               missedPractice: nextMissed,
               practiceProgress: summarizeLessonPractice(
                 nextAttempts,
-                lesson.id,
+                activeLesson.id,
                 attempt.totalPracticeItems ?? 0,
                 nextMissed,
               ),
@@ -127,7 +134,7 @@ function StatefulPracticeSection({
               missedPractice: nextMissed,
               practiceProgress: summarizeLessonPractice(
                 current.exerciseAttempts,
-                lesson.id,
+                activeLesson.id,
                 current.practiceProgress.totalCount,
                 nextMissed,
               ),
@@ -266,13 +273,88 @@ describe("PracticeSection", () => {
     });
   });
 
+  it("includes sentence builder items in guided practice progress", async () => {
+    const user = userEvent.setup();
+    render(
+      <StatefulPracticeSection
+        activeLesson={k1Lesson}
+        exercises={k1Lesson.exercises}
+      />,
+    );
+
+    expect(screen.getAllByTestId("exercise-renderer")).toHaveLength(2);
+    expect(screen.getByTestId("practice-progress")).toHaveTextContent(
+      "Practice 1 of 2",
+    );
+
+    await user.type(screen.getByLabelText("___ Elina."), "Атым");
+    await user.click(screen.getByRole("button", { name: "Check answer" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("practice-progress")).toHaveTextContent(
+        "Practice 2 of 2",
+      );
+    });
+
+    await user.click(screen.getByRole("button", { name: "Add Атым" }));
+    await user.click(screen.getByRole("button", { name: "Add Элина" }));
+    await user.click(screen.getByRole("button", { name: "Check" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("practice-complete")).toHaveTextContent(
+        "2 of 2 answers correct",
+      );
+    });
+  });
+
+  it("tracks and corrects a missed sentence builder answer", async () => {
+    const user = userEvent.setup();
+    render(
+      <StatefulPracticeSection
+        activeLesson={k1Lesson}
+        exercises={k1Lesson.exercises}
+      />,
+    );
+
+    await user.type(screen.getByLabelText("___ Elina."), "Атым");
+    await user.click(screen.getByRole("button", { name: "Check answer" }));
+    await user.click(screen.getByRole("button", { name: "Add Элина" }));
+    await user.click(screen.getByRole("button", { name: "Add Атым" }));
+    await user.click(screen.getByRole("button", { name: "Check" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "Review missed items",
+      );
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "Your answer: Элина Атым",
+      );
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "Answer to remember: Атым Элина",
+      );
+    });
+
+    const missedReview = screen.getByTestId("missed-review");
+    await user.click(within(missedReview).getByRole("button", { name: "Add Атым" }));
+    await user.click(
+      within(missedReview).getByRole("button", { name: "Add Элина" }),
+    );
+    await user.click(within(missedReview).getByRole("button", { name: "Try again" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("missed-corrected")).toHaveTextContent(
+        "Nice - corrected",
+      );
+    });
+  });
+
   it("keeps unsupported exercise fallback learner-friendly", () => {
     render(
       <StatefulPracticeSection
         exercises={[
           {
             ...lesson.exercises[0],
-            kind: "sentence_builder",
+            kind: "match_pairs",
           },
         ]}
       />,
