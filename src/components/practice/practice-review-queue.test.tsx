@@ -676,7 +676,7 @@ describe("PracticeReviewQueue", () => {
     await screen.findByTestId("review-queue");
 
     expect(screen.getByTestId("practice-review-page").textContent).not.toMatch(
-      /localStorage|exercise IDs?|schema|progress object|sourceNotes|rightsNotes|methodist|validation|not_reviewed/i,
+      /localStorage|exercise IDs?|schema|progress object|sourceNotes|rightsNotes|audioReviewStatus|storageKey|methodist|validation|not_recorded|not_reviewed/i,
     );
   });
 });

@@ -127,8 +127,13 @@ Content fields needed:
 - `russian`
 - `notes`
 - `tags`
-- `audioAssetId` later
-- `audio.status`
+- `audio.id`
+- `audio.url` when playable
+- `audio.storageKey` when reserved for future storage
+- `audio.transcript`
+- `audio.language`
+- `audio.voiceType`
+- `audio.audioReviewStatus`
 - `sourceNotes`
 - `validatedAgainst`
 - `methodistReviewStatus`
@@ -138,7 +143,9 @@ UX behavior:
 - Use compact cards.
 - Show Kyrgyz first.
 - Keep translations available by track.
-- Later: support audio playback, saved words, and spaced review.
+- Show a compact audio control.
+- If no playable audio URL exists, show an honest disabled state such as "Audio coming soon."
+- Later: support saved words and spaced review.
 - Make cards tappable-friendly for future audio, reveal, or save behavior.
 
 Validation rules:
@@ -146,6 +153,8 @@ Validation rules:
 - Vocabulary must be level-appropriate.
 - Meanings must be checked by a Kyrgyz linguist.
 - Register and politeness must be noted where relevant.
+- Audio transcript must match the Kyrgyz word or phrase.
+- Audio must be reviewed for pronunciation and naturalness before production release.
 - Demo vocabulary must be marked as requiring validation.
 
 ## 4. Dialogue Or Short Text
@@ -162,7 +171,8 @@ Content fields needed:
 - Kyrgyz lines
 - track-specific translations
 - optional context note
-- optional audio asset references later
+- audio asset references for dialogue lines
+- optional audio asset references for reading paragraphs
 - `readingSourceType`
 - `isOriginalContent`
 - `requiresLicense`
@@ -175,6 +185,8 @@ UX behavior:
 - Dialogue lines should be easy to scan.
 - Text should be short and chunked.
 - Translation display may become toggleable by track.
+- Dialogue lines should include a compact audio control when audio is available or reserved.
+- Missing audio should not block the lesson.
 - Keep dialogue/text before detailed grammar.
 
 Validation rules:
@@ -182,6 +194,8 @@ Validation rules:
 - Must use mostly known or target vocabulary.
 - Must be natural Kyrgyz, not word-for-word translation.
 - Must be original and copyright-safe.
+- Audio transcripts must match the written line or paragraph.
+- Human-recorded Kyrgyz audio should be reviewed before any learner-facing production release.
 
 ## 5. Breakdown
 
@@ -260,6 +274,7 @@ Content fields needed:
 - `correctAnswerData`
 - `options`
 - `feedback`
+- optional `audio` for future listening items
 - `linkedVocabularyIds`
 - `linkedGrammarPointIds`
 - `hskInspiredComponent`
@@ -277,6 +292,7 @@ Validation rules:
 - Each item must have one correct answer unless explicitly marked open-ended.
 - Distractors must be plausible but fair.
 - Exercises must test taught content.
+- Listening exercises must reference reviewed audio before production release.
 
 ## 8. Mini-game
 

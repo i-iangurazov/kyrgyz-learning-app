@@ -49,7 +49,23 @@ describe("LessonPlayer", () => {
     render(<LessonPlayer lesson={lessons[0]} />);
 
     expect(screen.getByTestId("lesson-player").textContent).not.toMatch(
-      /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|sourceNotes|rightsNotes|validatedAgainst|not_reviewed/i,
+      /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|sourceNotes|rightsNotes|validatedAgainst|audioReviewStatus|storageKey|not_recorded|not_reviewed/i,
+    );
+  });
+
+  it("renders audio-ready controls on vocabulary cards and dialogue lines", () => {
+    render(<LessonPlayer lesson={lessons[0]} />);
+
+    expect(screen.getAllByTestId("vocabulary-audio-control")).toHaveLength(
+      lessons[0].vocabulary.length,
+    );
+    expect(screen.getAllByTestId("dialogue-audio-control")).toHaveLength(
+      lessons[0].dialogues[0].lines.length,
+    );
+    expect(
+      screen.getAllByRole("button", { name: "Audio coming soon" }).length,
+    ).toBeGreaterThanOrEqual(
+      lessons[0].vocabulary.length + lessons[0].dialogues[0].lines.length,
     );
   });
 

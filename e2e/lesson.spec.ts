@@ -26,6 +26,17 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
   await expect(page.getByTestId("section-goals")).toContainText(
     "What you'll be able to do",
   );
+  await expect(page.getByTestId("vocabulary-audio-control")).toHaveCount(4);
+  await expect(page.getByTestId("dialogue-audio-control")).toHaveCount(3);
+  await expect(
+    page.getByTestId("vocabulary-audio-control").first(),
+  ).toContainText("Audio coming soon");
+  await expect(
+    page.getByTestId("dialogue-audio-control").first(),
+  ).toContainText("Audio coming soon");
+  await expect(
+    page.getByRole("button", { name: "Audio coming soon" }).first(),
+  ).toBeDisabled();
 
   const bottomNav = page.getByRole("navigation", { name: "Primary" });
   await expect(bottomNav).toBeVisible();
@@ -79,7 +90,7 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
   );
 
   await expect(page.locator("body")).not.toContainText(
-    /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|mock state|sourceNotes|rightsNotes|validatedAgainst|not_reviewed/i,
+    /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|mock state|sourceNotes|rightsNotes|validatedAgainst|audioReviewStatus|storageKey|not_recorded|not_reviewed/i,
   );
 
   await page.goto("/lesson/k0-u1-l1#lesson-review");
@@ -171,7 +182,7 @@ test("practice tab retries missed item directly at mobile viewport", async ({
   );
   await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
   await expect(page.locator("body")).not.toContainText(
-    /localStorage|exercise IDs?|schema|progress object|sourceNotes|rightsNotes|methodist|validation|not_reviewed/i,
+    /localStorage|exercise IDs?|schema|progress object|sourceNotes|rightsNotes|audioReviewStatus|storageKey|methodist|validation|not_recorded|not_reviewed/i,
   );
 });
 
@@ -272,6 +283,6 @@ test("sentence builder, match pairs, and error correction work inside a guided l
     "You completed 4 practice items, got 3 correct on the first try, and corrected 1 missed answer.",
   );
   await expect(page.locator("body")).not.toContainText(
-    /array|pair id|tokens|error object|schema|exercise ID|sourceNotes|rightsNotes|methodist|validation|not_reviewed/i,
+    /array|pair id|tokens|error object|schema|exercise ID|sourceNotes|rightsNotes|audioReviewStatus|storageKey|methodist|validation|not_recorded|not_reviewed/i,
   );
 });

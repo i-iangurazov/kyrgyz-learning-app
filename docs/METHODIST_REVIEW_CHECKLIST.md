@@ -85,9 +85,15 @@ Use this checklist before any lesson is treated as final learner-facing content.
 ## Audio Readiness
 
 - [ ] Audio is required for this item or explicitly deferred.
-- [ ] Native speaker recording is available where required.
+- [ ] Human-recorded Kyrgyz audio is available where required.
 - [ ] Audio matches written content.
+- [ ] Audio transcript matches the vocabulary item, dialogue line, or reading paragraph.
 - [ ] Audio quality is acceptable.
+- [ ] Pacing is appropriate for the level.
+- [ ] Speaker voice and register match the lesson context.
+- [ ] Audio rights/source notes are recorded internally.
+- [ ] Audio review status is recorded internally.
+- [ ] Placeholder or synthetic audio is not presented as native-quality final audio.
 - [ ] Pronunciation coaching text is approved.
 
 ## AI Roleplay Safety

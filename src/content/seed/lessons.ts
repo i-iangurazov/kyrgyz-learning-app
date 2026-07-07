@@ -21,10 +21,22 @@ const pendingValidation = [
   "pending: Кыргызтест A1 alignment review",
 ];
 
-const audioPlaceholder = {
-  status: "placeholder",
-  notes: "Native-speaker audio is not recorded for this demo item yet.",
-} as const;
+function audioPlaceholder(id: string, transcript: string, speakerLabel?: string) {
+  return {
+    id: `audio-${id}`,
+    storageKey: `pending/${id}.mp3`,
+    transcript,
+    language: "ky",
+    voiceType: "placeholder",
+    speakerLabel,
+    sourceNotes:
+      "Audio recording placeholder only. Native-speaker recording is not available for this demo item yet.",
+    rightsNotes:
+      "No audio asset has been recorded, licensed, or approved yet. Requires recording rights before production release.",
+    methodistReviewStatus: "not_reviewed",
+    audioReviewStatus: "not_recorded",
+  } satisfies Lesson["vocabulary"][number]["audio"];
+}
 
 function text(ky: string, en: string, ru: string) {
   return { ky, en, ru };
@@ -206,7 +218,7 @@ export const lessonSeedData = [
           kyrgyz: "Салам!",
           translations: translations("Hello!", "Привет!"),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k0-u1-l1-vocab-salam", "Салам"),
         tags: ["greeting", "k0"],
         ...vocabularySource("k0-u1-l1"),
       },
@@ -219,7 +231,7 @@ export const lessonSeedData = [
           kyrgyz: "Рахмат.",
           translations: translations("Thank you.", "Спасибо."),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k0-u1-l1-vocab-rahmat", "Рахмат"),
         tags: ["polite", "k0"],
         ...vocabularySource("k0-u1-l1"),
       },
@@ -232,7 +244,7 @@ export const lessonSeedData = [
           kyrgyz: "Жакшы.",
           translations: translations("Good.", "Хорошо."),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k0-u1-l1-vocab-jakshy", "Жакшы"),
         tags: ["response", "k0"],
         ...vocabularySource("k0-u1-l1"),
       },
@@ -245,7 +257,7 @@ export const lessonSeedData = [
           kyrgyz: "Сен жакшы.",
           translations: translations("You are good.", "У тебя хорошо."),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k0-u1-l1-vocab-sen", "Сен"),
         tags: ["pronoun", "register-review-needed"],
         ...vocabularySource("k0-u1-l1"),
       },
@@ -263,7 +275,11 @@ export const lessonSeedData = [
             kyrgyz: "Салам!",
             transliteration: "Salam!",
             translations: translations("Hello!", "Привет!"),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k0-u1-l1-dialogue-greeting-1",
+              "Салам!",
+              "Айжан",
+            ),
           },
           {
             id: "dialogue-greeting-2",
@@ -271,7 +287,11 @@ export const lessonSeedData = [
             kyrgyz: "Салам! Жакшы?",
             transliteration: "Salam! Jakshy?",
             translations: translations("Hello! Good?", "Привет! Хорошо?"),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k0-u1-l1-dialogue-greeting-2",
+              "Салам! Жакшы?",
+              "Тимур",
+            ),
           },
           {
             id: "dialogue-greeting-3",
@@ -279,7 +299,11 @@ export const lessonSeedData = [
             kyrgyz: "Жакшы, рахмат.",
             transliteration: "Jakshy, rahmat.",
             translations: translations("Good, thank you.", "Хорошо, спасибо."),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k0-u1-l1-dialogue-greeting-3",
+              "Жакшы, рахмат.",
+              "Айжан",
+            ),
           },
         ],
         breakdownItems: [
@@ -310,7 +334,11 @@ export const lessonSeedData = [
         ],
         linkedVocabularyIds: ["salam", "rahmat", "jakshy", "sen"],
         linkedGrammarPointIds: ["sample-short-replies"],
-        audio: audioPlaceholder,
+        audio: audioPlaceholder(
+          "k0-u1-l1-dialogue-greeting-full",
+          "Салам! Салам! Жакшы? Жакшы, рахмат.",
+          "Айжан жана Тимур",
+        ),
         ...originalInputSource(
           "Original K0 demo dialogue drafted for greeting practice; naturalness requires review.",
         ),
@@ -326,7 +354,10 @@ export const lessonSeedData = [
             id: "reading-greeting-p1",
             kyrgyz: "Салам. Мен жакшы. Рахмат.",
             translations: translations("Hello. I am good. Thank you.", "Привет. У меня хорошо. Спасибо."),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k0-u1-l1-reading-greeting-p1",
+              "Салам. Мен жакшы. Рахмат.",
+            ),
           },
         ],
         breakdownItems: [
@@ -596,7 +627,7 @@ export const lessonSeedData = [
           kyrgyz: "Бул өзөн.",
           translations: translations("This is a stream.", "Это ручей."),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k0-u1-l2-vocab-ozon", "Өзөн"),
         tags: ["letter-o-special", "reading"],
         ...vocabularySource("k0-u1-l2"),
       },
@@ -609,7 +640,7 @@ export const lessonSeedData = [
           kyrgyz: "Бул үтүк.",
           translations: translations("This is an iron.", "Это утюг."),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k0-u1-l2-vocab-utuk", "Үтүк"),
         tags: ["letter-u-special", "reading"],
         ...vocabularySource("k0-u1-l2"),
       },
@@ -622,7 +653,7 @@ export const lessonSeedData = [
           kyrgyz: "Бул таң.",
           translations: translations("This is dawn.", "Это рассвет."),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k0-u1-l2-vocab-tan", "Таң"),
         tags: ["letter-ng", "reading"],
         ...vocabularySource("k0-u1-l2"),
       },
@@ -640,7 +671,11 @@ export const lessonSeedData = [
             kyrgyz: "Бул ө.",
             transliteration: "Bul o.",
             translations: translations("This is ө.", "Это ө."),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k0-u1-l2-dialogue-sound-check-1",
+              "Бул ө.",
+              "Мугалим",
+            ),
           },
           {
             id: "dialogue-sound-check-2",
@@ -648,7 +683,11 @@ export const lessonSeedData = [
             kyrgyz: "Ө.",
             transliteration: "O.",
             translations: translations("Ө.", "Ө."),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k0-u1-l2-dialogue-sound-check-2",
+              "Ө.",
+              "Окуучу",
+            ),
           },
           {
             id: "dialogue-sound-check-3",
@@ -656,7 +695,11 @@ export const lessonSeedData = [
             kyrgyz: "Бул ң.",
             transliteration: "Bul ng.",
             translations: translations("This is ң.", "Это ң."),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k0-u1-l2-dialogue-sound-check-3",
+              "Бул ң.",
+              "Мугалим",
+            ),
           },
         ],
         breakdownItems: [
@@ -687,7 +730,11 @@ export const lessonSeedData = [
         ],
         linkedVocabularyIds: ["ozon", "utuk", "tan"],
         linkedGrammarPointIds: ["letters-not-grammar"],
-        audio: audioPlaceholder,
+        audio: audioPlaceholder(
+          "k0-u1-l2-dialogue-sound-check-full",
+          "Бул ө. Ө. Бул ң.",
+          "Мугалим жана Окуучу",
+        ),
         ...originalInputSource(
           "Original K0 sound-check dialogue drafted for special-letter recognition; pronunciation claims require review.",
         ),
@@ -703,7 +750,10 @@ export const lessonSeedData = [
             id: "reading-special-letters-p1",
             kyrgyz: "Өзөн. Үтүк. Таң.",
             translations: translations("Stream. Iron. Dawn.", "Ручей. Утюг. Рассвет."),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k0-u1-l2-reading-special-letters-p1",
+              "Өзөн. Үтүк. Таң.",
+            ),
           },
         ],
         breakdownItems: [
@@ -932,7 +982,7 @@ export const lessonSeedData = [
           kyrgyz: "Атым Нур.",
           translations: translations("My name is Nur.", "Меня зовут Нур."),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k1-u1-l1-vocab-at", "Ат"),
         tags: ["introduction", "k1"],
         ...vocabularySource("k1-u1-l1"),
       },
@@ -945,7 +995,7 @@ export const lessonSeedData = [
           kyrgyz: "Мен Нур.",
           translations: translations("I am Nur.", "Я Нур."),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k1-u1-l1-vocab-men", "Мен"),
         tags: ["pronoun", "k1"],
         ...vocabularySource("k1-u1-l1"),
       },
@@ -958,7 +1008,7 @@ export const lessonSeedData = [
           kyrgyz: "Атың ким?",
           translations: translations("What is your name?", "Как тебя зовут?"),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k1-u1-l1-vocab-kim", "Ким"),
         tags: ["question", "k1"],
         ...vocabularySource("k1-u1-l1"),
       },
@@ -971,7 +1021,7 @@ export const lessonSeedData = [
           kyrgyz: "Мен чай алам.",
           translations: translations("I get tea.", "Я беру чай."),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k1-u1-l1-vocab-chai", "Чай"),
         tags: ["cafe", "k1"],
         ...vocabularySource("k1-u1-l1"),
       },
@@ -984,7 +1034,7 @@ export const lessonSeedData = [
           kyrgyz: "Сенчи?",
           translations: translations("And you?", "А ты?"),
         },
-        audio: audioPlaceholder,
+        audio: audioPlaceholder("k1-u1-l1-vocab-senchi", "Сенчи?"),
         tags: ["question", "conversation"],
         ...vocabularySource("k1-u1-l1"),
       },
@@ -1002,7 +1052,11 @@ export const lessonSeedData = [
             kyrgyz: "Салам. Атың ким?",
             transliteration: "Salam. Atyn kim?",
             translations: translations("Hello. What is your name?", "Привет. Как тебя зовут?"),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k1-u1-l1-dialogue-introductions-1",
+              "Салам. Атың ким?",
+              "Нур",
+            ),
           },
           {
             id: "dialogue-introductions-2",
@@ -1010,7 +1064,11 @@ export const lessonSeedData = [
             kyrgyz: "Атым Элина. Сенчи?",
             transliteration: "Atym Elina. Senchi?",
             translations: translations("My name is Elina. And you?", "Меня зовут Элина. А ты?"),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k1-u1-l1-dialogue-introductions-2",
+              "Атым Элина. Сенчи?",
+              "Элина",
+            ),
           },
           {
             id: "dialogue-introductions-3",
@@ -1018,7 +1076,11 @@ export const lessonSeedData = [
             kyrgyz: "Атым Нур.",
             transliteration: "Atym Nur.",
             translations: translations("My name is Nur.", "Меня зовут Нур."),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k1-u1-l1-dialogue-introductions-3",
+              "Атым Нур.",
+              "Нур",
+            ),
           },
         ],
         breakdownItems: [
@@ -1049,7 +1111,11 @@ export const lessonSeedData = [
         ],
         linkedVocabularyIds: ["at", "men", "kim", "chai", "senchi"],
         linkedGrammarPointIds: ["sample-name-pattern"],
-        audio: audioPlaceholder,
+        audio: audioPlaceholder(
+          "k1-u1-l1-dialogue-introductions-full",
+          "Салам. Атың ким? Атым Элина. Сенчи? Атым Нур.",
+          "Нур жана Элина",
+        ),
         ...originalInputSource(
           "Original K1 introduction dialogue drafted for the app; register and naturalness require review.",
         ),
@@ -1065,7 +1131,10 @@ export const lessonSeedData = [
             id: "reading-intro-p1",
             kyrgyz: "Салам. Атым Нур. Мен чай алам.",
             translations: translations("Hello. My name is Nur. I get tea.", "Привет. Меня зовут Нур. Я беру чай."),
-            audio: audioPlaceholder,
+            audio: audioPlaceholder(
+              "k1-u1-l1-reading-intro-p1",
+              "Салам. Атым Нур. Мен чай алам.",
+            ),
           },
         ],
         breakdownItems: [

@@ -62,6 +62,20 @@ export const readingSourceTypeSchema = z.enum([
   "excerpt_requires_permission",
 ]);
 
+export const audioLanguageSchema = z.enum(["ky", "ru", "en"]);
+
+export const audioVoiceTypeSchema = z.enum([
+  "human",
+  "synthetic",
+  "placeholder",
+]);
+
+export const audioReviewStatusSchema = z.enum([
+  "not_recorded",
+  "needs_review",
+  "approved",
+]);
+
 const contentLifecycleShape = {
   contentStatus: contentStatusSchema,
   methodistReviewStatus: methodistReviewStatusSchema,
@@ -82,11 +96,25 @@ const sourceMethodologyShape = {
   isOriginalContent: z.boolean(),
 };
 
-export const audioPlaceholderSchema = z.object({
-  status: z.enum(["placeholder", "needed", "ready"]),
-  assetId: z.string().min(1).optional(),
-  notes: z.string().min(1).optional(),
-});
+export const audioAssetSchema = z
+  .object({
+    id: z.string().min(1),
+    url: z.string().url().optional(),
+    storageKey: z.string().min(1).optional(),
+    transcript: z.string().min(1),
+    language: audioLanguageSchema,
+    voiceType: audioVoiceTypeSchema,
+    speakerLabel: z.string().min(1).optional(),
+    durationSeconds: z.number().positive().optional(),
+    sourceNotes: z.string().min(1),
+    rightsNotes: z.string().min(1),
+    methodistReviewStatus: methodistReviewStatusSchema,
+    audioReviewStatus: audioReviewStatusSchema,
+  })
+  .refine((audio) => Boolean(audio.url || audio.storageKey), {
+    message: "Audio assets require a playable URL or storage key placeholder.",
+    path: ["url"],
+  });
 
 export const breakdownItemSchema = z.object({
   id: z.string().min(1),
@@ -118,7 +146,7 @@ export const vocabularyItemSchema = z.object({
     kyrgyz: z.string().min(1),
     translations: trackTranslationsSchema,
   }),
-  audio: audioPlaceholderSchema,
+  audio: audioAssetSchema,
   tags: z.array(z.string().min(1)).default([]),
   linkedLessonIds: z.array(z.string().min(1)).min(1),
   sourceNotes: z.string().min(1),
@@ -132,7 +160,7 @@ export const dialogueLineSchema = z.object({
   kyrgyz: z.string().min(1),
   transliteration: z.string().min(1).optional(),
   translations: trackTranslationsSchema,
-  audio: audioPlaceholderSchema,
+  audio: audioAssetSchema,
 });
 
 export const dialogueSchema = z.object({
@@ -144,7 +172,7 @@ export const dialogueSchema = z.object({
   breakdownItems: z.array(breakdownItemSchema).default([]),
   linkedVocabularyIds: z.array(z.string().min(1)).default([]),
   linkedGrammarPointIds: z.array(z.string().min(1)).default([]),
-  audio: audioPlaceholderSchema,
+  audio: audioAssetSchema,
   readingSourceType: readingSourceTypeSchema,
   rightsNotes: z.string().min(1),
   sourceNotes: z.string().min(1),
@@ -158,7 +186,7 @@ export const readingParagraphSchema = z.object({
   id: z.string().min(1),
   kyrgyz: z.string().min(1),
   translations: trackTranslationsSchema,
-  audio: audioPlaceholderSchema,
+  audio: audioAssetSchema,
 });
 
 export const readingTextSchema = z.object({
@@ -270,6 +298,7 @@ export const exerciseSchema = z.object({
           )
           .optional(),
         correctAnswerData: answerDataSchema,
+        audio: audioAssetSchema.optional(),
         explanation: localizedTextSchema,
         feedback: z.object({
           correct: localizedTextSchema,
@@ -399,6 +428,7 @@ export const levelSchema = z.object({
 });
 
 export type LocalizedText = z.infer<typeof localizedTextSchema>;
+export type AudioAsset = z.infer<typeof audioAssetSchema>;
 export type Lesson = z.infer<typeof lessonSchema>;
 export type Unit = z.infer<typeof unitSchema>;
 export type Level = z.infer<typeof levelSchema>;

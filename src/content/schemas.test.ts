@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { lessons, levels, units } from "@/content/curriculum";
 import { lessonSeedData } from "@/content/seed/lessons";
-import { lessonSchema } from "@/content/schemas";
+import { audioAssetSchema, lessonSchema } from "@/content/schemas";
 
 describe("curriculum content schemas", () => {
   it("validates all seeded lessons against schema v2", () => {
@@ -45,11 +45,32 @@ describe("curriculum content schemas", () => {
         expect(item.translations.en).toBeTruthy();
         expect(item.translations.ru).toBeTruthy();
         expect(item.example.kyrgyz).toBeTruthy();
-        expect(item.audio.status).toBe("placeholder");
+        expect(item.audio.id).toMatch(/^audio-/);
+        expect(item.audio.storageKey).toContain(item.id);
+        expect(item.audio.transcript).toBeTruthy();
+        expect(item.audio.language).toBe("ky");
+        expect(item.audio.voiceType).toBe("placeholder");
+        expect(item.audio.audioReviewStatus).toBe("not_recorded");
+        expect(item.audio.methodistReviewStatus).toBe("not_reviewed");
+        expect(item.audio.sourceNotes).toContain("Audio recording");
+        expect(item.audio.rightsNotes).toContain("No audio asset");
         expect(item.linkedLessonIds).toContain(lesson.id);
         expect(item.sourceNotes).toContain("Original");
         expect(item.rightsNotes).toContain("No textbook");
         expect(item.methodistReviewStatus).toBe("not_reviewed");
+      }
+
+      for (const dialogue of lesson.dialogues) {
+        expect(dialogue.audio.transcript).toBeTruthy();
+        expect(dialogue.audio.voiceType).toBe("placeholder");
+        expect(dialogue.audio.audioReviewStatus).toBe("not_recorded");
+
+        for (const line of dialogue.lines) {
+          expect(line.audio.transcript).toBe(line.kyrgyz);
+          expect(line.audio.speakerLabel).toBe(line.speaker);
+          expect(line.audio.language).toBe("ky");
+          expect(line.audio.voiceType).toBe("placeholder");
+        }
       }
 
       for (const text of lesson.texts) {
@@ -57,8 +78,44 @@ describe("curriculum content schemas", () => {
         expect(text.rightsNotes).toContain("No textbook");
         expect(text.isOriginalContent).toBe(true);
         expect(text.requiresLicense).toBe(false);
+
+        for (const paragraph of text.paragraphs) {
+          expect(paragraph.audio.transcript).toBe(paragraph.kyrgyz);
+          expect(paragraph.audio.audioReviewStatus).toBe("not_recorded");
+        }
       }
     }
+  });
+
+  it("validates playable and storage-backed audio assets", () => {
+    expect(() =>
+      audioAssetSchema.parse({
+        id: "audio-test-word",
+        url: "https://cdn.example.com/audio/test-word.mp3",
+        transcript: "Салам",
+        language: "ky",
+        voiceType: "human",
+        durationSeconds: 1.2,
+        sourceNotes: "Test fixture for playable audio validation.",
+        rightsNotes: "Test fixture rights note.",
+        methodistReviewStatus: "reviewed",
+        audioReviewStatus: "needs_review",
+      }),
+    ).not.toThrow();
+
+    expect(() =>
+      audioAssetSchema.parse({
+        id: "audio-test-placeholder",
+        storageKey: "pending/test-placeholder.mp3",
+        transcript: "Рахмат",
+        language: "ky",
+        voiceType: "placeholder",
+        sourceNotes: "Test fixture for future audio storage key.",
+        rightsNotes: "Test fixture rights note.",
+        methodistReviewStatus: "not_reviewed",
+        audioReviewStatus: "not_recorded",
+      }),
+    ).not.toThrow();
   });
 
   it("keeps learning tracks and target skills structurally ready", () => {

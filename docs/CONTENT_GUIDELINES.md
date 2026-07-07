@@ -87,19 +87,28 @@ Rules:
 MVP status:
 
 - Audio can be placeholder-only.
+- Placeholder audio records may exist in content data to reserve IDs, transcripts, storage keys, and review status.
+- Learner UI must show an honest unavailable state when no playable audio URL exists.
 
 Future production requirements:
 
-- Native speaker audio for vocabulary.
-- Native speaker audio for dialogues and reading texts.
+- Human-recorded Kyrgyz audio is preferred for vocabulary.
+- Human-recorded Kyrgyz audio is preferred for dialogues and reading texts.
 - Pronunciation examples for K0 sound lessons.
 - Audio asset IDs linked from content records.
+- Audio transcripts matching the learner-facing Kyrgyz text.
+- Source and rights notes for every recorded or uploaded audio asset.
+- Audio review status and methodist review status before release.
 - Audio QA for clarity, speed, noise, and naturalness.
 
 Rules:
 
 - Do not ship pronunciation claims or speech feedback without validation.
+- Audio must be reviewed for pronunciation, naturalness, pacing, and match with the written text.
+- Synthetic audio may be used only as temporary/internal placeholder audio if product policy allows it.
+- Do not label unreviewed or synthetic audio as native-quality.
 - Do not synthesize final audio without a product decision and QA process.
+- Do not expose audio source notes, rights notes, storage keys, or review metadata in normal learner-facing UI.
 
 ## Exercise Requirements
 

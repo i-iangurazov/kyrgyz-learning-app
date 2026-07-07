@@ -4,6 +4,7 @@ import { CheckCircle2, MessageCircle, Mic2, Sparkles } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AudioButton } from "@/components/lesson/audio-button";
 import {
   LessonStepProgress,
   type LessonStep,
@@ -148,19 +149,32 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           {lesson.vocabulary.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between gap-4 rounded-lg border border-border bg-[#fbfcf8] p-4"
+              className="rounded-lg border border-border bg-[#fbfcf8] p-4"
             >
-              <div className="min-w-0">
-                <p className="text-lg font-bold tracking-normal">{item.kyrgyz}</p>
-                {item.transliteration ? (
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                    {item.transliteration}
-                  </p>
-                ) : null}
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-lg font-bold tracking-normal">{item.kyrgyz}</p>
+                  {item.transliteration ? (
+                    <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      {item.transliteration}
+                    </p>
+                  ) : null}
+                </div>
+                <p className="shrink-0 text-sm font-semibold text-[#27645a]">
+                  {item.translations.en}
+                </p>
               </div>
-              <p className="shrink-0 text-sm font-semibold text-[#27645a]">
-                {item.translations.en}
-              </p>
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <p className="min-w-0 text-xs leading-5 text-muted-foreground">
+                  {item.example.translations.en}
+                </p>
+                <AudioButton
+                  audio={item.audio}
+                  className="w-[166px] shrink-0"
+                  label={`Play word ${item.kyrgyz}`}
+                  testId="vocabulary-audio-control"
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -179,9 +193,17 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
               key={`${line.speaker}-${index}`}
               className="rounded-lg bg-muted px-4 py-3"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                {line.speaker}
-              </p>
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                  {line.speaker}
+                </p>
+                <AudioButton
+                  audio={line.audio}
+                  className="w-[166px] shrink-0"
+                  label={`Play phrase ${line.kyrgyz}`}
+                  testId="dialogue-audio-control"
+                />
+              </div>
               <p className="mt-1 text-base font-semibold">{line.kyrgyz}</p>
               <p className="mt-1 text-sm leading-6 text-muted-foreground">
                 {line.translations.en}
