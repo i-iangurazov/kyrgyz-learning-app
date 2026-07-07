@@ -2,13 +2,15 @@
 
 This app uses an HSK-style curriculum model adapted for Kyrgyz. The goal is not to copy HSK content, Chinese pedagogy, or textbook passages. The goal is to borrow the useful structure: clear levels, controlled vocabulary, recurring lesson patterns, measurable can-do outcomes, and review loops.
 
+Source methodology is defined in `docs/SOURCE_METHODOLOGY.md`, `docs/HSK_STRUCTURE_ANALYSIS.md`, `docs/KYRGYZ_SOURCE_BASE.md`, and `docs/READING_AND_LITERATURE_PLAN.md`. Future curriculum work must use those documents for source handling, rights notes, local level alignment, and validation requirements.
+
 All Kyrgyz grammar explanations, examples, translations, pronunciations, and final learner-facing content require review by a Kyrgyz methodist and/or linguist before release.
 
 ## Core Learning Sequence
 
 Every content unit follows this structure:
 
-Level -> Unit -> Lesson -> Vocabulary -> Dialogue/Text -> Grammar Point -> Practice -> Mini-game -> Speaking/AI Roleplay -> Review
+Level -> Unit -> Lesson -> Vocabulary -> Dialogue/Text -> Breakdown -> Grammar Point -> Practice -> Mini-game -> Speaking/AI Roleplay -> Review
 
 Definitions:
 
@@ -17,6 +19,7 @@ Definitions:
 - Lesson: one short mobile-first learning session with one main communicative goal.
 - Vocabulary: a small controlled set of words or phrases.
 - Dialogue/Text: original input that shows the vocabulary in context.
+- Breakdown: phrase, chunk, or meaning support tied to the dialogue/text.
 - Grammar Point: one focused pattern or explanation.
 - Practice: short checks that prove the learner can recognize or produce the target language.
 - Mini-game: a lightweight reinforcement activity using approved lesson content.
@@ -31,6 +34,8 @@ Definitions:
 - Earlier levels prioritize recognition, survival phrases, reading confidence, and high-frequency patterns.
 - Later levels can add broader contexts, richer grammar, longer texts, and more open production.
 - Review should recycle previous content rather than constantly introducing new content.
+- HSK-style materials may guide structure, but final Kyrgyz content must be original, licensed, public-domain, or rights-approved.
+- Кыргызтест A1-C1 should be used as a local alignment reference, with exact K-level mapping left for methodist validation.
 
 ## Learning Tracks
 
@@ -186,3 +191,20 @@ Every demo lesson must include:
 - TODO notes for methodist and linguist review.
 - Clear separation between content data and UI rendering.
 - Structured fields for future RU -> KY, EN -> KY, and KY -> KY tracks.
+
+## Source And Rights Metadata
+
+Future content models should include:
+
+- `methodologyRefs`
+- `sourceNotes`
+- `rightsNotes`
+- `validatedAgainst`
+- `hskInspiredComponent`
+- `kyrgyztestLevel`
+- `readingSourceType`
+- `isOriginalText`
+- `requiresLicense`
+- `methodistReviewStatus`
+
+Use these fields to show which methodology informed the lesson, which Kyrgyz references validated it, whether content is original or source-derived, and whether rights clearance is required.

@@ -9,6 +9,10 @@ Use this checklist before any lesson is treated as final learner-facing content.
 - [ ] Lesson goal is clear and observable.
 - [ ] Content status is correct: demo, in review, approved, or rejected.
 - [ ] Reviewer name and review date are recorded when applicable.
+- [ ] `methodologyRefs` are present where applicable.
+- [ ] `sourceNotes` are present.
+- [ ] `methodistReviewStatus` is present.
+- [ ] `kyrgyztestLevel` is present or explicitly deferred.
 
 ## Vocabulary Accuracy
 
@@ -27,6 +31,8 @@ Use this checklist before any lesson is treated as final learner-facing content.
 - [ ] Examples show the target pattern clearly.
 - [ ] Common mistakes are accurate and useful.
 - [ ] Track-specific explanations are accurate.
+- [ ] Grammar has been checked against approved references.
+- [ ] `validatedAgainst` records the grammar reference or reviewer decision.
 
 ## Naturalness Of Kyrgyz
 
@@ -52,6 +58,7 @@ Use this checklist before any lesson is treated as final learner-facing content.
 - [ ] Text length fits the level.
 - [ ] Exercises fit the level.
 - [ ] Speaking and AI roleplay prompts fit the level.
+- [ ] Кыргызтест/local alignment has been considered.
 
 ## Cultural Appropriateness
 
@@ -94,6 +101,13 @@ Use this checklist before any lesson is treated as final learner-facing content.
 - [ ] No textbook passage or exercise set is copied.
 - [ ] Any licensed source material is documented.
 - [ ] External sources are used only for methodology, sequencing, or validation unless licensed.
+- [ ] HSK materials were used only as structural inspiration.
+- [ ] Kyrgyz textbook or Kyrgyz-as-foreign-language materials were not copied unless licensed.
+- [ ] Reading/literary content includes `rightsNotes`.
+- [ ] Reading/literary content includes `readingSourceType`.
+- [ ] `isOriginalText` is recorded where applicable.
+- [ ] `requiresLicense` is recorded where applicable.
+- [ ] Any modern literary excerpt has license or explicit permission.
 
 ## Final Approval Status
 

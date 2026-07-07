@@ -8,6 +8,14 @@ The MVP is a mobile-first web application for learning Kyrgyz with an HSK-style 
 
 The app should feel like a real mobile app, not a desktop website compressed into a narrow column.
 
+The MVP product experience is defined in:
+
+- `docs/UX_EXPERIENCE_BLUEPRINT.md`
+- `docs/USER_JOURNEYS.md`
+- `docs/ONBOARDING_AND_PLACEMENT_PLAN.md`
+- `docs/MOBILE_APP_SHELL_GUIDELINES.md`
+- `docs/LESSON_UX_PRINCIPLES.md`
+
 ## In Scope Now
 
 - Mobile-first Next.js web app.
@@ -22,6 +30,11 @@ The app should feel like a real mobile app, not a desktop website compressed int
 - Mini-game placeholders.
 - Speaking placeholders.
 - AI roleplay placeholders.
+- UX/product blueprint documentation.
+- User journey documentation.
+- Onboarding and placement plan documentation.
+- Mobile app shell guidelines.
+- Lesson UX principles.
 - Tests for content schema and lesson rendering.
 - Playwright mobile viewport check.
 
@@ -63,6 +76,8 @@ Current implementation includes only sample/demo K1 content. The later target is
 - Real AI roleplay.
 - Real speech recognition.
 - Production audio pipeline.
+- Full onboarding and placement implementation.
+- Full step-by-step focused lesson mode.
 - Full K2-K5 curriculum.
 - Final authoritative grammar content.
 
@@ -80,6 +95,8 @@ After the MVP shell and methodology are stable:
 - Add native speaker audio.
 - Add constrained AI roleplay.
 - Add pronunciation and speaking practice after validation.
+- Implement onboarding and placement flow.
+- Improve lesson step progress and focused lesson UX.
 
 ## Future Mobile Path
 
@@ -92,6 +109,7 @@ Guidelines:
 - Prefer reusable components and portable state patterns.
 - Avoid browser-only assumptions in curriculum and content code.
 - Keep interaction patterns mobile-first.
+- Follow the UX blueprint and mobile shell guidelines before adding new UI surfaces.
 
 Possible future path:
 
@@ -112,3 +130,4 @@ The MVP foundation is acceptable when:
 - Tests pass.
 - Production build passes.
 - Mobile visual checks are performed for UI changes.
+- UX changes follow the documented product experience principles.

@@ -7,6 +7,9 @@ These rules apply to lesson content, vocabulary, dialogues, texts, exercises, mi
 - All learner-facing Kyrgyz examples must be original.
 - Do not copy textbook passages, course pages, phrasebooks, or copyrighted exercise sets.
 - Source materials may guide methodology, sequencing, and validation, but must not be copied unless the license explicitly allows it.
+- Follow `docs/SOURCE_METHODOLOGY.md` for source handling, rights metadata, and validation workflow.
+- HSK materials may be used for structure only, not copied content.
+- Kyrgyz textbooks and literature may be used for methodology, sequencing, validation, and theme selection only unless licensed.
 - All demo content must be marked as sample/demo content requiring methodist and linguist validation.
 - Final grammar, pronunciation, cultural, and usage claims require Kyrgyz methodist/linguist approval.
 - Content must be stored in typed data models, JSON seed data, or database-ready records, not hardcoded inside React components.
@@ -135,6 +138,8 @@ Allowed:
 - Original examples written for this app.
 - Public-domain or licensed materials only when license terms are documented.
 - Methodology inspiration and sequencing ideas from external sources.
+- Public-domain folklore or literature only when rights status is documented.
+- Licensed or permission-based modern literary excerpts only when rights notes are recorded.
 
 Not allowed:
 
@@ -142,6 +147,7 @@ Not allowed:
 - Copying exercise sets.
 - Lightly paraphrasing copyrighted lesson content.
 - Importing examples from unlicensed sources as app content.
+- Copying protected modern literature into seed data.
 
 ## Demo Content Marking
 
@@ -151,3 +157,25 @@ Every demo lesson or sample item must include:
 - TODO notes for methodist/linguist validation.
 - Clear non-authoritative language.
 - No claim that grammar or pronunciation is final.
+
+## Required Source And Rights Fields
+
+Future content models should include:
+
+- `methodologyRefs`
+- `sourceNotes`
+- `rightsNotes`
+- `validatedAgainst`
+- `hskInspiredComponent`
+- `kyrgyztestLevel`
+- `readingSourceType`
+- `isOriginalText`
+- `requiresLicense`
+- `methodistReviewStatus`
+
+Rules:
+
+- Every new Kyrgyz dialogue, grammar example, exercise prompt, or reading must include source notes and methodist review status.
+- Every reading or literary item must include rights notes.
+- Every source-derived item must state whether it is original, adapted, public-domain, licensed, or permission-based.
+- Any unclear rights status blocks learner-facing release.

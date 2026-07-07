@@ -2,6 +2,10 @@
 
 Each lesson should feel like a short mobile app session. It should be structured, focused, and reusable across RU -> KY, EN -> KY, and KY -> KY tracks.
 
+Lesson content must also follow `docs/SOURCE_METHODOLOGY.md`. HSK-style sources are structural inspiration only. Kyrgyz textbooks, grammar books, Kyrgyz-as-foreign-language materials, school programs, and literature sources may guide methodology, sequencing, validation, and theme selection, but must not be copied unless rights are clear.
+
+Lesson UI must follow `docs/LESSON_UX_PRINCIPLES.md` and the overall product experience in `docs/UX_EXPERIENCE_BLUEPRINT.md`.
+
 Canonical sequence:
 
 1. Story card
@@ -30,12 +34,17 @@ Content fields needed:
 - `body`
 - `contextTags`
 - `sampleNotice`
+- `methodologyRefs`
+- `sourceNotes`
+- `rightsNotes`
+- `methodistReviewStatus`
 
 UX behavior:
 
 - Display first as a compact card.
 - Keep copy short and readable on a 390px viewport.
 - Show demo/validation status when content is not final.
+- Do not show raw source or methodist metadata to learners.
 
 Validation rules:
 
@@ -50,6 +59,9 @@ story: {
   title: { en: "Meeting at a cafe", ru: "Знакомство в кафе", ky: "Кафедеги таанышуу" },
   body: { en: "Two people greet each other and order tea.", ky: "..." },
   contextTags: ["cafe", "introduction"],
+  sourceNotes: "Original demo text inspired by K1 cafe theme.",
+  rightsNotes: "Original app-authored text; no external passage copied.",
+  methodistReviewStatus: "needs review",
 }
 ```
 
@@ -65,11 +77,14 @@ Content fields needed:
 - `objectives`
 - `canDoStatements`
 - `targetSkill`
+- `kyrgyztestLevel`
+- `hskInspiredComponent`
 
 UX behavior:
 
 - Show as 2-3 short bullets or chips.
 - Avoid long pedagogical explanations.
+- Make the lesson's single primary goal obvious.
 
 Validation rules:
 
@@ -94,6 +109,9 @@ Content fields needed:
 - `tags`
 - `audioAssetId` later
 - `validationStatus`
+- `sourceNotes`
+- `validatedAgainst`
+- `methodistReviewStatus`
 
 UX behavior:
 
@@ -101,6 +119,7 @@ UX behavior:
 - Show Kyrgyz first.
 - Keep translations available by track.
 - Later: support audio playback, saved words, and spaced review.
+- Make cards tappable-friendly for future audio, reveal, or save behavior.
 
 Validation rules:
 
@@ -124,12 +143,19 @@ Content fields needed:
 - track-specific translations
 - optional context note
 - optional audio asset references later
+- `readingSourceType`
+- `isOriginalText`
+- `requiresLicense`
+- `sourceNotes`
+- `rightsNotes`
+- `validatedAgainst`
 
 UX behavior:
 
 - Dialogue lines should be easy to scan.
 - Text should be short and chunked.
 - Translation display may become toggleable by track.
+- Keep dialogue/text before detailed grammar.
 
 Validation rules:
 
@@ -152,11 +178,14 @@ Content fields needed:
 - `notesByTrack`
 - `linkedVocabularyIds`
 - `linkedGrammarPointIds`
+- `validatedAgainst`
+- `sourceNotes`
 
 UX behavior:
 
 - Use tap-to-reveal or compact expandable rows later.
 - Keep explanations short.
+- Use progressive disclosure rather than long visible explanation blocks.
 
 Validation rules:
 
@@ -179,12 +208,16 @@ Content fields needed:
 - `microPractice`
 - `validationTodo`
 - `approvedBy`
+- `validatedAgainst`
+- `methodologyRefs`
+- `methodistReviewStatus`
 
 UX behavior:
 
 - Simple explanation first.
 - Examples second.
 - Short practice immediately after.
+- Add "Why?" or "More detail" expansion later for deeper grammar.
 
 Validation rules:
 
@@ -209,12 +242,15 @@ Content fields needed:
 - `feedback`
 - `linkedVocabularyIds`
 - `linkedGrammarPointIds`
+- `hskInspiredComponent`
+- `sourceNotes`
 
 UX behavior:
 
 - Mobile-first interactions.
 - Immediate feedback for MVP when possible.
 - Keep each item short.
+- Wrong answers should teach, not punish.
 
 Validation rules:
 
@@ -237,12 +273,14 @@ Content fields needed:
 - `sourcePhraseIds`
 - `difficulty`
 - `validationTodo`
+- `hskInspiredComponent`
 
 UX behavior:
 
 - Should be playable with one thumb.
 - Should not require desktop precision.
 - Should be short enough for a lesson session.
+- Reinforce lesson content rather than distract from it.
 
 Validation rules:
 
@@ -263,11 +301,13 @@ Content fields needed:
 - `allowedPhrases`
 - `audioRubric` later
 - `validationTodo`
+- `methodistReviewStatus`
 
 UX behavior:
 
 - Initially placeholder-only.
 - Later: record, replay, compare, and optionally submit for AI-assisted feedback.
+- Speaking should come after enough vocabulary and phrase preparation.
 
 Validation rules:
 
@@ -291,12 +331,15 @@ Content fields needed:
 - `correctionPolicy`
 - `systemPromptPlaceholder`
 - `reviewTags`
+- `sourceNotes`
+- `methodistReviewStatus`
 
 UX behavior:
 
 - MVP uses placeholders only.
 - Later roleplay should be short, guided, and restartable.
 - The learner should always know the goal.
+- AI roleplay should come after preparation and should feel like safe practice.
 
 Validation rules:
 
@@ -317,12 +360,14 @@ Content fields needed:
 - `reviewVocabularyIds`
 - `reviewGrammarPointIds`
 - `nextLessonId`
+- `methodologyRefs`
 
 UX behavior:
 
 - Show a concise summary.
 - Show can-do statements.
 - Offer a completion action.
+- Show what improved and make completion feel rewarding without pressure.
 
 Validation rules:
 
@@ -343,6 +388,7 @@ Content fields needed:
 - `completedAt`
 - `xpDelta`
 - `reviewDueAt` later
+- `methodistReviewStatus`
 
 UX behavior:
 
@@ -353,3 +399,24 @@ Validation rules:
 
 - Progress state must be testable.
 - Content completion must not depend on untracked UI-only state.
+
+## Lesson-level Source Metadata
+
+Every future lesson record should include a source metadata block:
+
+```ts
+sourceMetadata: {
+  methodologyRefs: ["HSK structure analysis", "Kyrgyz source base"],
+  sourceNotes: "Original app-authored lesson using HSK-inspired sequence and K1 cafe theme.",
+  rightsNotes: "No external learner-facing text copied. Requires review before production.",
+  validatedAgainst: ["pending Kyrgyz grammar reference review"],
+  hskInspiredComponent: ["vocabulary list", "dialogue", "workbook-style exercise"],
+  kyrgyztestLevel: "A1-placeholder",
+  readingSourceType: "original",
+  isOriginalText: true,
+  requiresLicense: false,
+  methodistReviewStatus: "needs review",
+}
+```
+
+For source-derived readings, `requiresLicense` must be true unless the source is confirmed public-domain or already licensed for this use.

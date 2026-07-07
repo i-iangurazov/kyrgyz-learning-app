@@ -12,6 +12,8 @@ Grammar should help learners use Kyrgyz in a practical context. It should not be
 - Add micro-practice directly after the grammar point.
 - Mark all demo grammar as requiring methodist/linguist validation.
 - Do not present unreviewed grammar as final authoritative content.
+- Validate grammar against approved Kyrgyz references listed in `docs/KYRGYZ_SOURCE_BASE.md`.
+- Grammar references may validate app-authored explanations, but their explanations must not be copied.
 
 ## Grammar Point Structure
 
@@ -40,6 +42,9 @@ grammarPoint: {
   ],
   commonMistakes: [],
   microPractice: [],
+  validatedAgainst: ["pending: К. А. Биялиев grammar reference review"],
+  sourceNotes: "Original explanation drafted for app; reference check required.",
+  methodistReviewStatus: "needs review",
   validationTodo: "TODO(linguist): validate..."
 }
 ```
@@ -150,3 +155,13 @@ Grammar content is not final until reviewed for:
 - Level appropriateness.
 - Translation quality.
 - Track-specific explanation quality.
+- Alignment with approved grammar references.
+- Source notes and validation status.
+
+Recommended validation metadata:
+
+- `validatedAgainst`
+- `sourceNotes`
+- `methodologyRefs`
+- `kyrgyztestLevel`
+- `methodistReviewStatus`
