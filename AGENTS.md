@@ -12,6 +12,12 @@ Rules for future Codex tasks in this repository:
 - Future lesson UI must follow `docs/LESSON_UX_PRINCIPLES.md`.
 - Future onboarding work must follow `docs/ONBOARDING_AND_PLACEMENT_PLAN.md`.
 - Future app shell changes must follow `docs/MOBILE_APP_SHELL_GUIDELINES.md`.
+- Future database/backend work must follow `docs/DATABASE_ARCHITECTURE.md`.
+- Future content knowledge-base work must follow `docs/CONTENT_KNOWLEDGE_BASE.md`.
+- Future flashcard or review-system work must follow `docs/FLASHCARDS_AND_SRS_PLAN.md`.
+- Future technology choices must check `docs/REUSABLE_TECH_STACK.md` before adding dependencies or custom infrastructure.
+- Future UX or app-flow work must check `docs/APP_FLOW_BENCHMARKS.md`.
+- Future lesson sequencing must follow `docs/CURRICULUM_SEQUENCING_RULES.md`.
 - Feature work must update `/docs` when it changes the learning model, lesson structure, content rules, grammar rules, AI roleplay behavior, review process, or MVP scope.
 - Reuse proven libraries instead of reinventing UI, forms, validation, state, and testing.
 - Every feature must be testable.
