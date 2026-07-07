@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { buildTtsManifest } from "@/content/audio/tts-manifest";
+import {
+  buildTtsManifest,
+  filterTtsManifestByLesson,
+} from "@/content/audio/tts-manifest";
 import {
   createTtsGenerationPlan,
   validateTtsGenerationPlan,
@@ -57,6 +60,21 @@ describe("TTS audio manifest", () => {
     );
   });
 
+  it("filters manifests to a single pilot lesson", () => {
+    const manifest = buildTtsManifest(lessons, { lessonId: "k0-u1-l1" });
+    const filteredManifest = filterTtsManifestByLesson(
+      buildTtsManifest(lessons),
+      "k0-u1-l1",
+    );
+
+    expect(manifest.lessonId).toBe("k0-u1-l1");
+    expect(manifest.counts.total).toBeGreaterThan(0);
+    expect(manifest.items.every((item) => item.lessonId === "k0-u1-l1")).toBe(
+      true,
+    );
+    expect(filteredManifest.items).toEqual(manifest.items);
+  });
+
   it("skips empty or missing text", () => {
     const lessonWithEmptyAudio = {
       ...lessons[0],
@@ -103,6 +121,21 @@ describe("TTS audio manifest", () => {
     expect(plan.requiresApiKey).toBe(false);
     expect(plan.itemCount).toBe(manifest.items.length);
     expect(() => validateTtsGenerationPlan(plan)).not.toThrow();
+  });
+
+  it("plans a pilot dry run for only the target lesson", () => {
+    const manifest = buildTtsManifest(lessons, { lessonId: "k0-u1-l1" });
+    const plan = createTtsGenerationPlan(manifest, {
+      dryRun: true,
+      outputDir: "public/generated-audio",
+    });
+
+    expect(plan.requiresApiKey).toBe(false);
+    expect(plan.itemCount).toBe(manifest.counts.total);
+    expect(plan.files).toHaveLength(manifest.counts.total);
+    expect(
+      plan.files.every((file) => file.outputPath.includes("k0-u1-l1")),
+    ).toBe(true);
   });
 
   it("requires an API key for real generation only", () => {

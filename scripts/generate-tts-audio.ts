@@ -6,12 +6,16 @@ import {
   createTtsGenerationPlan,
   validateTtsGenerationPlan,
 } from "../src/content/audio/tts-generation.ts";
-import type { TtsManifest } from "../src/content/audio/tts-manifest.ts";
+import {
+  filterTtsManifestByLesson,
+  type TtsManifest,
+} from "../src/content/audio/tts-manifest.ts";
 
 type CliOptions = {
   dryRun: boolean;
   manifestPath: string;
   outputDir: string;
+  lessonId?: string;
 };
 
 const defaultManifestPath = fileURLToPath(
@@ -22,9 +26,11 @@ const defaultOutputDir = fileURLToPath(
 );
 
 const cliOptions = parseCliOptions(process.argv.slice(2));
-const manifest = JSON.parse(
+const sourceManifest = JSON.parse(
   await readFile(cliOptions.manifestPath, "utf8"),
 ) as TtsManifest;
+const manifest = filterTtsManifestByLesson(sourceManifest, cliOptions.lessonId);
+assertManifestHasItems(manifest, cliOptions.lessonId);
 const apiKey = process.env.TTS_API_KEY ?? process.env.OPENAI_API_KEY;
 const plan = createTtsGenerationPlan(manifest, {
   dryRun: cliOptions.dryRun,
@@ -40,6 +46,9 @@ console.log(
 console.log(`Voice: ${plan.voice}`);
 console.log(`Model: ${plan.model}`);
 console.log(`Output directory: ${plan.outputDir}`);
+if (cliOptions.lessonId) {
+  console.log(`Lesson filter: ${cliOptions.lessonId}`);
+}
 
 if (plan.dryRun) {
   console.table(
@@ -93,6 +102,7 @@ function parseCliOptions(args: string[]): CliOptions {
   let dryRun = false;
   let manifestPath = defaultManifestPath;
   let outputDir = defaultOutputDir;
+  let lessonId = process.env.TTS_LESSON_ID;
 
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
@@ -114,10 +124,16 @@ function parseCliOptions(args: string[]): CliOptions {
       continue;
     }
 
+    if (arg === "--lesson") {
+      lessonId = requireValue(args[index + 1], "--lesson");
+      index += 1;
+      continue;
+    }
+
     throw new Error(`Unknown argument: ${arg}`);
   }
 
-  return { dryRun, manifestPath, outputDir };
+  return { dryRun, manifestPath, outputDir, ...(lessonId ? { lessonId } : {}) };
 }
 
 function requireValue(value: string | undefined, flag: string) {
@@ -126,4 +142,16 @@ function requireValue(value: string | undefined, flag: string) {
   }
 
   return value;
+}
+
+function assertManifestHasItems(manifest: TtsManifest, lessonId: string | undefined) {
+  if (manifest.items.length > 0) {
+    return;
+  }
+
+  throw new Error(
+    lessonId
+      ? `No TTS manifest items found for lesson ${lessonId}.`
+      : "No TTS manifest items found.",
+  );
 }

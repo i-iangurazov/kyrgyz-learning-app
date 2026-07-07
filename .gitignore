@@ -5,6 +5,7 @@ dist/
 coverage/
 playwright-report/
 test-results/
+public/generated-audio/
 .env
 .env*.local
 *.tsbuildinfo

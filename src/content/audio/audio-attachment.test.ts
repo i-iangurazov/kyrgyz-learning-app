@@ -5,12 +5,17 @@ import { dirname, join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import {
+  applyAudioAttachmentMapToLessons,
   buildAudioAttachmentMap,
+  buildAudioAttachmentApplyPlan,
   isSafeLocalGeneratedPath,
   validateAudioAttachmentMap,
   type AudioAttachmentMap,
 } from "@/content/audio/audio-attachment";
-import { buildTtsManifest } from "@/content/audio/tts-manifest";
+import {
+  buildTtsManifest,
+  filterTtsManifestByLesson,
+} from "@/content/audio/tts-manifest";
 import { lessons } from "@/content/curriculum";
 
 describe("audio attachment mapping", () => {
@@ -65,6 +70,22 @@ describe("audio attachment mapping", () => {
     expect(validation.isValid).toBe(true);
     expect(validation.allFilesAttached).toBe(false);
     expect(validation.missingAudioIds).toHaveLength(manifest.items.length);
+  });
+
+  it("can build a filtered pilot attachment map", async () => {
+    const manifest = filterTtsManifestByLesson(
+      buildTtsManifest(lessons),
+      "k0-u1-l1",
+    );
+    const audioDir = await mkdtemp(join(tmpdir(), "kyrgyz-audio-map-"));
+    const attachmentMap = await buildAudioAttachmentMap(manifest, {
+      generatedAudioDir: audioDir,
+    });
+
+    expect(attachmentMap.items).toHaveLength(manifest.items.length);
+    expect(
+      attachmentMap.items.every((item) => item.lessonId === "k0-u1-l1"),
+    ).toBe(true);
   });
 
   it("fails validation for unknown audio IDs", async () => {
@@ -140,6 +161,64 @@ describe("audio attachment mapping", () => {
 
     expect(validation.isValid).toBe(false);
     expect(validation.errors[0]).toContain("needs_audio_review");
+  });
+
+  it("builds an apply dry-run plan without mutating seed lessons", async () => {
+    const manifest = buildTtsManifest([lessons[0]]);
+    const firstItem = manifest.items[0];
+    const publicDir = await mkdtemp(join(tmpdir(), "kyrgyz-public-audio-"));
+    const audioPath = join(publicDir, firstItem.suggestedFilename);
+    await mkdir(dirname(audioPath), { recursive: true });
+    await writeFile(audioPath, "fake mp3 fixture");
+    const attachmentMap = await buildAudioAttachmentMap(manifest, {
+      generatedAudioDir: publicDir,
+    });
+
+    const plan = buildAudioAttachmentApplyPlan([lessons[0]], attachmentMap, {
+      publicDir,
+      publicUrlBase: "http://127.0.0.1:3000/generated-audio",
+    });
+
+    expect(plan.summary.attachable).toBeGreaterThan(0);
+    expect(plan.items[0]).toEqual(
+      expect.objectContaining({
+        audioId: firstItem.audioId,
+        canAttach: true,
+        currentUrl: null,
+        proposedReviewStatus: "needs_review",
+        proposedUrl: expect.stringContaining("/generated-audio/"),
+      }),
+    );
+    expect(lessons[0].vocabulary[0].audio.url).toBeUndefined();
+  });
+
+  it("can apply local pilot URLs while keeping synthetic audio in review", async () => {
+    const manifest = buildTtsManifest([lessons[0]]);
+    const firstItem = manifest.items[0];
+    const publicDir = await mkdtemp(join(tmpdir(), "kyrgyz-public-audio-"));
+    const audioPath = join(publicDir, firstItem.suggestedFilename);
+    await mkdir(dirname(audioPath), { recursive: true });
+    await writeFile(audioPath, "fake mp3 fixture");
+    const attachmentMap = await buildAudioAttachmentMap(manifest, {
+      generatedAudioDir: publicDir,
+    });
+
+    const [lessonWithAudio] = applyAudioAttachmentMapToLessons(
+      [lessons[0]],
+      attachmentMap,
+      {
+        publicDir,
+        publicUrlBase: "http://127.0.0.1:3000/generated-audio",
+      },
+    );
+
+    expect(lessonWithAudio.vocabulary[0].audio.url).toBe(
+      `http://127.0.0.1:3000/generated-audio/${firstItem.suggestedFilename}`,
+    );
+    expect(lessonWithAudio.vocabulary[0].audio.voiceType).toBe("synthetic");
+    expect(lessonWithAudio.vocabulary[0].audio.audioReviewStatus).toBe(
+      "needs_review",
+    );
   });
 
   it("rejects unsafe generated file paths", () => {

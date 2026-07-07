@@ -19,9 +19,15 @@
     "content:db:validate-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-postgres-seed-roundtrip.ts",
     "content:db:read-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/read-postgres-lessons-local.ts",
     "audio:manifest": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-manifest.ts",
+    "audio:manifest:pilot": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-manifest.ts --lesson k0-u1-l1 --output test-results/audio/pilot/tts-manifest-k0-u1-l1.json",
     "audio:generate": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts",
+    "audio:generate:pilot": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts --lesson k0-u1-l1 --manifest test-results/audio/pilot/tts-manifest-k0-u1-l1.json --output-dir public/generated-audio",
     "audio:generate:dry-run": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts --dry-run",
+    "audio:generate:pilot:dry-run": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts --dry-run --lesson k0-u1-l1 --manifest test-results/audio/pilot/tts-manifest-k0-u1-l1.json --output-dir public/generated-audio",
     "audio:attachment-map": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-audio-attachment-map.ts",
+    "audio:attachment-map:pilot": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-audio-attachment-map.ts --lesson k0-u1-l1 --manifest test-results/audio/pilot/tts-manifest-k0-u1-l1.json --output test-results/audio/pilot/audio-attachment-map-k0-u1-l1.json --audio-dir public/generated-audio",
+    "audio:apply-attachments:dry-run": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/apply-audio-attachments-dry-run.ts",
+    "audio:apply-attachments:pilot:dry-run": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/apply-audio-attachments-dry-run.ts --attachment-map test-results/audio/pilot/audio-attachment-map-k0-u1-l1.json --output test-results/audio/pilot/audio-apply-plan-k0-u1-l1.json --public-dir public/generated-audio",
     "format": "prettier --write ."
   },
   "dependencies": {

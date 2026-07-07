@@ -153,6 +153,70 @@ Recommended local workflow:
 7. Keep synthetic audio marked as synthetic and in review until approved.
 8. Never label synthetic or unreviewed audio as native-quality.
 
+## One-Lesson Pilot Workflow
+
+Use the pilot workflow to validate a tiny local playback loop for one small K0 lesson before generating broader audio coverage.
+
+Default pilot lesson:
+
+```text
+k0-u1-l1
+```
+
+Generate a pilot manifest:
+
+```bash
+pnpm audio:manifest:pilot
+```
+
+Preview the pilot generation plan without an API key:
+
+```bash
+pnpm audio:generate:pilot:dry-run
+```
+
+Run paid generation only when intentional:
+
+```bash
+TTS_API_KEY=... pnpm audio:generate:pilot
+```
+
+The pilot generation command writes local files under:
+
+```text
+public/generated-audio/
+```
+
+This folder is ignored by Git and must not be committed.
+
+Create the pilot attachment map:
+
+```bash
+pnpm audio:attachment-map:pilot
+```
+
+Preview what a local playback attachment would change:
+
+```bash
+pnpm audio:apply-attachments:pilot:dry-run
+```
+
+The dry-run plan does not mutate `src/content/seed/lessons.ts`.
+
+To validate local playback in the app after generated files exist:
+
+```bash
+LOCAL_AUDIO_PILOT=1 pnpm dev
+```
+
+Optional local playback env vars:
+
+- `LOCAL_AUDIO_ATTACHMENT_MAP`, default `test-results/audio/pilot/audio-attachment-map-k0-u1-l1.json`
+- `LOCAL_AUDIO_PUBLIC_DIR`, default `public/generated-audio`
+- `LOCAL_AUDIO_PUBLIC_URL_BASE`, default `http://127.0.0.1:3000/generated-audio`
+
+When `LOCAL_AUDIO_PILOT` is not set, the app keeps the normal placeholder behavior.
+
 ## Metadata Update Strategy
 
 The current scripts do not automatically mutate seed lessons.

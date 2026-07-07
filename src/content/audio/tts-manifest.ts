@@ -33,12 +33,14 @@ export type TtsManifestCounts = Record<TtsContentType, number> & {
 export type TtsManifest = {
   schemaVersion: "tts-manifest-v1";
   generatedFrom: string;
+  lessonId?: string;
   items: TtsManifestItem[];
   counts: TtsManifestCounts;
 };
 
 type BuildTtsManifestOptions = {
   generatedFrom?: string;
+  lessonId?: string;
 };
 
 type AudioBackedManifestInput = {
@@ -64,8 +66,11 @@ export function buildTtsManifest(
 ): TtsManifest {
   const items: TtsManifestItem[] = [];
   const seenItemIds = new Set<string>();
+  const selectedLessons = options.lessonId
+    ? lessons.filter((lesson) => lesson.id === options.lessonId)
+    : lessons;
 
-  for (const lesson of lessons) {
+  for (const lesson of selectedLessons) {
     for (const vocabularyItem of lesson.vocabulary) {
       addManifestItem(
         items,
@@ -147,6 +152,25 @@ export function buildTtsManifest(
   return {
     schemaVersion: "tts-manifest-v1",
     generatedFrom: options.generatedFrom ?? "src/content/seed/lessons.ts",
+    ...(options.lessonId ? { lessonId: options.lessonId } : {}),
+    items,
+    counts: countTtsManifestItems(items),
+  };
+}
+
+export function filterTtsManifestByLesson(
+  manifest: TtsManifest,
+  lessonId?: string,
+): TtsManifest {
+  if (!lessonId) {
+    return manifest;
+  }
+
+  const items = manifest.items.filter((item) => item.lessonId === lessonId);
+
+  return {
+    ...manifest,
+    lessonId,
     items,
     counts: countTtsManifestItems(items),
   };

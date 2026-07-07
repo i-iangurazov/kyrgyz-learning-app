@@ -215,6 +215,8 @@ Actions:
 - Keep generated audio traceable to stable lesson, vocabulary, dialogue, reading, grammar, or future listening IDs.
 - Use `pnpm audio:attachment-map` to review which generated files match known audio IDs before any seed or database metadata update.
 - Do not apply generated audio attachments to seed or database content automatically; attachment updates require an explicit reviewed task.
+- Use the one-lesson pilot commands in `docs/TTS_AUDIO_PIPELINE.md` before expanding generated audio coverage beyond `k0-u1-l1`.
+- `LOCAL_AUDIO_PILOT=1` may be used for local playback validation only; production and normal builds must not depend on generated local files.
 
 Exit criteria:
 
