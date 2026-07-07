@@ -162,6 +162,48 @@ function makeProgress({
   };
 }
 
+function makeMixedProgress(): LocalProgress {
+  const needsReviewProgress = makeProgress();
+  const correctedProgress = makeProgress({
+    corrected: true,
+    missedKind: "error_correction",
+  });
+
+  return {
+    ...defaultProgress,
+    missedPractice: {
+      ...needsReviewProgress.missedPractice,
+      ...correctedProgress.missedPractice,
+    },
+    lessonPractice: {
+      "k0-u1-l1": {
+        ...emptyLessonPracticeProgress,
+        totalCount: 2,
+        attemptedCount: 2,
+        completedCount: 2,
+        correctCount: 1,
+        incorrectCount: 1,
+        missedCount: 1,
+        correctedMissedCount: 0,
+        practiceComplete: true,
+        missedReviewComplete: false,
+      },
+      "k1-u1-l1": {
+        ...emptyLessonPracticeProgress,
+        totalCount: 4,
+        attemptedCount: 4,
+        completedCount: 4,
+        correctCount: 3,
+        incorrectCount: 1,
+        missedCount: 1,
+        correctedMissedCount: 1,
+        practiceComplete: true,
+        missedReviewComplete: true,
+      },
+    },
+  };
+}
+
 describe("PracticeReviewQueue", () => {
   beforeEach(() => {
     window.localStorage.clear();
@@ -199,6 +241,69 @@ describe("PracticeReviewQueue", () => {
     expect(summary).toHaveTextContent("0");
   });
 
+  it("renders review queue filters with Needs review selected by default", async () => {
+    seedProgress(makeProgress());
+    render(<PracticeReviewQueue lessons={lessons} />);
+
+    const filters = await screen.findByTestId("review-queue-filters");
+
+    expect(within(filters).getByRole("tab", { name: "Needs review" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(within(filters).getByRole("tab", { name: "Corrected" })).toBeVisible();
+    expect(within(filters).getByRole("tab", { name: "All" })).toBeVisible();
+  });
+
+  it("filters review queue items by needs review, corrected, and all", async () => {
+    const user = userEvent.setup();
+
+    seedProgress(makeMixedProgress());
+    render(<PracticeReviewQueue lessons={lessons} />);
+
+    const queue = await screen.findByTestId("review-queue");
+
+    expect(within(queue).getAllByTestId("review-queue-item")).toHaveLength(1);
+    expect(queue).toHaveTextContent("hello");
+    expect(queue).not.toHaveTextContent("Атым ким?");
+
+    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+
+    expect(within(queue).getAllByTestId("review-queue-item")).toHaveLength(1);
+    expect(queue).toHaveTextContent("Атым ким?");
+    expect(queue).not.toHaveTextContent("hello");
+
+    await user.click(screen.getByRole("tab", { name: "All" }));
+
+    expect(within(queue).getAllByTestId("review-queue-item")).toHaveLength(2);
+    expect(queue).toHaveTextContent("hello");
+    expect(queue).toHaveTextContent("Атым ким?");
+  });
+
+  it("renders filtered empty states", async () => {
+    const user = userEvent.setup();
+
+    seedProgress(makeProgress());
+    const { unmount } = render(<PracticeReviewQueue lessons={lessons} />);
+
+    await screen.findByTestId("review-queue");
+    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+
+    expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
+      "Corrected items will appear here after you fix missed answers.",
+    );
+
+    unmount();
+    window.localStorage.clear();
+    seedProgress(makeProgress({ corrected: true }));
+    render(<PracticeReviewQueue lessons={lessons} />);
+
+    await screen.findByTestId("review-queue");
+    expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
+      "Nothing needs review right now",
+    );
+  });
+
   it("shows missed item details in the review queue", async () => {
     seedProgress(makeProgress());
     render(<PracticeReviewQueue lessons={lessons} />);
@@ -219,9 +324,13 @@ describe("PracticeReviewQueue", () => {
   });
 
   it("shows corrected status for corrected missed items", async () => {
+    const user = userEvent.setup();
+
     seedProgress(makeProgress({ corrected: true }));
     render(<PracticeReviewQueue lessons={lessons} />);
 
+    await screen.findByTestId("review-queue");
+    await user.click(screen.getByRole("tab", { name: "Corrected" }));
     const item = await screen.findByTestId("review-queue-item");
 
     expect(item).toHaveTextContent("Corrected");
@@ -247,7 +356,9 @@ describe("PracticeReviewQueue", () => {
     await user.click(within(item).getByRole("button", { name: "thank you" }));
 
     await waitFor(() => {
-      expect(item).toHaveTextContent("Nice - corrected");
+      expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
+        "Nothing needs review right now",
+      );
       expect(screen.getByTestId("review-queue-complete")).toHaveTextContent(
         "Review complete",
       );
@@ -258,6 +369,12 @@ describe("PracticeReviewQueue", () => {
         "1",
       );
     });
+
+    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+
+    expect(await screen.findByTestId("review-queue-item")).toHaveTextContent(
+      "Nice - corrected",
+    );
   });
 
   it("keeps a multiple choice item in review after an incorrect direct retry", async () => {
@@ -295,7 +412,9 @@ describe("PracticeReviewQueue", () => {
     await user.click(within(item).getByRole("button", { name: "Try again" }));
 
     await waitFor(() => {
-      expect(item).toHaveTextContent("Nice - corrected");
+      expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
+        "Nothing needs review right now",
+      );
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "0",
       );
@@ -303,6 +422,12 @@ describe("PracticeReviewQueue", () => {
         "1",
       );
     });
+
+    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+
+    expect(await screen.findByTestId("review-queue-item")).toHaveTextContent(
+      "Nice - corrected",
+    );
   });
 
   it("keeps a fill blank item in review after an incorrect direct retry", async () => {
@@ -347,7 +472,9 @@ describe("PracticeReviewQueue", () => {
     await user.click(within(item).getByRole("button", { name: "Try again" }));
 
     await waitFor(() => {
-      expect(item).toHaveTextContent("Nice - corrected");
+      expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
+        "Nothing needs review right now",
+      );
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "0",
       );
@@ -355,6 +482,12 @@ describe("PracticeReviewQueue", () => {
         "1",
       );
     });
+
+    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+
+    expect(await screen.findByTestId("review-queue-item")).toHaveTextContent(
+      "Nice - corrected",
+    );
   });
 
   it("keeps a sentence builder item in review after an incorrect direct retry", async () => {
@@ -408,7 +541,9 @@ describe("PracticeReviewQueue", () => {
     await user.click(within(item).getByRole("button", { name: "Try again" }));
 
     await waitFor(() => {
-      expect(item).toHaveTextContent("Nice - corrected");
+      expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
+        "Nothing needs review right now",
+      );
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "0",
       );
@@ -416,6 +551,12 @@ describe("PracticeReviewQueue", () => {
         "1",
       );
     });
+
+    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+
+    expect(await screen.findByTestId("review-queue-item")).toHaveTextContent(
+      "Nice - corrected",
+    );
   });
 
   it("keeps a match pairs item in review after an incorrect direct retry", async () => {
@@ -468,7 +609,9 @@ describe("PracticeReviewQueue", () => {
     await user.click(within(item).getByRole("button", { name: "Try again" }));
 
     await waitFor(() => {
-      expect(item).toHaveTextContent("Nice - corrected");
+      expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
+        "Nothing needs review right now",
+      );
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "0",
       );
@@ -476,6 +619,12 @@ describe("PracticeReviewQueue", () => {
         "1",
       );
     });
+
+    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+
+    expect(await screen.findByTestId("review-queue-item")).toHaveTextContent(
+      "Nice - corrected",
+    );
   });
 
   it("keeps an error correction item in review after an incorrect direct retry", async () => {

@@ -57,6 +57,8 @@ export type ReviewQueueItem = MissedPracticeItem & {
   needsReview: boolean;
 };
 
+export type ReviewQueueFilter = "needs_review" | "corrected" | "all";
+
 export type PracticeSummary = {
   completedPracticeItems: number;
   missedItemsCount: number;
@@ -153,6 +155,29 @@ export function getMissedItems(progress: Pick<LocalProgress, "missedPractice">) 
 
 export function getReviewQueue(progress: Pick<LocalProgress, "missedPractice">) {
   return getMissedItems(progress);
+}
+
+export function filterReviewQueueItems(
+  queue: ReviewQueueItem[],
+  filter: ReviewQueueFilter,
+) {
+  if (filter === "needs_review") {
+    return queue.filter((item) => item.needsReview);
+  }
+
+  if (filter === "corrected") {
+    return queue.filter((item) => item.corrected);
+  }
+
+  return queue;
+}
+
+export function getNeedsReviewItems(queue: ReviewQueueItem[]) {
+  return filterReviewQueueItems(queue, "needs_review");
+}
+
+export function getCorrectedReviewItems(queue: ReviewQueueItem[]) {
+  return filterReviewQueueItems(queue, "corrected");
 }
 
 export function getPracticeSummary(

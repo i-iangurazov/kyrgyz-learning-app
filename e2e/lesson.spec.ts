@@ -121,6 +121,13 @@ test("practice tab retries missed item directly at mobile viewport", async ({
     "Missed items",
   );
   await expect(page.getByTestId("review-queue")).toContainText("Keep it fresh");
+  await expect(page.getByTestId("review-queue-filters")).toContainText(
+    "Needs review",
+  );
+  await expect(page.getByRole("tab", { name: "Needs review" })).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
   await expect(page.getByTestId("review-queue-item")).toContainText(
     "Needs review",
   );
@@ -143,8 +150,8 @@ test("practice tab retries missed item directly at mobile viewport", async ({
     .getByTestId("review-queue-item")
     .getByRole("button", { name: "thank you" })
     .click();
-  await expect(page.getByTestId("review-queue-item")).toContainText(
-    "Nice - corrected",
+  await expect(page.getByTestId("review-queue-filter-empty")).toContainText(
+    "Nothing needs review right now",
   );
   await expect(page.getByTestId("review-queue-complete")).toContainText(
     "Review complete",
@@ -153,6 +160,15 @@ test("practice tab retries missed item directly at mobile viewport", async ({
     "0",
   );
   await expect(page.getByTestId("practice-summary-corrected")).toContainText("1");
+  await page.getByRole("tab", { name: "Corrected" }).click();
+  await expect(page.getByTestId("review-queue-item")).toContainText(
+    "Nice - corrected",
+  );
+  await expect(page.getByTestId("review-queue-item")).toContainText("hello");
+  await page.getByRole("tab", { name: "All" }).click();
+  await expect(page.getByTestId("review-queue-item")).toContainText(
+    "Review in lesson",
+  );
   await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
   await expect(page.locator("body")).not.toContainText(
     /localStorage|exercise IDs?|schema|progress object|sourceNotes|rightsNotes|methodist|validation|not_reviewed/i,

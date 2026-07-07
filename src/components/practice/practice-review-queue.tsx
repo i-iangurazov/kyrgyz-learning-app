@@ -29,8 +29,10 @@ import {
   type ExerciseItem,
 } from "@/lib/exercise-checking";
 import {
+  filterReviewQueueItems,
   getPracticeSummary,
   getReviewQueue,
+  type ReviewQueueFilter,
   type ReviewQueueItem,
 } from "@/lib/progress";
 
@@ -42,6 +44,15 @@ type RetryFeedback = {
   kind: "correct" | "incorrect";
   message: string;
 };
+
+const reviewFilters: Array<{
+  id: ReviewQueueFilter;
+  label: string;
+}> = [
+  { id: "needs_review", label: "Needs review" },
+  { id: "corrected", label: "Corrected" },
+  { id: "all", label: "All" },
+];
 
 function pluralize(count: number, singular: string, plural: string) {
   return count === 1 ? singular : plural;
@@ -466,8 +477,14 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
   const { progress, recordMissedRetry } = useLocalProgress();
   const summary = getPracticeSummary(progress);
   const queue = getReviewQueue(progress);
-  const groupedQueue = groupQueueByLesson(queue);
+  const [activeFilter, setActiveFilter] =
+    useState<ReviewQueueFilter>("needs_review");
+  const filteredQueue = filterReviewQueueItems(queue, activeFilter);
+  const groupedQueue = groupQueueByLesson(filteredQueue);
   const lessonById = new Map(lessons.map((lesson) => [lesson.id, lesson]));
+  const activeFilterLabel =
+    reviewFilters.find((filter) => filter.id === activeFilter)?.label ??
+    "Review";
 
   useEffect(() => {
     if (process.env.NODE_ENV === "test") {
@@ -582,6 +599,35 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
             </Badge>
           </div>
 
+          <div
+            aria-label="Review queue filters"
+            className="grid grid-cols-3 gap-1 rounded-full border border-border bg-muted/50 p-1"
+            data-testid="review-queue-filters"
+            role="tablist"
+          >
+            {reviewFilters.map((filter) => {
+              const isActive = activeFilter === filter.id;
+
+              return (
+                <button
+                  aria-selected={isActive}
+                  className={
+                    isActive
+                      ? "min-h-10 rounded-full bg-white px-3 text-xs font-semibold text-[#1f5e50] shadow-sm"
+                      : "min-h-10 rounded-full px-3 text-xs font-semibold text-muted-foreground transition hover:bg-white/70"
+                  }
+                  data-testid={`review-filter-${filter.id}`}
+                  key={filter.id}
+                  onClick={() => setActiveFilter(filter.id)}
+                  role="tab"
+                  type="button"
+                >
+                  {filter.label}
+                </button>
+              );
+            })}
+          </div>
+
           {summary.needsReviewCount === 0 ? (
             <div
               className="rounded-lg border border-[#b8dfc8] bg-[#f1faf4] p-4"
@@ -602,6 +648,36 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
             </div>
           ) : null}
 
+          {filteredQueue.length === 0 ? (
+            <Card data-testid="review-queue-filter-empty">
+              <CardHeader>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#eef7f1] text-[#27645a]">
+                  <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <CardTitle>
+                  {activeFilter === "needs_review"
+                    ? "Nothing needs review right now"
+                    : null}
+                  {activeFilter === "corrected"
+                    ? "No corrected items yet"
+                    : null}
+                  {activeFilter === "all" ? "Nothing to review yet" : null}
+                </CardTitle>
+                <CardDescription>
+                  {activeFilter === "needs_review"
+                    ? "Nice - you're all clear. Corrected items stay in your review history."
+                    : null}
+                  {activeFilter === "corrected"
+                    ? "Corrected items will appear here after you fix missed answers."
+                    : null}
+                  {activeFilter === "all"
+                    ? "Complete a lesson and anything you miss will appear here for quick review."
+                    : null}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          ) : null}
+
           {Object.entries(groupedQueue).map(([lessonId, items]) => {
             const lesson = lessonById.get(lessonId);
 
@@ -613,7 +689,8 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
                       {lesson?.title.en ?? "Lesson review"}
                     </p>
                     <p className="text-xs font-medium text-muted-foreground">
-                      {lesson?.levelId ?? "Lesson"} - {items.length}{" "}
+                      {lesson?.levelId ?? "Lesson"} - {activeFilterLabel} -{" "}
+                      {items.length}{" "}
                       {pluralize(items.length, "item", "items")}
                     </p>
                   </div>
