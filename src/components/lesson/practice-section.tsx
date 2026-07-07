@@ -5,13 +5,15 @@ import { CheckCircle2, RotateCcw } from "lucide-react";
 
 import {
   ExerciseRenderer,
-  getCorrectAnswerText,
-  isCorrectOption,
-  isCorrectTextAnswer,
   type ExerciseAttemptPayload,
 } from "@/components/lesson/exercise-renderer";
 import { Button } from "@/components/ui/button";
 import type { Lesson } from "@/content/schemas";
+import {
+  getCorrectAnswerText,
+  isCorrectOption,
+  isCorrectTextAnswer,
+} from "@/lib/exercise-checking";
 import {
   emptyLessonPracticeProgress,
   type ExerciseAttempt,

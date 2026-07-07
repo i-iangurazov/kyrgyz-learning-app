@@ -89,7 +89,7 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
   await expect(page.getByTestId("lesson-step-progress")).toContainText("Review");
 });
 
-test("practice tab shows missed item review queue at mobile viewport", async ({
+test("practice tab retries missed item directly at mobile viewport", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -134,6 +134,25 @@ test("practice tab shows missed item review queue at mobile viewport", async ({
   await expect(page.getByTestId("review-queue-item")).toContainText(
     "ыраазычылык",
   );
+  await expect(page.getByTestId("review-queue-item")).toContainText("Try again");
+  await page
+    .getByTestId("review-queue-item")
+    .getByRole("button", { name: "Try again" })
+    .click();
+  await page
+    .getByTestId("review-queue-item")
+    .getByRole("button", { name: "thank you" })
+    .click();
+  await expect(page.getByTestId("review-queue-item")).toContainText(
+    "Nice - corrected",
+  );
+  await expect(page.getByTestId("review-queue-complete")).toContainText(
+    "Review complete",
+  );
+  await expect(page.getByTestId("practice-summary-needs-review")).toContainText(
+    "0",
+  );
+  await expect(page.getByTestId("practice-summary-corrected")).toContainText("1");
   await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
   await expect(page.locator("body")).not.toContainText(
     /localStorage|exercise IDs?|schema|progress object|sourceNotes|rightsNotes|methodist|validation|not_reviewed/i,
