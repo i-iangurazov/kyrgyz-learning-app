@@ -13,12 +13,20 @@ Current offline validation commands:
 - `pnpm content:export-db-json`
 - `pnpm content:validate-db-roundtrip`
 
+Current local DB validation commands:
+
+- `DATABASE_URL=... pnpm content:db:apply-local`
+- `DATABASE_URL=... pnpm content:db:import-local`
+- `DATABASE_URL=... pnpm content:db:validate-local`
+
 ## Before Migration
 
 - [ ] Confirm Supabase/Postgres is still the chosen backend.
 - [ ] Confirm the first migration is limited to the approved vertical slice.
 - [ ] Confirm local dev setup: Supabase CLI or another local Postgres workflow.
+- [ ] Confirm `psql` is available, or set `PSQL_BIN`.
 - [ ] Confirm required environment variables and where they live.
+- [ ] Confirm `DATABASE_URL` points at a local database, not production.
 - [ ] Confirm schema naming conventions:
   - snake_case table and column names
   - stable text IDs for authored content
@@ -68,6 +76,7 @@ Current offline validation commands:
 
 - [ ] Create source/curriculum/content tables from the approved slice.
 - [ ] Confirm the migration includes only the Slice 1 content tables.
+- [ ] Run `DATABASE_URL=... pnpm content:db:apply-local`.
 - [ ] Add primary keys.
 - [ ] Add foreign keys where targets are concrete.
 - [ ] Add check constraints for status/kind fields.
@@ -87,6 +96,8 @@ Current offline validation commands:
 - [ ] Seed K0/K1 content from current TypeScript lessons.
 - [ ] Run `pnpm content:export-db-json` to inspect generated DB-shaped rows.
 - [ ] Run `pnpm content:validate-db-roundtrip` to prove mapper reversibility.
+- [ ] Run `DATABASE_URL=... pnpm content:db:import-local`.
+- [ ] Run `DATABASE_URL=... pnpm content:db:validate-local`.
 - [ ] Validate all inserted rows have required source, rights, and review fields.
 - [ ] Export DB rows back into a `lesson-v2` object.
 - [ ] Validate exported lessons with Zod.

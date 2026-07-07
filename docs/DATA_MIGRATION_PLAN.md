@@ -9,6 +9,9 @@ Current Slice 1 migration and validation utilities:
 - Migration: `supabase/migrations/20260708000100_slice_1_content_schema.sql`
 - Export current seed content to DB-shaped JSON: `pnpm content:export-db-json`
 - Validate DB-shaped round trip back to `lesson-v2`: `pnpm content:validate-db-roundtrip`
+- Apply Slice 1 migration to local Postgres: `DATABASE_URL=... pnpm content:db:apply-local`
+- Import seed rows into local Postgres: `DATABASE_URL=... pnpm content:db:import-local`
+- Validate local Postgres round trip: `DATABASE_URL=... pnpm content:db:validate-local`
 - Generated JSON is written under `test-results/` and should not be committed.
 
 ## Current State
@@ -119,6 +122,43 @@ Exit criteria:
 - DB import can be repeated idempotently in local/dev.
 - Imported data validates against app schemas.
 - Tests pass against seed path.
+
+### Slice 1 Local Validation Guide
+
+Prerequisites:
+
+- Local Supabase or Postgres is running.
+- `psql` is available on `PATH`, or `PSQL_BIN` is set.
+- `DATABASE_URL` points at the local database.
+
+Recommended sequence:
+
+```bash
+pnpm content:export-db-json
+pnpm content:validate-db-roundtrip
+DATABASE_URL=... pnpm content:db:apply-local
+DATABASE_URL=... pnpm content:db:import-local
+DATABASE_URL=... pnpm content:db:validate-local
+```
+
+Expected output:
+
+- Offline export prints row counts for Slice 1 tables.
+- Offline validation confirms all 3 current seed lessons round-trip.
+- Local DB import prints upsert counts by table.
+- Local DB validation confirms the database reconstructs valid `lesson-v2` content.
+
+Troubleshooting:
+
+- `DATABASE_URL is required`: set a local Supabase/Postgres connection string.
+- `psql exited with status`: confirm the database is running and the migration has been applied.
+- `relation already exists`: apply the migration to a fresh local database or reset the local database first.
+- Round-trip mismatch: do not enable DB reads; inspect the mapper, row ordering, and JSONB fields.
+
+Runtime reminder:
+
+- The learner app still uses TypeScript seed content.
+- The DB import/export scripts do not change learner-facing routes.
 
 ### Phase 4: Read Lessons From DB Behind Feature Flag
 

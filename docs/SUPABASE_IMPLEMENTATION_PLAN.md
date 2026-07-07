@@ -282,9 +282,62 @@ When implementation is requested:
 6. Add tests for DB payload shape.
 7. Keep current seed content path as fallback.
 
+## Slice 1 Local DB Validation
+
+Slice 1 can be validated against either local Supabase Postgres or a plain local Postgres database. The app runtime still uses TypeScript seed content; these commands only validate the backend content schema and seed import/export path.
+
+Prerequisites:
+
+- A local Postgres-compatible database.
+- `psql` available on `PATH`, or `PSQL_BIN` pointing to the binary.
+- `DATABASE_URL` pointing at the local database.
+
+Example local Supabase URL:
+
+```bash
+DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
+```
+
+Example plain local Postgres URL:
+
+```bash
+DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54329/kyrgyz_learning
+```
+
+Apply the Slice 1 migration:
+
+```bash
+DATABASE_URL=... pnpm content:db:apply-local
+```
+
+Import current TypeScript seed lessons into the local DB:
+
+```bash
+DATABASE_URL=... pnpm content:db:import-local
+```
+
+Validate local DB rows back into `lesson-v2`:
+
+```bash
+DATABASE_URL=... pnpm content:db:validate-local
+```
+
+Expected result:
+
+- Migration applies cleanly to a fresh local DB.
+- Import can be safely rerun and uses `insert ... on conflict ... do update`.
+- Validation reconstructs the same 3 seed lessons.
+- Supported exercise kinds remain `multiple_choice`, `fill_blank`, `sentence_builder`, `match_pairs`, and `error_correction`.
+
+Troubleshooting:
+
+- If `DATABASE_URL` is missing, the DB scripts fail early with setup guidance.
+- If `psql` is not on `PATH`, set `PSQL_BIN=/absolute/path/to/psql`.
+- If migration tables already exist, use a fresh local DB or reset the local dev database before applying the migration.
+- If validation fails, keep runtime reads on seed content and inspect imported rows before adding any DB read path.
+
 ## What Not To Implement Yet
 
-- No migrations.
 - No Supabase client.
 - No auth.
 - No storage buckets.

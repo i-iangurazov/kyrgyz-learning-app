@@ -1,3 +1,4 @@
+import { canonicalJson } from "../src/content/db/compare.ts";
 import {
   getDbRowCounts,
   mapDbRowsToLessons,
@@ -17,7 +18,7 @@ const units = unitSchema.array().parse(unitSeedData);
 const rows = mapLessonsToDbRows(sourceLessons, { levels, units });
 const roundTrippedLessons = lessonSchema.array().parse(mapDbRowsToLessons(rows));
 
-if (JSON.stringify(roundTrippedLessons) !== JSON.stringify(sourceLessons)) {
+if (canonicalJson(roundTrippedLessons) !== canonicalJson(sourceLessons)) {
   throw new Error(
     "DB seed round-trip changed lesson-v2 content. Compare mapper output before continuing.",
   );

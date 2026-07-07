@@ -9,6 +9,9 @@ Implementation status:
 - Initial migration file: `supabase/migrations/20260708000100_slice_1_content_schema.sql`
 - Offline export script: `pnpm content:export-db-json`
 - Offline round-trip validation script: `pnpm content:validate-db-roundtrip`
+- Local DB migration script: `DATABASE_URL=... pnpm content:db:apply-local`
+- Local DB import script: `DATABASE_URL=... pnpm content:db:import-local`
+- Local DB validation script: `DATABASE_URL=... pnpm content:db:validate-local`
 - Runtime app content source remains the TypeScript seed path.
 
 ## Goal
@@ -231,6 +234,16 @@ pnpm content:validate-db-roundtrip
 ```
 
 `content:export-db-json` writes generated DB-shaped rows to `test-results/db-seed/slice-1-db-rows.json`, which is ignored by Git. `content:validate-db-roundtrip` maps current seed lessons into DB rows, maps them back to `lesson-v2`, validates with Zod, and fails if learner content changes during the round trip.
+
+For live local Postgres validation:
+
+```bash
+DATABASE_URL=... pnpm content:db:apply-local
+DATABASE_URL=... pnpm content:db:import-local
+DATABASE_URL=... pnpm content:db:validate-local
+```
+
+These commands require a local Postgres-compatible database and `psql`. They are not required for normal app build or tests.
 
 ## Next Backend Step
 
