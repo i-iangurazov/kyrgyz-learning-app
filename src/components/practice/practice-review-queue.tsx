@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { BookOpen, CheckCircle2, Dumbbell, RotateCcw } from "lucide-react";
 
+import { MatchPairsControl } from "@/components/lesson/match-pairs-control";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,6 +65,10 @@ function canRetryDirectly(exercise?: Exercise, item?: ExerciseItem) {
   }
 
   if (exercise.kind === "sentence_builder") {
+    return Boolean(item.options?.length);
+  }
+
+  if (exercise.kind === "match_pairs") {
     return Boolean(item.options?.length);
   }
 
@@ -383,6 +388,16 @@ function ReviewQueueCard({
                   </Button>
                 </div>
               </form>
+            ) : null}
+
+            {exercise?.kind === "match_pairs" ? (
+              <MatchPairsControl
+                item={exerciseItem}
+                onSubmit={({ answer, answerDisplay, correct }) =>
+                  submitRetry(answer, answerDisplay, correct)
+                }
+                submitLabel="Try again"
+              />
             ) : null}
           </div>
         ) : null}

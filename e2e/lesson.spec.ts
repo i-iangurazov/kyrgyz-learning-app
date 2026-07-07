@@ -159,7 +159,7 @@ test("practice tab retries missed item directly at mobile viewport", async ({
   );
 });
 
-test("sentence builder works inside a guided lesson flow at mobile viewport", async ({
+test("sentence builder and match pairs work inside a guided lesson flow at mobile viewport", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -169,7 +169,7 @@ test("sentence builder works inside a guided lesson flow at mobile viewport", as
   await practice.scrollIntoViewIfNeeded();
 
   await expect(practice.getByTestId("practice-progress")).toContainText(
-    "Practice 1 of 2",
+    "Practice 1 of 3",
   );
   await practice.getByLabel("___ Elina.").fill("Атым");
   await practice.getByRole("button", { name: "Check answer" }).click();
@@ -177,7 +177,7 @@ test("sentence builder works inside a guided lesson flow at mobile viewport", as
     "Good. That fits this lesson.",
   );
   await expect(practice.getByTestId("practice-progress")).toContainText(
-    "Practice 2 of 2",
+    "Practice 2 of 3",
   );
 
   await expect(practice.getByTestId("sentence-builder-answer")).toContainText(
@@ -186,23 +186,53 @@ test("sentence builder works inside a guided lesson flow at mobile viewport", as
   const sentenceBuilder = practice.getByTestId(
     "exercise-item-item-build-atym-elina",
   );
-  await sentenceBuilder.getByRole("button", { name: "Add Элина" }).click();
   await sentenceBuilder.getByRole("button", { name: "Add Атым" }).click();
+  await sentenceBuilder.getByRole("button", { name: "Add Элина" }).click();
   await sentenceBuilder.getByRole("button", { name: "Check", exact: true }).click();
 
   await expect(sentenceBuilder.getByTestId("exercise-feedback")).toContainText(
-    "Almost. Check the order and try again.",
+    "Nice - that works.",
   );
-  await expect(sentenceBuilder.getByTestId("exercise-feedback")).toContainText(
-    "Answer: Атым Элина",
+  await expect(practice.getByTestId("practice-progress")).toContainText(
+    "Practice 3 of 3",
   );
-  await expect(practice.getByTestId("missed-review")).toContainText(
-    "Review missed items",
+
+  const matchPairs = practice.getByTestId("exercise-item-item-intro-pairs");
+  await matchPairs.scrollIntoViewIfNeeded();
+  await expect(matchPairs.getByTestId("match-pairs-control")).toContainText(
+    "Tap one item from each side.",
+  );
+
+  const matchLeft = matchPairs.getByTestId("match-pairs-left");
+  const matchRight = matchPairs.getByTestId("match-pairs-right");
+  await matchLeft.getByRole("button", { name: "Атым ..." }).click();
+  await matchRight.getByRole("button", { name: "And you?" }).click();
+  await matchLeft.getByRole("button", { name: "Атың ким?" }).click();
+  await matchRight.getByRole("button", { name: "What is your name?" }).click();
+  await matchLeft.getByRole("button", { name: "Сенчи?" }).click();
+  await matchRight.getByRole("button", { name: "My name is ..." }).click();
+  await matchPairs.getByRole("button", { name: "Check", exact: true }).click();
+
+  await expect(matchPairs.getByTestId("exercise-feedback")).toContainText(
+    "Almost. Review the pairs and try again.",
+  );
+  await expect(matchPairs.getByTestId("exercise-feedback")).toContainText(
+    "Answer: Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
   );
 
   const missedReview = practice.getByTestId("missed-review");
-  await missedReview.getByRole("button", { name: "Add Атым" }).click();
-  await missedReview.getByRole("button", { name: "Add Элина" }).click();
+  await expect(missedReview).toContainText("Review missed items");
+  await expect(missedReview).toContainText(
+    "Your answer: Атым ... -> And you?; Атың ким? -> What is your name?; Сенчи? -> My name is ...",
+  );
+  const missedLeft = missedReview.getByTestId("match-pairs-left");
+  const missedRight = missedReview.getByTestId("match-pairs-right");
+  await missedLeft.getByRole("button", { name: "Атым ..." }).click();
+  await missedRight.getByRole("button", { name: "My name is ..." }).click();
+  await missedLeft.getByRole("button", { name: "Атың ким?" }).click();
+  await missedRight.getByRole("button", { name: "What is your name?" }).click();
+  await missedLeft.getByRole("button", { name: "Сенчи?" }).click();
+  await missedRight.getByRole("button", { name: "And you?" }).click();
   await missedReview.getByRole("button", { name: "Try again" }).click();
 
   await expect(practice.getByTestId("missed-corrected")).toContainText(
@@ -213,9 +243,9 @@ test("sentence builder works inside a guided lesson flow at mobile viewport", as
 
   await page.getByTestId("section-review").scrollIntoViewIfNeeded();
   await expect(page.getByTestId("practice-summary")).toContainText(
-    "You completed 2 practice items, got 1 correct on the first try, and corrected 1 missed answer.",
+    "You completed 3 practice items, got 2 correct on the first try, and corrected 1 missed answer.",
   );
   await expect(page.locator("body")).not.toContainText(
-    /array|tokens|schema|exercise ID|sourceNotes|rightsNotes|methodist|validation|not_reviewed/i,
+    /array|pair id|tokens|schema|exercise ID|sourceNotes|rightsNotes|methodist|validation|not_reviewed/i,
   );
 });

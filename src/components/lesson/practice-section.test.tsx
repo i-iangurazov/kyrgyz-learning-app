@@ -282,9 +282,9 @@ describe("PracticeSection", () => {
       />,
     );
 
-    expect(screen.getAllByTestId("exercise-renderer")).toHaveLength(2);
+    expect(screen.getAllByTestId("exercise-renderer")).toHaveLength(3);
     expect(screen.getByTestId("practice-progress")).toHaveTextContent(
-      "Practice 1 of 2",
+      "Practice 1 of 3",
     );
 
     await user.type(screen.getByLabelText("___ Elina."), "Атым");
@@ -292,17 +292,41 @@ describe("PracticeSection", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("practice-progress")).toHaveTextContent(
-        "Practice 2 of 2",
+        "Practice 2 of 3",
       );
     });
 
-    await user.click(screen.getByRole("button", { name: "Add Атым" }));
-    await user.click(screen.getByRole("button", { name: "Add Элина" }));
-    await user.click(screen.getByRole("button", { name: "Check" }));
+    const sentenceBuilder = screen.getByTestId(
+      "exercise-item-item-build-atym-elina",
+    );
+    await user.click(within(sentenceBuilder).getByRole("button", { name: "Add Атым" }));
+    await user.click(
+      within(sentenceBuilder).getByRole("button", { name: "Add Элина" }),
+    );
+    await user.click(within(sentenceBuilder).getByRole("button", { name: "Check" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("practice-progress")).toHaveTextContent(
+        "Practice 3 of 3",
+      );
+    });
+
+    const matchPairs = screen.getByTestId("exercise-item-item-intro-pairs");
+    await user.click(within(matchPairs).getByRole("button", { name: "Атым ..." }));
+    await user.click(
+      within(matchPairs).getByRole("button", { name: "My name is ..." }),
+    );
+    await user.click(within(matchPairs).getByRole("button", { name: "Атың ким?" }));
+    await user.click(
+      within(matchPairs).getByRole("button", { name: "What is your name?" }),
+    );
+    await user.click(within(matchPairs).getByRole("button", { name: "Сенчи?" }));
+    await user.click(within(matchPairs).getByRole("button", { name: "And you?" }));
+    await user.click(within(matchPairs).getByRole("button", { name: "Check" }));
 
     await waitFor(() => {
       expect(screen.getByTestId("practice-complete")).toHaveTextContent(
-        "2 of 2 answers correct",
+        "3 of 3 answers correct",
       );
     });
   });
@@ -318,9 +342,27 @@ describe("PracticeSection", () => {
 
     await user.type(screen.getByLabelText("___ Elina."), "Атым");
     await user.click(screen.getByRole("button", { name: "Check answer" }));
-    await user.click(screen.getByRole("button", { name: "Add Элина" }));
-    await user.click(screen.getByRole("button", { name: "Add Атым" }));
-    await user.click(screen.getByRole("button", { name: "Check" }));
+    const sentenceBuilder = screen.getByTestId(
+      "exercise-item-item-build-atym-elina",
+    );
+    await user.click(
+      within(sentenceBuilder).getByRole("button", { name: "Add Элина" }),
+    );
+    await user.click(within(sentenceBuilder).getByRole("button", { name: "Add Атым" }));
+    await user.click(within(sentenceBuilder).getByRole("button", { name: "Check" }));
+
+    const matchPairs = screen.getByTestId("exercise-item-item-intro-pairs");
+    await user.click(within(matchPairs).getByRole("button", { name: "Атым ..." }));
+    await user.click(
+      within(matchPairs).getByRole("button", { name: "My name is ..." }),
+    );
+    await user.click(within(matchPairs).getByRole("button", { name: "Атың ким?" }));
+    await user.click(
+      within(matchPairs).getByRole("button", { name: "What is your name?" }),
+    );
+    await user.click(within(matchPairs).getByRole("button", { name: "Сенчи?" }));
+    await user.click(within(matchPairs).getByRole("button", { name: "And you?" }));
+    await user.click(within(matchPairs).getByRole("button", { name: "Check" }));
 
     await waitFor(() => {
       expect(screen.getByTestId("missed-review")).toHaveTextContent(
@@ -348,13 +390,84 @@ describe("PracticeSection", () => {
     });
   });
 
+  it("tracks and corrects a missed match pairs answer", async () => {
+    const user = userEvent.setup();
+    render(
+      <StatefulPracticeSection
+        activeLesson={k1Lesson}
+        exercises={k1Lesson.exercises}
+      />,
+    );
+
+    await user.type(screen.getByLabelText("___ Elina."), "Атым");
+    await user.click(screen.getByRole("button", { name: "Check answer" }));
+    const sentenceBuilder = screen.getByTestId(
+      "exercise-item-item-build-atym-elina",
+    );
+    await user.click(within(sentenceBuilder).getByRole("button", { name: "Add Атым" }));
+    await user.click(
+      within(sentenceBuilder).getByRole("button", { name: "Add Элина" }),
+    );
+    await user.click(within(sentenceBuilder).getByRole("button", { name: "Check" }));
+
+    const matchPairs = screen.getByTestId("exercise-item-item-intro-pairs");
+    await user.click(within(matchPairs).getByRole("button", { name: "Атым ..." }));
+    await user.click(within(matchPairs).getByRole("button", { name: "And you?" }));
+    await user.click(within(matchPairs).getByRole("button", { name: "Атың ким?" }));
+    await user.click(
+      within(matchPairs).getByRole("button", { name: "What is your name?" }),
+    );
+    await user.click(within(matchPairs).getByRole("button", { name: "Сенчи?" }));
+    await user.click(
+      within(matchPairs).getByRole("button", { name: "My name is ..." }),
+    );
+    await user.click(within(matchPairs).getByRole("button", { name: "Check" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "Review missed items",
+      );
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "Your answer: Атым ... -> And you?; Атың ким? -> What is your name?; Сенчи? -> My name is ...",
+      );
+      expect(screen.getByTestId("missed-review")).toHaveTextContent(
+        "Answer to remember: Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
+      );
+    });
+
+    const missedReview = screen.getByTestId("missed-review");
+    await user.click(within(missedReview).getByRole("button", { name: "Атым ..." }));
+    await user.click(
+      within(missedReview).getByRole("button", { name: "My name is ..." }),
+    );
+    await user.click(
+      within(missedReview).getByRole("button", { name: "Атың ким?" }),
+    );
+    await user.click(
+      within(missedReview).getByRole("button", { name: "What is your name?" }),
+    );
+    await user.click(within(missedReview).getByRole("button", { name: "Сенчи?" }));
+    await user.click(
+      within(missedReview).getByRole("button", { name: "And you?" }),
+    );
+    await user.click(
+      within(missedReview).getByRole("button", { name: "Try again" }),
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("missed-corrected")).toHaveTextContent(
+        "Nice - corrected",
+      );
+    });
+  });
+
   it("keeps unsupported exercise fallback learner-friendly", () => {
     render(
       <StatefulPracticeSection
         exercises={[
           {
             ...lesson.exercises[0],
-            kind: "match_pairs",
+            kind: "error_correction",
           },
         ]}
       />,

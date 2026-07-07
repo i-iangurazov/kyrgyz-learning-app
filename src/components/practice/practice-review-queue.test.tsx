@@ -20,7 +20,12 @@ function makeProgress({
   missedKind = "multiple_choice",
 }: {
   corrected?: boolean;
-  missedKind?: "multiple_choice" | "fill_blank" | "sentence_builder" | "fallback";
+  missedKind?:
+    | "multiple_choice"
+    | "fill_blank"
+    | "sentence_builder"
+    | "match_pairs"
+    | "fallback";
 } = {}): LocalProgress {
   const missedItem =
     missedKind === "fill_blank"
@@ -56,6 +61,30 @@ function makeProgress({
             retryAttempts: corrected ? 1 : 0,
             updatedAt: "2026-07-08T00:00:00.000Z",
           }
+      : missedKind === "match_pairs"
+        ? {
+            lessonId: "k1-u1-l1",
+            exerciseId: "ex-intro-match",
+            itemId: "item-intro-pairs",
+            submittedAnswer:
+              "left-atym:right-and-you|left-atyn-kim:right-your-name|left-senchi:right-my-name",
+            submittedAnswerDisplay:
+              "Атым ... -> And you?; Атың ким? -> What is your name?; Сенчи? -> My name is ...",
+            correctAnswerDisplay:
+              "Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
+            explanation:
+              "These pairs are short phrases used in introductions.",
+            feedback: "Almost. Review the pairs and try again.",
+            corrected,
+            retryAnswer: corrected
+              ? "left-atym:right-my-name|left-atyn-kim:right-your-name|left-senchi:right-and-you"
+              : undefined,
+            retryAnswerDisplay: corrected
+              ? "Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?"
+              : undefined,
+            retryAttempts: corrected ? 1 : 0,
+            updatedAt: "2026-07-08T00:00:00.000Z",
+          }
       : {
           lessonId: "k0-u1-l1",
           exerciseId:
@@ -79,10 +108,15 @@ function makeProgress({
       ? "k0-u1-l1:ex-greeting-fill:item-jakshy-rahmat"
       : missedKind === "sentence_builder"
         ? "k1-u1-l1:ex-name-build:item-build-atym-elina"
+      : missedKind === "match_pairs"
+        ? "k1-u1-l1:ex-intro-match:item-intro-pairs"
       : missedKind === "fallback"
         ? "k0-u1-l1:ex-review-later:item-review-later"
         : "k0-u1-l1:ex-greeting-match:item-rahmat";
-  const lessonId = missedKind === "sentence_builder" ? "k1-u1-l1" : "k0-u1-l1";
+  const lessonId =
+    missedKind === "sentence_builder" || missedKind === "match_pairs"
+      ? "k1-u1-l1"
+      : "k0-u1-l1";
 
   return {
     ...defaultProgress,
@@ -312,6 +346,75 @@ describe("PracticeReviewQueue", () => {
     await user.click(within(item).getByRole("button", { name: "Try again" }));
     await user.click(within(item).getByRole("button", { name: "Add Элина" }));
     await user.click(within(item).getByRole("button", { name: "Add Атым" }));
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+
+    await waitFor(() => {
+      expect(item).toHaveTextContent(
+        "Not quite yet. Use the answer above and try once more.",
+      );
+      expect(item).toHaveTextContent("Needs review");
+      expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
+        "1",
+      );
+    });
+  });
+
+  it("retries a missed match pairs item directly and marks it corrected", async () => {
+    const user = userEvent.setup();
+
+    seedProgress(makeProgress({ missedKind: "match_pairs" }));
+    render(<PracticeReviewQueue lessons={lessons} />);
+
+    const queue = await screen.findByTestId("review-queue");
+    const item = await screen.findByTestId("review-queue-item");
+
+    expect(queue).toHaveTextContent("Introductions");
+    expect(item).toHaveTextContent("Атым ... -> And you?");
+    expect(item).toHaveTextContent("Атым ... -> My name is ...");
+
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Атым ..." }));
+    await user.click(
+      within(item).getByRole("button", { name: "My name is ..." }),
+    );
+    await user.click(within(item).getByRole("button", { name: "Атың ким?" }));
+    await user.click(
+      within(item).getByRole("button", { name: "What is your name?" }),
+    );
+    await user.click(within(item).getByRole("button", { name: "Сенчи?" }));
+    await user.click(within(item).getByRole("button", { name: "And you?" }));
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+
+    await waitFor(() => {
+      expect(item).toHaveTextContent("Nice - corrected");
+      expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
+        "0",
+      );
+      expect(screen.getByTestId("practice-summary-corrected")).toHaveTextContent(
+        "1",
+      );
+    });
+  });
+
+  it("keeps a match pairs item in review after an incorrect direct retry", async () => {
+    const user = userEvent.setup();
+
+    seedProgress(makeProgress({ missedKind: "match_pairs" }));
+    render(<PracticeReviewQueue lessons={lessons} />);
+
+    const item = await screen.findByTestId("review-queue-item");
+
+    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Атым ..." }));
+    await user.click(within(item).getByRole("button", { name: "And you?" }));
+    await user.click(within(item).getByRole("button", { name: "Атың ким?" }));
+    await user.click(
+      within(item).getByRole("button", { name: "What is your name?" }),
+    );
+    await user.click(within(item).getByRole("button", { name: "Сенчи?" }));
+    await user.click(
+      within(item).getByRole("button", { name: "My name is ..." }),
+    );
     await user.click(within(item).getByRole("button", { name: "Try again" }));
 
     await waitFor(() => {

@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
 
+import { MatchPairsControl } from "@/components/lesson/match-pairs-control";
 import { Button } from "@/components/ui/button";
 import type { Lesson } from "@/content/schemas";
 import {
@@ -152,7 +153,8 @@ export function ExerciseRenderer({
   if (
     exercise.kind !== "multiple_choice" &&
     exercise.kind !== "fill_blank" &&
-    exercise.kind !== "sentence_builder"
+    exercise.kind !== "sentence_builder" &&
+    exercise.kind !== "match_pairs"
   ) {
     return <UnsupportedPractice />;
   }
@@ -381,6 +383,33 @@ export function ExerciseRenderer({
                 <FeedbackPanel item={item} submittedAnswer={submittedAnswer} />
               ) : null}
             </form>
+          );
+        }
+
+        if (exercise.kind === "match_pairs") {
+          return (
+            <div
+              key={item.id}
+              className="space-y-3"
+              data-testid={`exercise-item-${item.id}`}
+            >
+              <div>
+                <p className="text-sm font-semibold">{item.question.en}</p>
+                <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                  {item.feedback.hint.en}
+                </p>
+              </div>
+              <MatchPairsControl
+                disabled={Boolean(submittedAnswer)}
+                item={item}
+                onSubmit={({ answer, answerDisplay, correct }) =>
+                  submitAnswer(item, answer, correct, answerDisplay)
+                }
+              />
+              {submittedAnswer ? (
+                <FeedbackPanel item={item} submittedAnswer={submittedAnswer} />
+              ) : null}
+            </div>
           );
         }
 

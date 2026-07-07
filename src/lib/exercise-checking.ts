@@ -16,6 +16,17 @@ export function getOptionDisplayText(option: ExerciseOption) {
   return option.text.ky ?? option.text.en;
 }
 
+export function getMatchOptionDisplayText(
+  option: ExerciseOption,
+  side: "left" | "right",
+) {
+  if (side === "right") {
+    return option.text.en ?? option.text.ky;
+  }
+
+  return option.text.ky ?? option.text.en;
+}
+
 export function getSelectedAnswerText(item: ExerciseItem, optionIds: string[]) {
   return optionIds
     .map((optionId) => {
@@ -23,6 +34,64 @@ export function getSelectedAnswerText(item: ExerciseItem, optionIds: string[]) {
       return option ? getOptionDisplayText(option) : optionId;
     })
     .join(" ");
+}
+
+export function getMatchPairMap(item: ExerciseItem) {
+  const value = item.correctAnswerData.value;
+
+  if (item.correctAnswerData.kind !== "pairs" || Array.isArray(value)) {
+    return {};
+  }
+
+  if (typeof value === "string") {
+    return {};
+  }
+
+  return value;
+}
+
+export function getMatchPairSides(item: ExerciseItem) {
+  const pairMap = getMatchPairMap(item);
+  const leftIds = Object.keys(pairMap);
+  const rightIds = Array.from(new Set(Object.values(pairMap)));
+
+  return {
+    leftOptions: leftIds
+      .map((optionId) => getOptionById(item, optionId))
+      .filter((option): option is ExerciseOption => Boolean(option)),
+    rightOptions: rightIds
+      .map((optionId) => getOptionById(item, optionId))
+      .filter((option): option is ExerciseOption => Boolean(option)),
+  };
+}
+
+export function getMatchPairsDisplay(
+  item: ExerciseItem,
+  selectedPairs: Record<string, string>,
+) {
+  return Object.entries(selectedPairs)
+    .map(([leftId, rightId]) => {
+      const leftOption = getOptionById(item, leftId);
+      const rightOption = getOptionById(item, rightId);
+      const leftText = leftOption
+        ? getMatchOptionDisplayText(leftOption, "left")
+        : leftId;
+      const rightText = rightOption
+        ? getMatchOptionDisplayText(rightOption, "right")
+        : rightId;
+
+      return `${leftText} -> ${rightText}`;
+    })
+    .join("; ");
+}
+
+export function serializeMatchPairs(selectedPairs: Record<string, string>) {
+  return Object.entries(selectedPairs)
+    .sort(([firstLeftId], [secondLeftId]) =>
+      firstLeftId.localeCompare(secondLeftId),
+    )
+    .map(([leftId, rightId]) => `${leftId}:${rightId}`)
+    .join("|");
 }
 
 export function getCorrectAnswerText(item: ExerciseItem) {
@@ -37,6 +106,10 @@ export function getCorrectAnswerText(item: ExerciseItem) {
   }
 
   if (typeof value !== "string") {
+    if (item.correctAnswerData.kind === "pairs") {
+      return getMatchPairsDisplay(item, value);
+    }
+
     return "";
   }
 
@@ -114,6 +187,20 @@ export function isCorrectSentenceBuilder(
   }
 
   return false;
+}
+
+export function isCorrectMatchPairs(
+  item: ExerciseItem,
+  selectedPairs: Record<string, string>,
+) {
+  const pairMap = getMatchPairMap(item);
+  const leftIds = Object.keys(pairMap);
+
+  return (
+    leftIds.length > 0 &&
+    Object.keys(selectedPairs).length === leftIds.length &&
+    leftIds.every((leftId) => selectedPairs[leftId] === pairMap[leftId])
+  );
 }
 
 export function findExerciseItem(

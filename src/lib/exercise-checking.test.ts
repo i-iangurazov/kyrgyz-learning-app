@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   getCorrectAnswerText,
+  getMatchPairsDisplay,
   getSelectedAnswerText,
+  isCorrectMatchPairs,
   isCorrectOption,
   isCorrectSentenceBuilder,
   isCorrectTextAnswer,
@@ -24,6 +26,10 @@ const sentenceBuilderExercise = k1Lesson.exercises.find(
   (exercise) => exercise.id === "ex-name-build",
 )!;
 const sentenceBuilderItem = sentenceBuilderExercise.items[0];
+const matchPairsExercise = k1Lesson.exercises.find(
+  (exercise) => exercise.id === "ex-intro-match",
+)!;
+const matchPairsItem = matchPairsExercise.items[0];
 
 describe("exercise checking", () => {
   it("normalizes whitespace and casing for text answers", () => {
@@ -61,5 +67,27 @@ describe("exercise checking", () => {
       getSelectedAnswerText(sentenceBuilderItem, ["tile-atym", "tile-elina"]),
     ).toBe("Атым Элина");
     expect(getCorrectAnswerText(sentenceBuilderItem)).toBe("Атым Элина");
+  });
+
+  it("checks match pair answers by stable pair ids", () => {
+    const correctPairs = {
+      "left-atym": "right-my-name",
+      "left-atyn-kim": "right-your-name",
+      "left-senchi": "right-and-you",
+    };
+    const incorrectPairs = {
+      "left-atym": "right-and-you",
+      "left-atyn-kim": "right-your-name",
+      "left-senchi": "right-my-name",
+    };
+
+    expect(isCorrectMatchPairs(matchPairsItem, correctPairs)).toBe(true);
+    expect(isCorrectMatchPairs(matchPairsItem, incorrectPairs)).toBe(false);
+    expect(getMatchPairsDisplay(matchPairsItem, correctPairs)).toBe(
+      "Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
+    );
+    expect(getCorrectAnswerText(matchPairsItem)).toBe(
+      "Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
+    );
   });
 });

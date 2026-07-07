@@ -1141,7 +1141,7 @@ export const lessonSeedData = [
             feedback: text("Атым Нур.", "Atym Nur.", "Атым Нур."),
           },
         ],
-        linkedExerciseIds: ["ex-name-pattern", "ex-name-build"],
+        linkedExerciseIds: ["ex-name-pattern", "ex-name-build", "ex-intro-match"],
         methodologyRefs,
         sourceNotes:
           "Original demo grammar point for K1 introductions; validate against Kyrgyz grammar references.",
@@ -1235,6 +1235,79 @@ export const lessonSeedData = [
         ],
         sourceNotes:
           "Original demo sentence-builder item for the K1 name pattern. Requires methodist validation.",
+        methodistReviewStatus: "not_reviewed",
+      },
+      {
+        id: "ex-intro-match",
+        kind: "match_pairs",
+        prompt: text("Жуптарды дал келтир.", "Match the pairs.", "Сопоставьте пары."),
+        helperTextByTrack: {
+          RU_KY: "Кыргызча сөздү мааниси менен дал келтириңиз.",
+          EN_KY: "Match each Kyrgyz phrase with its meaning.",
+          KY_KY: "Кыргызча сөздү мааниси менен дал келтир.",
+        },
+        linkedVocabularyIds: ["at", "kim", "senchi"],
+        linkedGrammarPointIds: ["sample-name-pattern"],
+        items: [
+          {
+            id: "item-intro-pairs",
+            question: text(
+              "Сөздөрдү мааниси менен дал келтир.",
+              "Match the Kyrgyz phrases with their meanings.",
+              "Сопоставьте кыргызские фразы с их значениями.",
+            ),
+            options: [
+              { id: "left-atym", text: text("Атым ...", "Атым ...", "Атым ...") },
+              { id: "left-atyn-kim", text: text("Атың ким?", "Атың ким?", "Атың ким?") },
+              { id: "left-senchi", text: text("Сенчи?", "Сенчи?", "Сенчи?") },
+              {
+                id: "right-my-name",
+                text: text("Менин атым ...", "My name is ...", "Меня зовут ..."),
+              },
+              {
+                id: "right-your-name",
+                text: text("Атың ким?", "What is your name?", "Как тебя зовут?"),
+              },
+              {
+                id: "right-and-you",
+                text: text("Сенчи?", "And you?", "А ты?"),
+              },
+            ],
+            correctAnswerData: {
+              kind: "pairs",
+              value: {
+                "left-atym": "right-my-name",
+                "left-atyn-kim": "right-your-name",
+                "left-senchi": "right-and-you",
+              },
+            },
+            explanation: text(
+              "Бул жуптар таанышууда колдонулган кыска фразалар.",
+              "These pairs are short phrases used in introductions.",
+              "Эти пары - короткие фразы для знакомства.",
+            ),
+            feedback: {
+              correct: text(
+                "Туура.",
+                "Nice - these match.",
+                "Верно. Эти пары совпадают.",
+              ),
+              incorrect: text(
+                "Жуптарды кайра кара.",
+                "Almost. Review the pairs and try again.",
+                "Почти. Проверьте пары и попробуйте ещё раз.",
+              ),
+              hint: text(
+                "Бир кыргызча фразаны жана бир маанини танда.",
+                "Tap one Kyrgyz phrase and one meaning.",
+                "Выберите одну кыргызскую фразу и одно значение.",
+              ),
+            },
+          },
+        ],
+        hskInspiredComponent: ["workbook_exercise"],
+        sourceNotes:
+          "Original demo match-pairs item for K1 introduction phrases. Requires methodist validation.",
         methodistReviewStatus: "not_reviewed",
       },
     ],

@@ -7,6 +7,7 @@ import {
   ExerciseRenderer,
   type ExerciseAttemptPayload,
 } from "@/components/lesson/exercise-renderer";
+import { MatchPairsControl } from "@/components/lesson/match-pairs-control";
 import { Button } from "@/components/ui/button";
 import type { Lesson } from "@/content/schemas";
 import {
@@ -34,6 +35,7 @@ const supportedExerciseKinds = [
   "multiple_choice",
   "fill_blank",
   "sentence_builder",
+  "match_pairs",
 ] as const;
 
 function isSupportedExercise(exercise: Exercise) {
@@ -327,6 +329,16 @@ function MissedRetryCard({
               </Button>
             </div>
           </form>
+        ) : null}
+
+        {exercise.kind === "match_pairs" ? (
+          <MatchPairsControl
+            item={item}
+            onSubmit={({ answer, answerDisplay, correct }) =>
+              submitRetry(answer, answerDisplay, correct)
+            }
+            submitLabel="Try again"
+          />
         ) : null}
 
         {retryFeedback ? (
