@@ -210,6 +210,9 @@ Actions:
 - Add content version snapshots.
 - Add review task assignment.
 - Add methodist, linguist, rights, and audio review status.
+- Keep TTS-generated audio metadata aligned with `docs/TTS_AUDIO_PIPELINE.md`.
+- Do not migrate generated TTS files into production storage until they are reviewed and intentionally approved for the target release stage.
+- Keep generated audio traceable to stable lesson, vocabulary, dialogue, reading, grammar, or future listening IDs.
 
 Exit criteria:
 

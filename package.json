@@ -18,6 +18,9 @@
     "content:db:import-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-seed-db-json-to-postgres.ts",
     "content:db:validate-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-postgres-seed-roundtrip.ts",
     "content:db:read-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/read-postgres-lessons-local.ts",
+    "audio:manifest": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-manifest.ts",
+    "audio:generate": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts",
+    "audio:generate:dry-run": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts --dry-run",
     "format": "prettier --write ."
   },
   "dependencies": {

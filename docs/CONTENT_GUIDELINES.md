@@ -106,6 +106,11 @@ Rules:
 - Do not ship pronunciation claims or speech feedback without validation.
 - Audio must be reviewed for pronunciation, naturalness, pacing, and match with the written text.
 - Synthetic audio may be used only as temporary/internal placeholder audio if product policy allows it.
+- Temporary MVP TTS must follow `docs/TTS_AUDIO_PIPELINE.md`.
+- Built-in TTS voices may be used only through offline scripts, never at learner runtime.
+- Do not clone real voices, imitate celebrities/public figures/private people, or create character voices for MVP TTS.
+- TTS-generated files must remain traceable to lesson, vocabulary, dialogue, reading, grammar, or future listening IDs.
+- TTS-generated audio must be marked internally as synthetic and must remain in audio review until checked by a Kyrgyz speaker or qualified reviewer.
 - Do not label unreviewed or synthetic audio as native-quality.
 - Do not synthesize final audio without a product decision and QA process.
 - Do not expose audio source notes, rights notes, storage keys, or review metadata in normal learner-facing UI.

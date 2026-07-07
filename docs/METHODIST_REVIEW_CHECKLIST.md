@@ -94,6 +94,9 @@ Use this checklist before any lesson is treated as final learner-facing content.
 - [ ] Audio rights/source notes are recorded internally.
 - [ ] Audio review status is recorded internally.
 - [ ] Placeholder or synthetic audio is not presented as native-quality final audio.
+- [ ] Synthetic/TTS audio is marked internally as synthetic and needs review until approved.
+- [ ] TTS audio follows `docs/TTS_AUDIO_PIPELINE.md`, including no voice cloning and no real-person or character imitation.
+- [ ] TTS audio has been reviewed by a Kyrgyz speaker or qualified reviewer before any beta-approved use.
 - [ ] Pronunciation coaching text is approved.
 
 ## AI Roleplay Safety
