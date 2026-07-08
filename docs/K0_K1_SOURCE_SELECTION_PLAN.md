@@ -2,6 +2,8 @@
 
 This plan defines what sources must be selected and cataloged before rewriting `k0-u1-l1` or creating future K0/K1 lessons. It does not authorize copying protected content. Sources are used for level alignment, sequencing, validation, translation checking, and methodist review support unless licensing explicitly allows more.
 
+Use `docs/source-catalog/` to record actual sources, rights status, allowed usage, and methodist decisions before any K0/K1 rewrite.
+
 ## Source Record Fields
 
 Every candidate source should be cataloged with:
@@ -195,5 +197,6 @@ Before rewriting any K0/K1 lesson:
 - [ ] Kyrgyz-as-foreign-language sequencing has been considered, or explicitly deferred with rationale.
 - [ ] Dictionary/translation references or reviewer notes are available for new vocabulary.
 - [ ] Rights status and allowed use are recorded for every source consulted.
+- [ ] Source IDs and methodist decision IDs are recorded in `docs/source-catalog/` or linked revision notes.
 - [ ] Direct copying is blocked unless the source is public-domain or licensed.
 - [ ] The rewrite plan follows `docs/K0_K1_CONTENT_GROUNDING_CHECKLIST.md`.

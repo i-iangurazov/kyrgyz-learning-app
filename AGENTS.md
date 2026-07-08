@@ -11,6 +11,7 @@ Rules for future Codex tasks in this repository:
 - Future source ingestion, book/material adaptation, or curriculum sourcing work must follow `docs/SOURCE_INGESTION_AND_ADAPTATION_PLAN.md`.
 - Future content work must check `docs/METHODIST_REVIEW_BACKLOG.md`.
 - Future K0/K1 lesson rewrites must check `docs/K0_K1_SOURCE_SELECTION_PLAN.md` and `docs/K0_K1_CONTENT_GROUNDING_CHECKLIST.md` before editing lesson content.
+- Future lesson rewrites must check `docs/source-catalog/` and record source or methodist decision IDs where applicable.
 - Future curriculum work must explicitly follow `docs/SOURCE_METHODOLOGY.md`.
 - Future UI tasks must follow `docs/UX_EXPERIENCE_BLUEPRINT.md`.
 - Future lesson UI must follow `docs/LESSON_UX_PRINCIPLES.md`.

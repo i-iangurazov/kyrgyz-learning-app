@@ -6,6 +6,7 @@ Before rewriting this lesson, use:
 
 - `docs/K0_K1_SOURCE_SELECTION_PLAN.md`
 - `docs/K0_K1_CONTENT_GROUNDING_CHECKLIST.md`
+- `docs/source-catalog/`
 
 ## 1. Current Lesson Summary
 
@@ -132,6 +133,7 @@ Before rewriting content, check:
 
 - `docs/K0_K1_SOURCE_SELECTION_PLAN.md` for source categories and source-record fields.
 - `docs/K0_K1_CONTENT_GROUNDING_CHECKLIST.md` for the K0/K1 rewrite gate.
+- `docs/source-catalog/` for recording source IDs, rights status, allowed usage, and methodist decisions.
 - Кыргызтест A1 starter expectations, if accessible and rights-safe.
 - Kyrgyz grammar/alphabet beginner references for any explanation that touches form, politeness, or short replies.
 - Kyrgyz-as-foreign-language beginner materials for sequencing and pacing only.
@@ -218,3 +220,5 @@ A revised `k0-u1-l1` can be considered beta-ready only if:
 ## Next Revision Step
 
 After methodist answers are available, create a separate content revision task for `src/content/seed/lessons.ts`. That task should rewrite only `k0-u1-l1`, regenerate review packets, run schema/content validation, and keep the lesson marked unapproved unless explicit review approval exists.
+
+Before that rewrite task starts, record source decisions and methodist recommendations in `docs/source-catalog/`.
