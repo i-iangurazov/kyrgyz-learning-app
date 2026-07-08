@@ -13,7 +13,7 @@ export function getOptionById(item: ExerciseItem, optionId: string) {
 }
 
 export function getOptionDisplayText(option: ExerciseOption) {
-  return option.text.ky ?? option.text.en;
+  return option.text.ru ?? option.text.ky ?? option.text.en;
 }
 
 export function getMatchOptionDisplayText(
@@ -21,7 +21,7 @@ export function getMatchOptionDisplayText(
   side: "left" | "right",
 ) {
   if (side === "right") {
-    return option.text.en ?? option.text.ky;
+    return option.text.ru ?? option.text.en ?? option.text.ky;
   }
 
   return option.text.ky ?? option.text.en;
@@ -80,7 +80,7 @@ export function getMatchPairsDisplay(
         ? getMatchOptionDisplayText(rightOption, "right")
         : rightId;
 
-      return `${leftText} -> ${rightText}`;
+      return `${leftText} → ${rightText}`;
     })
     .join("; ");
 }
@@ -115,7 +115,7 @@ export function getCorrectAnswerText(item: ExerciseItem) {
 
   if (item.correctAnswerData.kind === "choice_id") {
     const option = getOptionById(item, value);
-    return option?.text.ky ?? option?.text.en ?? value;
+    return option?.text.ru ?? option?.text.ky ?? option?.text.en ?? value;
   }
 
   return value;

@@ -18,79 +18,83 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
   await expect(page.getByTestId("section-ai-roleplay")).toBeVisible();
   await expect(page.getByTestId("section-review")).toBeVisible();
   await expect(page.getByTestId("lesson-step-progress")).toContainText(
-    "Step 1 of 11",
+    "1/11",
   );
   await expect(page.getByTestId("lesson-step-progress")).toContainText(
-    "Next: Goals",
+    "Далее: Цель",
   );
   await expect(page.getByTestId("section-goals")).toContainText(
-    "What you'll be able to do",
+    "После урока вы сможете",
   );
   await expect(page.getByTestId("vocabulary-audio-control")).toHaveCount(4);
   await expect(page.getByTestId("dialogue-audio-control")).toHaveCount(3);
   await expect(page.getByTestId("reading-audio-control")).toHaveCount(1);
   await expect(
     page.getByTestId("vocabulary-audio-control").first(),
-  ).toContainText("Audio coming soon");
+  ).toContainText("Скоро");
   await expect(
     page.getByTestId("dialogue-audio-control").first(),
-  ).toContainText("Audio coming soon");
+  ).toContainText("Скоро");
   await expect(
     page.getByTestId("reading-audio-control").first(),
-  ).toContainText("Audio coming soon");
+  ).toContainText("Скоро");
   await expect(
-    page.getByRole("button", { name: "Audio coming soon" }).first(),
+    page.getByTestId("dialogue-audio-control").first(),
+  ).not.toContainText("Салам! Жакшы?");
+  await expect(
+    page.getByRole("button", { name: /Слушать .*: скоро/ }).first(),
   ).toBeDisabled();
 
-  const bottomNav = page.getByRole("navigation", { name: "Primary" });
+  const bottomNav = page.getByRole("navigation", { name: "Основная навигация" });
   await expect(bottomNav).toBeVisible();
-  await expect(bottomNav.getByRole("link", { name: "Home" })).toBeVisible();
-  await expect(bottomNav.getByRole("link", { name: "Learn" })).toBeVisible();
-  await expect(bottomNav.getByRole("link", { name: "Practice" })).toBeVisible();
-  await expect(bottomNav.getByRole("link", { name: "Games" })).toBeVisible();
-  await expect(bottomNav.getByRole("link", { name: "Profile" })).toBeVisible();
+  await expect(bottomNav.getByRole("link", { name: "Главная" })).toBeVisible();
+  await expect(bottomNav.getByRole("link", { name: "Учиться" })).toBeVisible();
+  await expect(bottomNav.getByRole("link", { name: "Практика" })).toBeVisible();
+  await expect(bottomNav.getByRole("link", { name: "Игры" })).toBeVisible();
+  await expect(bottomNav.getByRole("link", { name: "Профиль" })).toBeVisible();
 
   const practice = page.getByTestId("section-exercise");
   await practice.scrollIntoViewIfNeeded();
   await expect(practice.getByTestId("practice-progress")).toContainText(
-    "Practice 1 of 2",
+    "Практика 1 из 2",
   );
-  await practice.getByRole("button", { name: "hello" }).click();
+  await practice.getByRole("button", { name: "привет" }).click();
   await expect(practice.getByTestId("exercise-feedback")).toContainText(
-    "Not quite yet.",
+    "Почти.",
   );
   await expect(practice.getByTestId("exercise-feedback")).toContainText(
-    "Rahmat means thank you.",
+    "Рахмат значит спасибо.",
   );
   await expect(practice.getByTestId("practice-progress")).toContainText(
-    "Practice 2 of 2",
+    "Практика 2 из 2",
   );
 
   await practice.getByLabel("Жакшы, ___.").fill("рахмат");
-  await practice.getByRole("button", { name: "Check answer" }).click();
+  await practice.getByRole("button", { name: "Проверить" }).click();
   await expect(practice.getByTestId("missed-review")).toContainText(
-    "Review missed items",
+    "Повторить ошибки",
   );
   await expect(practice.getByTestId("missed-review")).toContainText(
-    "You missed 1 item",
+    "Ошибок: 1",
   );
   await practice
     .getByTestId("missed-review")
-    .getByRole("button", { name: "thank you" })
+    .getByRole("button", { name: "спасибо" })
     .click();
   await expect(practice.getByTestId("missed-corrected")).toContainText(
-    "Nice - corrected",
+    "Исправлено",
   );
-  await practice.getByRole("button", { name: "Continue" }).click();
+  await practice.getByRole("button", { name: "Продолжить" }).click();
   await expect(page.getByTestId("section-mini-game")).toBeVisible();
 
   await page.getByTestId("section-review").scrollIntoViewIfNeeded();
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await expect(page.getByTestId("lesson-step-progress")).toContainText(
-    "Step 11 of 11",
+    "11/11",
   );
-  await expect(page.getByTestId("lesson-step-progress")).toContainText("Review");
+  await expect(page.getByTestId("lesson-step-progress")).toContainText("Итог");
   await expect(page.getByTestId("practice-summary")).toContainText(
-    "You completed 2 practice items, got 1 correct on the first try, and corrected 1 missed answer.",
+    "Вы сделали 2 задания, сразу ответили верно на 1 и исправили 1.",
   );
 
   await expect(page.locator("body")).not.toContainText(
@@ -99,9 +103,9 @@ test("lesson page renders core sections at mobile viewport", async ({ page }) =>
 
   await page.goto("/lesson/k0-u1-l1#lesson-review");
   await expect(page.getByTestId("lesson-step-progress")).toContainText(
-    "Step 11 of 11",
+    "11/11",
   );
-  await expect(page.getByTestId("lesson-step-progress")).toContainText("Review");
+  await expect(page.getByTestId("lesson-step-progress")).toContainText("Итог");
 });
 
 test("practice tab retries missed item directly at mobile viewport", async ({
@@ -112,79 +116,83 @@ test("practice tab retries missed item directly at mobile viewport", async ({
 
   const practice = page.getByTestId("section-exercise");
   await practice.scrollIntoViewIfNeeded();
-  await practice.getByRole("button", { name: "hello" }).click();
+  await practice.getByRole("button", { name: "привет" }).click();
   await practice.getByLabel("Жакшы, ___.").fill("рахмат");
-  await practice.getByRole("button", { name: "Check answer" }).click();
+  await practice.getByRole("button", { name: "Проверить" }).click();
 
   await expect(practice.getByTestId("missed-review")).toContainText(
-    "Review missed items",
+    "Повторить ошибки",
   );
-  await practice.getByRole("button", { name: "Continue anyway" }).click();
+  await practice.getByRole("button", { name: "Продолжить сейчас" }).click();
   await expect(page.getByTestId("section-mini-game")).toBeVisible();
 
   await page
-    .getByRole("navigation", { name: "Primary" })
-    .getByRole("link", { name: "Practice" })
+    .getByRole("navigation", { name: "Основная навигация" })
+    .getByRole("link", { name: "Практика" })
     .click();
 
   await expect(page).toHaveURL(/\/practice$/);
   await expect(page.getByTestId("practice-review-page")).toBeVisible();
   await expect(page.getByTestId("practice-review-page")).toContainText(
-    "Review your weak spots",
+    "Повторите слабые места",
   );
   await expect(page.getByTestId("practice-progress-summary")).toContainText(
-    "Missed items",
+    "Ошибки",
   );
-  await expect(page.getByTestId("review-queue")).toContainText("Keep it fresh");
+  await expect(page.getByTestId("review-queue")).toContainText("Закрепить");
   await expect(page.getByTestId("review-queue-filters")).toContainText(
-    "Needs review",
+    "Повторить",
   );
-  await expect(page.getByRole("tab", { name: "Needs review" })).toHaveAttribute(
+  await expect(page.getByRole("tab", { name: "Повторить" })).toHaveAttribute(
     "aria-selected",
     "true",
   );
   await expect(page.getByTestId("review-queue-item")).toContainText(
-    "Needs review",
+    "Повторить",
   );
   await expect(page.getByTestId("review-queue-item")).toContainText(
-    "Your answer",
+    "Ваш ответ",
   );
-  await expect(page.getByTestId("review-queue-item")).toContainText("hello");
+  await expect(page.getByTestId("review-queue-item")).toContainText("привет");
   await expect(page.getByTestId("review-queue-item")).toContainText(
-    "Answer to remember",
+    "Правильный ответ",
   );
   await expect(page.getByTestId("review-queue-item")).toContainText(
-    "ыраазычылык",
+    "спасибо",
   );
-  await expect(page.getByTestId("review-queue-item")).toContainText("Try again");
+  await expect(page.getByTestId("review-queue-item")).toContainText(
+    "Попробовать ещё раз",
+  );
   await page
     .getByTestId("review-queue-item")
-    .getByRole("button", { name: "Try again" })
+    .getByRole("button", { name: "Попробовать ещё раз" })
     .click();
   await page
     .getByTestId("review-queue-item")
-    .getByRole("button", { name: "thank you" })
+    .getByRole("button", { name: "спасибо" })
     .click();
   await expect(page.getByTestId("review-queue-filter-empty")).toContainText(
-    "Nothing needs review right now",
+    "Сейчас нечего повторять",
   );
   await expect(page.getByTestId("review-queue-complete")).toContainText(
-    "Review complete",
+    "Повтор завершён",
   );
   await expect(page.getByTestId("practice-summary-needs-review")).toContainText(
     "0",
   );
   await expect(page.getByTestId("practice-summary-corrected")).toContainText("1");
-  await page.getByRole("tab", { name: "Corrected" }).click();
+  await page.getByRole("tab", { name: "Исправлено" }).click();
   await expect(page.getByTestId("review-queue-item")).toContainText(
-    "Nice - corrected",
+    "Исправлено",
   );
-  await expect(page.getByTestId("review-queue-item")).toContainText("hello");
-  await page.getByRole("tab", { name: "All" }).click();
+  await expect(page.getByTestId("review-queue-item")).toContainText("привет");
+  await page.getByRole("tab", { name: "Все" }).click();
   await expect(page.getByTestId("review-queue-item")).toContainText(
-    "Review in lesson",
+    "Повторить в уроке",
   );
-  await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "Основная навигация" }),
+  ).toBeVisible();
   await expect(page.locator("body")).not.toContainText(
     /localStorage|exercise IDs?|schema|progress object|sourceNotes|rightsNotes|audioReviewStatus|storageKey|methodist|validation|not_recorded|not_reviewed/i,
   );
@@ -200,55 +208,56 @@ test("sentence builder, match pairs, and error correction work inside a guided l
   await practice.scrollIntoViewIfNeeded();
 
   await expect(practice.getByTestId("practice-progress")).toContainText(
-    "Practice 1 of 4",
+    "Практика 1 из 4",
   );
-  await practice.getByLabel("___ Elina.").fill("Атым");
-  await practice.getByRole("button", { name: "Check answer" }).click();
+  const fillBlank = practice.getByTestId("exercise-item-item-atym");
+  await fillBlank.getByLabel("___ Элина.").fill("Атым");
+  await fillBlank.getByRole("button", { name: "Проверить" }).click();
   await expect(practice.getByTestId("exercise-feedback")).toContainText(
-    "Good. That fits this lesson.",
+    "Верно. Это подходит к уроку.",
   );
   await expect(practice.getByTestId("practice-progress")).toContainText(
-    "Practice 2 of 4",
+    "Практика 2 из 4",
   );
 
   await expect(practice.getByTestId("sentence-builder-answer")).toContainText(
-    "Tap the words in order",
+    "Нажимайте слова по порядку",
   );
   const sentenceBuilder = practice.getByTestId(
     "exercise-item-item-build-atym-elina",
   );
-  await sentenceBuilder.getByRole("button", { name: "Add Атым" }).click();
-  await sentenceBuilder.getByRole("button", { name: "Add Элина" }).click();
-  await sentenceBuilder.getByRole("button", { name: "Check", exact: true }).click();
+  await sentenceBuilder.getByRole("button", { name: "Добавить Атым" }).click();
+  await sentenceBuilder.getByRole("button", { name: "Добавить Элина" }).click();
+  await sentenceBuilder.getByRole("button", { name: "Проверить", exact: true }).click();
 
   await expect(sentenceBuilder.getByTestId("exercise-feedback")).toContainText(
-    "Nice - that works.",
+    "Верно. Так подходит.",
   );
   await expect(practice.getByTestId("practice-progress")).toContainText(
-    "Practice 3 of 4",
+    "Практика 3 из 4",
   );
 
   const matchPairs = practice.getByTestId("exercise-item-item-intro-pairs");
   await matchPairs.scrollIntoViewIfNeeded();
-  await expect(matchPairs.getByTestId("match-pairs-control")).toContainText(
-    "Tap one item from each side.",
+  await expect(matchPairs).toContainText(
+    "Сопоставьте кыргызские фразы с их значениями.",
   );
 
   const matchLeft = matchPairs.getByTestId("match-pairs-left");
   const matchRight = matchPairs.getByTestId("match-pairs-right");
   await matchLeft.getByRole("button", { name: "Атым ..." }).click();
-  await matchRight.getByRole("button", { name: "My name is ..." }).click();
+  await matchRight.getByRole("button", { name: "Меня зовут ..." }).click();
   await matchLeft.getByRole("button", { name: "Атың ким?" }).click();
-  await matchRight.getByRole("button", { name: "What is your name?" }).click();
+  await matchRight.getByRole("button", { name: "Как тебя зовут?" }).click();
   await matchLeft.getByRole("button", { name: "Сенчи?" }).click();
-  await matchRight.getByRole("button", { name: "And you?" }).click();
-  await matchPairs.getByRole("button", { name: "Check", exact: true }).click();
+  await matchRight.getByRole("button", { name: "А ты?" }).click();
+  await matchPairs.getByRole("button", { name: "Проверить", exact: true }).click();
 
   await expect(matchPairs.getByTestId("exercise-feedback")).toContainText(
-    "Nice - these match.",
+    "Верно. Эти пары совпадают.",
   );
   await expect(practice.getByTestId("practice-progress")).toContainText(
-    "Practice 4 of 4",
+    "Практика 4 из 4",
   );
 
   const errorCorrection = practice.getByTestId(
@@ -258,33 +267,33 @@ test("sentence builder, match pairs, and error correction work inside a guided l
   await expect(errorCorrection.getByTestId("error-correction-source")).toContainText(
     "Атым ким?",
   );
-  await errorCorrection.getByLabel("Correct version").fill("Атым ким?");
-  await errorCorrection.getByRole("button", { name: "Check" }).click();
+  await errorCorrection.getByLabel("Правильный вариант").fill("Атым ким?");
+  await errorCorrection.getByRole("button", { name: "Проверить" }).click();
 
   await expect(errorCorrection.getByTestId("exercise-feedback")).toContainText(
-    "Almost. Look at the ending.",
+    "Почти. Посмотрите на окончание.",
   );
   await expect(errorCorrection.getByTestId("exercise-feedback")).toContainText(
-    "Correct version: Атың ким?",
+    "Правильный вариант: Атың ким?",
   );
 
   const missedReview = practice.getByTestId("missed-review");
-  await expect(missedReview).toContainText("Review missed items");
+  await expect(missedReview).toContainText("Повторить ошибки");
   await expect(missedReview).toContainText(
-    "Your answer: Атым ким?",
+    "Ваш ответ: Атым ким?",
   );
-  await missedReview.getByLabel("Correct version").fill("Атың ким?");
-  await missedReview.getByRole("button", { name: "Try again" }).click();
+  await missedReview.getByLabel("Правильный вариант").fill("Атың ким?");
+  await missedReview.getByRole("button", { name: "Проверить" }).click();
 
   await expect(practice.getByTestId("missed-corrected")).toContainText(
-    "Nice - corrected",
+    "Исправлено",
   );
-  await practice.getByRole("button", { name: "Continue" }).click();
+  await practice.getByRole("button", { name: "Продолжить" }).click();
   await expect(page.getByTestId("section-mini-game")).toBeVisible();
 
   await page.getByTestId("section-review").scrollIntoViewIfNeeded();
   await expect(page.getByTestId("practice-summary")).toContainText(
-    "You completed 4 practice items, got 3 correct on the first try, and corrected 1 missed answer.",
+    "Вы сделали 4 задания, сразу ответили верно на 3 и исправили 1.",
   );
   await expect(page.locator("body")).not.toContainText(
     /array|pair id|tokens|error object|schema|exercise ID|sourceNotes|rightsNotes|audioReviewStatus|storageKey|methodist|validation|not_recorded|not_reviewed/i,

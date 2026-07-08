@@ -6,9 +6,9 @@ export default function GamesPage() {
   return (
     <AppPlaceholder
       icon={Gamepad2}
-      title="Games"
-      body="Mini-games unlock from lesson words and phrases, so every round reinforces what you are learning."
-      chips={["Sound match", "Quick pick", "Word order", "Memory"]}
+      title="Игры"
+      body="Короткие игры будут закреплять слова и фразы из уроков."
+      chips={["Звуки", "Быстрый выбор", "Порядок слов", "Память"]}
     />
   );
 }

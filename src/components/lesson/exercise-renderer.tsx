@@ -45,7 +45,7 @@ type ExerciseRendererProps = {
 };
 
 function FeedbackPanel({
-  correctAnswerLabel = "Answer",
+  correctAnswerLabel = "Ответ",
   item,
   submittedAnswer,
 }: {
@@ -80,14 +80,14 @@ function FeedbackPanel({
         )}
         <div className="space-y-2">
           <p className="font-semibold">
-            {submittedAnswer.correct ? item.feedback.correct.en : "Not quite yet."}
+            {submittedAnswer.correct ? item.feedback.correct.ru : "Почти."}
           </p>
           {!submittedAnswer.correct ? (
             <p className="leading-6 text-muted-foreground">
-              {item.feedback.incorrect.en}
+              {item.feedback.incorrect.ru}
             </p>
           ) : null}
-          <p className="leading-6 text-muted-foreground">{item.explanation.en}</p>
+          <p className="leading-6 text-muted-foreground">{item.explanation.ru}</p>
           {!submittedAnswer.correct && correctAnswerText ? (
             <p className="font-medium text-foreground">
               {correctAnswerLabel}: {correctAnswerText}
@@ -105,9 +105,9 @@ function UnsupportedPractice() {
       className="rounded-lg border border-dashed border-[#b6c6bf] bg-[#f8faf7] p-4"
       data-testid="unsupported-exercise"
     >
-      <p className="text-sm font-semibold">Practice type coming soon</p>
+      <p className="text-sm font-semibold">Этот формат скоро появится</p>
       <p className="mt-2 text-sm leading-6 text-muted-foreground">
-        This activity will open here later. You can keep moving through the lesson.
+        Продолжайте урок, это задание откроется позже.
       </p>
     </div>
   );
@@ -148,8 +148,8 @@ export function ExerciseRenderer({
       answerDisplay,
       correct,
       correctAnswerDisplay: getCorrectAnswerText(item),
-      explanation: item.explanation.en,
-      feedback: correct ? item.feedback.correct.en : item.feedback.incorrect.en,
+      explanation: item.explanation.ru,
+      feedback: correct ? item.feedback.correct.ru : item.feedback.incorrect.ru,
     });
   };
 
@@ -166,9 +166,9 @@ export function ExerciseRenderer({
   return (
     <div className="space-y-4" data-testid="exercise-renderer">
       <div>
-        <p className="text-sm font-semibold">{exercise.prompt.en}</p>
+        <p className="text-sm font-semibold">{exercise.prompt.ru}</p>
         <p className="mt-1 text-sm leading-6 text-muted-foreground">
-          {exercise.helperTextByTrack.EN_KY}
+          {exercise.helperTextByTrack.RU_KY}
         </p>
       </div>
 
@@ -186,7 +186,7 @@ export function ExerciseRenderer({
               className="space-y-3"
               data-testid={`exercise-item-${item.id}`}
             >
-              <p className="text-sm font-semibold">{item.question.en}</p>
+              <p className="text-sm font-semibold">{item.question.ru}</p>
               <div className="grid gap-2">
                 {item.options.map((option) => {
                   const isSelected = submittedAnswer?.answer === option.id;
@@ -217,12 +217,12 @@ export function ExerciseRenderer({
                           item,
                           option.id,
                           isCorrectOption(item, option),
-                          option.text.en,
+                          option.text.ru,
                         )
                       }
                       type="button"
                     >
-                      <span>{option.text.en}</span>
+                      <span>{option.text.ru}</span>
                       {submittedAnswer && isSelected && isCorrect ? (
                         <CheckCircle2 className="h-4 w-4 shrink-0" />
                       ) : null}
@@ -294,9 +294,9 @@ export function ExerciseRenderer({
               onSubmit={handleSubmit}
             >
               <div>
-                <p className="text-sm font-semibold">{item.question.en}</p>
+                <p className="text-sm font-semibold">{item.question.ru}</p>
                 <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                  {item.feedback.hint.en}
+                  {item.feedback.hint.ru}
                 </p>
               </div>
 
@@ -319,7 +319,7 @@ export function ExerciseRenderer({
 
                       return (
                         <button
-                          aria-label={`Remove ${optionText}`}
+                          aria-label={`Убрать ${optionText}`}
                           className="min-h-10 rounded-full bg-[#27645a] px-3 py-2 text-sm font-semibold text-white disabled:opacity-80"
                           disabled={Boolean(submittedAnswer)}
                           key={`${optionId}-${index}`}
@@ -333,13 +333,13 @@ export function ExerciseRenderer({
                   </div>
                 ) : (
                   <p className="text-sm font-medium text-muted-foreground">
-                    Tap the words in order
+                    Нажимайте слова по порядку
                   </p>
                 )}
               </div>
 
               <div
-                aria-label="Available words"
+                aria-label="Доступные слова"
                 className="flex flex-wrap gap-2"
                 data-testid="sentence-builder-tiles"
               >
@@ -349,7 +349,7 @@ export function ExerciseRenderer({
 
                   return (
                     <button
-                      aria-label={`Add ${optionText}`}
+                      aria-label={`Добавить ${optionText}`}
                       className="min-h-11 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition hover:bg-accent disabled:cursor-default disabled:bg-muted disabled:text-muted-foreground"
                       disabled={Boolean(submittedAnswer) || isSelected}
                       key={option.id}
@@ -369,7 +369,7 @@ export function ExerciseRenderer({
                   }
                   type="submit"
                 >
-                  Check
+                  Проверить
                 </Button>
                 <Button
                   disabled={
@@ -379,7 +379,7 @@ export function ExerciseRenderer({
                   type="button"
                   variant="outline"
                 >
-                  Clear
+                  Очистить
                 </Button>
               </div>
 
@@ -398,9 +398,9 @@ export function ExerciseRenderer({
               data-testid={`exercise-item-${item.id}`}
             >
               <div>
-                <p className="text-sm font-semibold">{item.question.en}</p>
+                <p className="text-sm font-semibold">{item.question.ru}</p>
                 <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                  {item.feedback.hint.en}
+                  {item.feedback.hint.ru}
                 </p>
               </div>
               <MatchPairsControl
@@ -409,6 +409,7 @@ export function ExerciseRenderer({
                 onSubmit={({ answer, answerDisplay, correct }) =>
                   submitAnswer(item, answer, correct, answerDisplay)
                 }
+                showIntro={false}
               />
               {submittedAnswer ? (
                 <FeedbackPanel item={item} submittedAnswer={submittedAnswer} />
@@ -424,7 +425,7 @@ export function ExerciseRenderer({
               className="space-y-3"
               data-testid={`exercise-item-${item.id}`}
             >
-              <p className="text-sm font-semibold">{item.question.en}</p>
+              <p className="text-sm font-semibold">{item.question.ru}</p>
               <ErrorCorrectionControl
                 disabled={Boolean(submittedAnswer)}
                 item={item}
@@ -434,7 +435,7 @@ export function ExerciseRenderer({
               />
               {submittedAnswer ? (
                 <FeedbackPanel
-                  correctAnswerLabel="Correct version"
+                  correctAnswerLabel="Правильный вариант"
                   item={item}
                   submittedAnswer={submittedAnswer}
                 />
@@ -464,7 +465,7 @@ export function ExerciseRenderer({
             onSubmit={handleSubmit}
           >
             <label className="block text-sm font-semibold" htmlFor={item.id}>
-              {item.question.en}
+              {item.question.ru}
             </label>
             <input
               aria-describedby={`${item.id}-hint`}
@@ -478,18 +479,18 @@ export function ExerciseRenderer({
                   [item.id]: event.target.value,
                 }))
               }
-              placeholder="Type the missing word"
+              placeholder="Введите слово"
               value={draftAnswer}
             />
             <p className="text-xs leading-5 text-muted-foreground" id={`${item.id}-hint`}>
-              {item.feedback.hint.en}
+              {item.feedback.hint.ru}
             </p>
             <Button
               className="w-full"
               disabled={Boolean(submittedAnswer) || draftAnswer.trim().length === 0}
               type="submit"
             >
-              Check answer
+              Проверить
             </Button>
             {submittedAnswer ? (
               <FeedbackPanel item={item} submittedAnswer={submittedAnswer} />

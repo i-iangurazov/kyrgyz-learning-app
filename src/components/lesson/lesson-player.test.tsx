@@ -33,23 +33,21 @@ describe("LessonPlayer", () => {
     render(<LessonPlayer lesson={lessons[0]} />);
 
     expect(screen.getByTestId("lesson-step-progress")).toHaveTextContent(
-      "Step 1 of 11",
+      "1/11",
     );
-    expect(screen.getByRole("link", { name: "Story" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Ситуация" })).toBeInTheDocument();
     expect(screen.getByTestId("lesson-step-progress")).toHaveTextContent(
-      "Next: Goals",
+      "Далее: Цель",
     );
-    expect(
-      screen.getByText("What you'll be able to do"),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Recognize simple greetings.")).toBeInTheDocument();
+    expect(screen.getByText("После урока вы сможете")).toBeInTheDocument();
+    expect(screen.getByText("Узнавать простые приветствия.")).toBeInTheDocument();
   });
 
   it("does not expose implementation or validation copy to learners", () => {
     render(<LessonPlayer lesson={lessons[0]} />);
 
     expect(screen.getByTestId("lesson-player").textContent).not.toMatch(
-      /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|sourceNotes|rightsNotes|validatedAgainst|audioReviewStatus|storageKey|not_recorded|not_reviewed/i,
+      /Seeded|typed lesson|schema|placeholder|Sample\/demo|methodist|validation|TODO|sourceNotes|rightsNotes|validatedAgainst|audioReviewStatus|storageKey|not_recorded|not_reviewed|demo/i,
     );
   });
 
@@ -66,7 +64,7 @@ describe("LessonPlayer", () => {
       lessons[0].texts[0].paragraphs.length,
     );
     expect(
-      screen.getAllByRole("button", { name: "Audio coming soon" }).length,
+      screen.getAllByRole("button", { name: /Слушать .*: скоро/ }).length,
     ).toBeGreaterThanOrEqual(
       lessons[0].vocabulary.length +
         lessons[0].dialogues[0].lines.length +
@@ -79,33 +77,33 @@ describe("LessonPlayer", () => {
     render(<LessonPlayer lesson={lessons[0]} />);
 
     expect(screen.getByTestId("practice-progress")).toHaveTextContent(
-      "Practice 1 of 2",
+      "Практика 1 из 2",
     );
 
     await user.click(
       within(screen.getByTestId("section-exercise")).getByRole("button", {
-        name: "thank you",
+        name: "спасибо",
       }),
     );
 
     await waitFor(() => {
       expect(screen.getByTestId("practice-progress")).toHaveTextContent(
-        "Practice 2 of 2",
+        "Практика 2 из 2",
       );
       expect(screen.getByTestId("practice-progress")).toHaveTextContent(
-        "1 completed",
+        "Готово: 1",
       );
     });
 
     await user.type(screen.getByLabelText("Жакшы, ___."), "рахмат");
-    await user.click(screen.getByRole("button", { name: "Check answer" }));
+    await user.click(screen.getByRole("button", { name: "Проверить" }));
 
     await waitFor(() => {
       expect(screen.getByTestId("practice-complete")).toHaveTextContent(
-        "You're ready for the next step",
+        "Можно идти дальше",
       );
       expect(screen.getByTestId("practice-summary")).toHaveTextContent(
-        "Practice complete: 2 of 2 correct.",
+        "Практика завершена: 2 из 2 верно.",
       );
     });
 
@@ -128,15 +126,15 @@ describe("LessonPlayer", () => {
 
     await user.click(
       within(screen.getByTestId("section-exercise")).getByRole("button", {
-        name: "hello",
+        name: "привет",
       }),
     );
     await user.type(screen.getByLabelText("Жакшы, ___."), "рахмат");
-    await user.click(screen.getByRole("button", { name: "Check answer" }));
+    await user.click(screen.getByRole("button", { name: "Проверить" }));
 
     await waitFor(() => {
       expect(screen.getByTestId("missed-review")).toHaveTextContent(
-        "Review missed items",
+        "Повторить ошибки",
       );
     });
 
@@ -149,11 +147,11 @@ describe("LessonPlayer", () => {
 
       expect(missedItem.exerciseId).toBe("ex-greeting-match");
       expect(missedItem.submittedAnswer).toBe("hello");
-      expect(missedItem.submittedAnswerDisplay).toBe("hello");
-      expect(missedItem.correctAnswerDisplay).toBe("ыраазычылык");
-      expect(missedItem.explanation).toBe("Rahmat means thank you.");
+      expect(missedItem.submittedAnswerDisplay).toBe("привет");
+      expect(missedItem.correctAnswerDisplay).toBe("спасибо");
+      expect(missedItem.explanation).toBe("Рахмат значит спасибо.");
       expect(missedItem.feedback).toBe(
-        "Not quite. Look at the lesson words again.",
+        "Не совсем. Посмотрите ещё раз на слова урока.",
       );
       expect(missedItem.corrected).toBe(false);
       expect(storedProgress.lessonPractice["k0-u1-l1"].missedCount).toBe(1);
@@ -164,16 +162,16 @@ describe("LessonPlayer", () => {
 
     await user.click(
       within(screen.getByTestId("missed-review")).getByRole("button", {
-        name: "thank you",
+        name: "спасибо",
       }),
     );
 
     await waitFor(() => {
       expect(screen.getByTestId("missed-corrected")).toHaveTextContent(
-        "Nice - corrected",
+        "Исправлено",
       );
       expect(screen.getByTestId("practice-summary")).toHaveTextContent(
-        "You completed 2 practice items, got 1 correct on the first try, and corrected 1 missed answer.",
+        "Вы сделали 2 задания, сразу ответили верно на 1 и исправили 1.",
       );
     });
 
@@ -186,7 +184,7 @@ describe("LessonPlayer", () => {
 
       expect(missedItem.corrected).toBe(true);
       expect(missedItem.retryAnswer).toBe("thank-you");
-      expect(missedItem.retryAnswerDisplay).toBe("thank you");
+      expect(missedItem.retryAnswerDisplay).toBe("спасибо");
       expect(missedItem.retryAttempts).toBe(1);
       expect(storedProgress.lessonPractice["k0-u1-l1"].correctedMissedCount).toBe(
         1,

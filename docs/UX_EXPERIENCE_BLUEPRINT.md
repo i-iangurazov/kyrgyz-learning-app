@@ -176,6 +176,9 @@ Future UI work should be accepted only when:
 - The primary action is obvious.
 - The screen reads well at around 390px wide.
 - Text does not overflow or collide.
+- Audio controls fit inside vocabulary, dialogue, and reading cards without including full phrases in visible button text.
+- Russian-default learner UI does not accidentally show English labels unless the user selected an English track.
+- Repeated section labels and technical-looking uppercase labels are removed or justified by UX.
 - The bottom nav remains usable and does not cover final actions.
 - Loading and empty states are defined.
 - Internal methodology/source metadata is not exposed to learners unless intentionally designed.

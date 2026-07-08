@@ -9,7 +9,8 @@ import { cn } from "@/lib/utils";
 
 type AudioButtonProps = {
   audio?: AudioAsset;
-  label: string;
+  ariaLabel: string;
+  label?: string;
   unavailableLabel?: string;
   className?: string;
   testId?: string;
@@ -17,14 +18,16 @@ type AudioButtonProps = {
 
 export function AudioButton({
   audio,
+  ariaLabel,
   className,
-  label,
+  label = "Слушать",
   testId = "audio-button",
-  unavailableLabel = "Audio coming soon",
+  unavailableLabel = "Скоро",
 }: AudioButtonProps) {
   const [playError, setPlayError] = useState(false);
   const hasPlayableAudio = Boolean(audio?.url);
-  const buttonLabel = hasPlayableAudio ? label : unavailableLabel;
+  const visibleLabel = hasPlayableAudio ? label : unavailableLabel;
+  const buttonLabel = hasPlayableAudio ? ariaLabel : `${ariaLabel}: скоро`;
 
   const handlePlay = () => {
     if (!audio?.url) {
@@ -39,7 +42,7 @@ export function AudioButton({
     <div className={cn("min-w-0", className)}>
       <Button
         aria-label={buttonLabel}
-        className="min-h-10 w-full px-3 text-[11px]"
+        className="min-h-9 w-full min-w-0 gap-1.5 px-2.5 text-[11px]"
         data-testid={testId}
         disabled={!hasPlayableAudio}
         onClick={handlePlay}
@@ -52,11 +55,11 @@ export function AudioButton({
         ) : (
           <VolumeX className="h-4 w-4" aria-hidden="true" />
         )}
-        <span className="whitespace-nowrap">{buttonLabel}</span>
+        <span className="truncate">{visibleLabel}</span>
       </Button>
       {playError ? (
         <p className="mt-1 text-xs font-medium text-[#87352f]" role="status">
-          Audio could not play.
+          Не удалось включить аудио.
         </p>
       ) : null}
     </div>

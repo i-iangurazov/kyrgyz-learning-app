@@ -8,9 +8,12 @@ These rules apply to lesson content, vocabulary, dialogues, texts, exercises, mi
 - Do not copy textbook passages, course pages, phrasebooks, or copyrighted exercise sets.
 - Source materials may guide methodology, sequencing, and validation, but must not be copied unless the license explicitly allows it.
 - Follow `docs/SOURCE_METHODOLOGY.md` for source handling, rights metadata, and validation workflow.
+- Follow `docs/CONTENT_QUALITY_RESET.md` before treating prototype lessons as real curriculum.
+- Follow `docs/SOURCE_INGESTION_AND_ADAPTATION_PLAN.md` when using books, textbooks, literature, public-domain material, or other sources for lesson planning.
 - HSK materials may be used for structure only, not copied content.
 - Kyrgyz textbooks and literature may be used for methodology, sequencing, validation, and theme selection only unless licensed.
 - All demo content must be marked as sample/demo content requiring methodist and linguist validation.
+- Current seed lessons are prototype samples only and must not be treated as final curriculum.
 - Final grammar, pronunciation, cultural, and usage claims require Kyrgyz methodist/linguist approval.
 - Content must be stored in typed data models, JSON seed data, or database-ready records, not hardcoded inside React components.
 

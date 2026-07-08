@@ -20,7 +20,7 @@ type ErrorCorrectionControlProps = {
 export function ErrorCorrectionControl({
   item,
   disabled = false,
-  submitLabel = "Check",
+  submitLabel = "Проверить",
   onSubmit,
 }: ErrorCorrectionControlProps) {
   const generatedInputId = useId();
@@ -49,9 +49,9 @@ export function ErrorCorrectionControl({
       onSubmit={handleSubmit}
     >
       <div>
-        <p className="text-sm font-semibold">Fix the sentence</p>
+        <p className="text-sm font-semibold">Исправьте фразу</p>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          {item.feedback.hint.en}
+          {item.feedback.hint.ru}
         </p>
       </div>
 
@@ -59,14 +59,14 @@ export function ErrorCorrectionControl({
         className="rounded-lg border border-[#d9e5dd] bg-[#f6faf5] p-3"
         data-testid="error-correction-source"
       >
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-          What sounds better?
+        <p className="text-xs font-semibold text-muted-foreground">
+          Как будет правильно?
         </p>
         <p className="mt-2 text-base font-semibold">{item.question.ky}</p>
       </div>
 
       <label className="block text-sm font-semibold" htmlFor={inputId}>
-        Correct version
+        Правильный вариант
       </label>
       <input
         aria-describedby={`${inputId}-hint`}
@@ -75,11 +75,11 @@ export function ErrorCorrectionControl({
         id={inputId}
         inputMode="text"
         onChange={(event) => setDraftAnswer(event.target.value)}
-        placeholder="Type the corrected version"
+        placeholder="Введите исправленную фразу"
         value={draftAnswer}
       />
       <p className="text-xs leading-5 text-muted-foreground" id={`${inputId}-hint`}>
-        Keep the Kyrgyz phrase short and exact.
+        Пишите коротко и точно по-кыргызски.
       </p>
       <Button
         className="w-full"

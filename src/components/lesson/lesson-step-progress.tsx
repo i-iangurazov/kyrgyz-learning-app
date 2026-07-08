@@ -92,27 +92,27 @@ export function LessonStepProgress({ steps }: { steps: LessonStep[] }) {
 
   return (
     <nav
-      aria-label="Lesson progress"
-      className="sticky top-[76px] z-30 -mx-1 rounded-lg border border-border bg-background/95 p-2.5 shadow-sm backdrop-blur-xl"
+      aria-label="Прогресс урока"
+      className="sticky top-[76px] z-30 -mx-1 rounded-lg border border-border/80 bg-background/95 p-2 shadow-sm backdrop-blur-xl"
       data-testid="lesson-step-progress"
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
           <a
             aria-current="step"
-            className="rounded-full bg-[#27645a] px-3 py-1 text-[11px] font-semibold text-white"
+            className="truncate rounded-full bg-[#27645a] px-3 py-1 text-[11px] font-semibold text-white"
             href={`#${activeStep.sectionId}`}
           >
             {activeStep.label}
           </a>
           {nextStep ? (
             <span className="truncate text-[11px] font-medium text-muted-foreground">
-              Next: {nextStep.label}
+              Далее: {nextStep.label}
             </span>
           ) : null}
         </div>
         <p className="shrink-0 text-[11px] font-semibold text-[#27645a]">
-          Step {activeIndex + 1} of {steps.length}
+          {activeIndex + 1}/{steps.length}
         </p>
       </div>
       <Progress

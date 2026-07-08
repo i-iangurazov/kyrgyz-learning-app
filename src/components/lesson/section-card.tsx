@@ -32,7 +32,7 @@ export function SectionCard({
     <section id={id} data-testid={testId} className="scroll-mt-36">
       <Card>
         <CardHeader className={cn(compact && "space-y-1 p-4 pb-3")}>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          <p className="text-xs font-semibold text-muted-foreground">
             {eyebrow}
           </p>
           <CardTitle>{title}</CardTitle>

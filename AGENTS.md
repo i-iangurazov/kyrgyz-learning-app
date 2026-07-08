@@ -7,6 +7,8 @@ Rules for future Codex tasks in this repository:
 - Do not hardcode final lesson content inside React components.
 - Lesson content must come from typed data models, JSON seed data, or database-ready schemas.
 - Future lesson or content-related work must follow the methodology docs in `/docs`.
+- Future content quality work must follow `docs/CONTENT_QUALITY_RESET.md`.
+- Future source ingestion, book/material adaptation, or curriculum sourcing work must follow `docs/SOURCE_INGESTION_AND_ADAPTATION_PLAN.md`.
 - Future curriculum work must explicitly follow `docs/SOURCE_METHODOLOGY.md`.
 - Future UI tasks must follow `docs/UX_EXPERIENCE_BLUEPRINT.md`.
 - Future lesson UI must follow `docs/LESSON_UX_PRINCIPLES.md`.
@@ -26,6 +28,7 @@ Rules for future Codex tasks in this repository:
 - Every feature must be testable.
 - Every UI change must be visually checked at a mobile viewport.
 - Codex must visually check mobile viewport around 390px for UI changes.
+- Visual QA for UI changes must check text overflow, button overflow, repeated labels, accidental English copy in the Russian-default learner UI, audio controls fitting inside cards, bottom nav clearance, 390px readability, and desktop centered mobile-frame behavior.
 - Codex must avoid clutter and avoid exposing internal methodology/source metadata to learners unless it helps UX.
 - Before finishing any task, run typecheck, lint, tests, Playwright where relevant, and a production build.
 - If a check fails, report it honestly and include the failure context.

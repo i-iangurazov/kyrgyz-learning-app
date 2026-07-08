@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 type MatchPairsControlProps = {
   item: ExerciseItem;
   disabled?: boolean;
+  showIntro?: boolean;
   submitLabel?: string;
   onSubmit: (attempt: {
     answer: string;
@@ -27,7 +28,8 @@ type MatchPairsControlProps = {
 export function MatchPairsControl({
   item,
   disabled = false,
-  submitLabel = "Check",
+  showIntro = true,
+  submitLabel = "Проверить",
   onSubmit,
 }: MatchPairsControlProps) {
   const { leftOptions, rightOptions } = getMatchPairSides(item);
@@ -102,9 +104,9 @@ export function MatchPairsControl({
         className="rounded-lg border border-dashed border-[#b6c6bf] bg-[#f8faf7] p-4"
         data-testid="match-pairs-unavailable"
       >
-        <p className="text-sm font-semibold">Practice type coming soon</p>
+        <p className="text-sm font-semibold">Этот формат скоро появится</p>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          This activity will open here later. You can keep moving through the lesson.
+          Продолжайте урок, это задание откроется позже.
         </p>
       </div>
     );
@@ -112,12 +114,14 @@ export function MatchPairsControl({
 
   return (
     <div className="space-y-3" data-testid="match-pairs-control">
-      <div>
-        <p className="text-sm font-semibold">Match the pairs</p>
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          Tap one item from each side.
-        </p>
-      </div>
+      {showIntro ? (
+        <div>
+          <p className="text-sm font-semibold">Соедините пары</p>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+            Выберите одну фразу и одно значение.
+          </p>
+        </div>
+      ) : null}
 
       {Object.keys(selectedPairs).length > 0 ? (
         <div
@@ -140,14 +144,14 @@ export function MatchPairsControl({
                   {leftOption
                     ? getMatchOptionDisplayText(leftOption, "left")
                     : leftId}{" "}
-                  {"->"}{" "}
+                  {"→"}{" "}
                   {rightOption
                     ? getMatchOptionDisplayText(rightOption, "right")
                     : rightId}
                 </span>
                 {!disabled ? (
                   <span className="text-xs font-medium text-muted-foreground">
-                    Remove
+                    Убрать
                   </span>
                 ) : null}
               </button>
@@ -160,15 +164,15 @@ export function MatchPairsControl({
           data-testid="match-pairs-empty"
         >
           <p className="text-sm font-medium text-muted-foreground">
-            Tap a pair to connect it
+            Нажмите элементы, чтобы соединить пару
           </p>
         </div>
       )}
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-2" data-testid="match-pairs-left">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            Items
+          <p className="text-xs font-semibold text-muted-foreground">
+            Фразы
           </p>
           {leftOptions.map((option) => {
             const isSelected = selectedLeftId === option.id;
@@ -194,8 +198,8 @@ export function MatchPairsControl({
         </div>
 
         <div className="space-y-2" data-testid="match-pairs-right">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            Matches
+          <p className="text-xs font-semibold text-muted-foreground">
+            Значения
           </p>
           {rightOptions.map((option) => {
             const isSelected = selectedRightId === option.id;
@@ -231,7 +235,7 @@ export function MatchPairsControl({
           type="button"
           variant="outline"
         >
-          Reset
+          Сбросить
         </Button>
       </div>
     </div>

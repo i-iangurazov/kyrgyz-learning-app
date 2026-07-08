@@ -49,14 +49,10 @@ const reviewFilters: Array<{
   id: ReviewQueueFilter;
   label: string;
 }> = [
-  { id: "needs_review", label: "Needs review" },
-  { id: "corrected", label: "Corrected" },
-  { id: "all", label: "All" },
+  { id: "needs_review", label: "Повторить" },
+  { id: "corrected", label: "Исправлено" },
+  { id: "all", label: "Все" },
 ];
-
-function pluralize(count: number, singular: string, plural: string) {
-  return count === 1 ? singular : plural;
-}
 
 function groupQueueByLesson(queue: ReviewQueueItem[]) {
   return queue.reduce<Record<string, ReviewQueueItem[]>>((groups, item) => {
@@ -131,14 +127,14 @@ function ReviewQueueCard({
     if (!correct) {
       setRetryFeedback({
         kind: "incorrect",
-        message: "Not quite yet. Use the answer above and try once more.",
+        message: "Почти. Посмотрите на ответ и попробуйте ещё раз.",
       });
       return;
     }
 
     setRetryFeedback({
       kind: "correct",
-      message: "Nice - corrected",
+      message: "Исправлено",
     });
     setDraftAnswer("");
     setSelectedSentenceTiles([]);
@@ -190,29 +186,29 @@ function ReviewQueueCard({
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <CardTitle>{item.corrected ? "Corrected" : "Missed item"}</CardTitle>
+            <CardTitle>{item.corrected ? "Исправлено" : "Нужно повторить"}</CardTitle>
             <CardDescription>
               {item.corrected
-                ? "You fixed this one."
-                : "A quick retry will help this stick."}
+                ? "Вы уже закрепили этот ответ."
+                : "Короткий повтор поможет запомнить."}
             </CardDescription>
           </div>
           <Badge variant={item.corrected ? "secondary" : "warning"}>
-            {item.corrected ? "Corrected" : "Needs review"}
+            {item.corrected ? "Готово" : "Повторить"}
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-3 text-sm">
           <div className="rounded-lg bg-white p-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              Your answer
+            <p className="text-xs font-semibold text-muted-foreground">
+              Ваш ответ
             </p>
             <p className="mt-1 font-semibold">{item.submittedAnswerDisplay}</p>
           </div>
           <div className="rounded-lg bg-white p-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              Answer to remember
+            <p className="text-xs font-semibold text-muted-foreground">
+              Правильный ответ
             </p>
             <p className="mt-1 font-semibold">{correctAnswerText}</p>
           </div>
@@ -234,9 +230,9 @@ function ReviewQueueCard({
                 className="mt-0.5 h-4 w-4 shrink-0 text-[#2b8a68]"
               />
               <div>
-                <p className="text-sm font-semibold">Nice - corrected</p>
+                <p className="text-sm font-semibold">Исправлено</p>
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  You fixed this one. Keep going.
+                  Этот ответ закреплён. Продолжайте.
                 </p>
               </div>
             </div>
@@ -251,7 +247,7 @@ function ReviewQueueCard({
             type="button"
           >
             <RotateCcw className="h-4 w-4" aria-hidden="true" />
-            Try again
+            Попробовать ещё раз
           </Button>
         ) : null}
 
@@ -261,11 +257,11 @@ function ReviewQueueCard({
             data-testid="review-queue-retry"
           >
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Try again
+              <p className="text-xs font-semibold text-muted-foreground">
+                Ещё раз
               </p>
               <p className="mt-1 text-sm font-semibold">
-                {exerciseItem.question.en}
+                {exerciseItem.question.ru}
               </p>
             </div>
 
@@ -278,13 +274,13 @@ function ReviewQueueCard({
                     onClick={() =>
                       submitRetry(
                         option.id,
-                        option.text.en,
+                        option.text.ru ?? option.text.en,
                         isCorrectOption(exerciseItem, option),
                       )
                     }
                     type="button"
                   >
-                    <span>{option.text.en}</span>
+                    <span>{option.text.ru ?? option.text.en}</span>
                   </button>
                 ))}
               </div>
@@ -296,14 +292,14 @@ function ReviewQueueCard({
                   className="block text-sm font-semibold"
                   htmlFor={`review-retry-${item.key}`}
                 >
-                  Try the answer again
+                  Введите ответ ещё раз
                 </label>
                 <input
                   className="min-h-12 w-full rounded-lg border border-border bg-background px-4 py-3 text-base font-medium outline-none transition focus:border-[#27645a] focus:ring-2 focus:ring-[#27645a]/18"
                   id={`review-retry-${item.key}`}
                   inputMode="text"
                   onChange={(event) => setDraftAnswer(event.target.value)}
-                  placeholder="Type the answer"
+                  placeholder="Введите ответ"
                   value={draftAnswer}
                 />
                 <Button
@@ -311,7 +307,7 @@ function ReviewQueueCard({
                   disabled={draftAnswer.trim().length === 0}
                   type="submit"
                 >
-                  Try again
+                  Проверить
                 </Button>
               </form>
             ) : null}
@@ -319,9 +315,9 @@ function ReviewQueueCard({
             {exercise?.kind === "sentence_builder" && exerciseItem.options?.length ? (
               <form className="space-y-3" onSubmit={handleSentenceBuilderRetry}>
                 <div>
-                  <p className="text-sm font-semibold">Build the sentence</p>
+                  <p className="text-sm font-semibold">Соберите фразу</p>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                    Tap the words in order.
+                    Нажимайте слова по порядку.
                   </p>
                 </div>
                 <div
@@ -340,7 +336,7 @@ function ReviewQueueCard({
 
                         return (
                           <button
-                            aria-label={`Remove ${optionText}`}
+                            aria-label={`Убрать ${optionText}`}
                             className="min-h-10 rounded-full bg-[#27645a] px-3 py-2 text-sm font-semibold text-white"
                             key={`${optionId}-${index}`}
                             onClick={() =>
@@ -359,7 +355,7 @@ function ReviewQueueCard({
                     </div>
                   ) : (
                     <p className="text-sm font-medium text-muted-foreground">
-                      Tap the words in order
+                      Нажимайте слова по порядку
                     </p>
                   )}
                 </div>
@@ -369,7 +365,7 @@ function ReviewQueueCard({
 
                     return (
                       <button
-                        aria-label={`Add ${optionText}`}
+                        aria-label={`Добавить ${optionText}`}
                         className="min-h-11 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition hover:bg-accent disabled:cursor-default disabled:bg-muted disabled:text-muted-foreground"
                         disabled={selectedSentenceTiles.includes(option.id)}
                         key={option.id}
@@ -392,7 +388,7 @@ function ReviewQueueCard({
                     disabled={selectedSentenceTiles.length === 0}
                     type="submit"
                   >
-                    Try again
+                    Проверить
                   </Button>
                   <Button
                     disabled={selectedSentenceTiles.length === 0}
@@ -400,7 +396,7 @@ function ReviewQueueCard({
                     type="button"
                     variant="outline"
                   >
-                    Clear
+                    Очистить
                   </Button>
                 </div>
               </form>
@@ -412,7 +408,7 @@ function ReviewQueueCard({
                 onSubmit={({ answer, answerDisplay, correct }) =>
                   submitRetry(answer, answerDisplay, correct)
                 }
-                submitLabel="Try again"
+                submitLabel="Проверить"
               />
             ) : null}
 
@@ -422,7 +418,7 @@ function ReviewQueueCard({
                 onSubmit={({ answer, answerDisplay, correct }) =>
                   submitRetry(answer, answerDisplay, correct)
                 }
-                submitLabel="Try again"
+                submitLabel="Проверить"
               />
             ) : null}
           </div>
@@ -447,14 +443,14 @@ function ReviewQueueCard({
             className="space-y-3 rounded-lg border border-dashed border-[#b6c6bf] bg-white p-3"
             data-testid="review-queue-lesson-fallback"
           >
-            <p className="text-sm font-semibold">Open the lesson to review this item</p>
+            <p className="text-sm font-semibold">Откройте урок для повтора</p>
             <p className="text-sm leading-6 text-muted-foreground">
-              This review works best inside the lesson for now.
+              Этот формат пока удобнее повторять внутри урока.
             </p>
             <Button asChild className="w-full" variant="outline">
               <Link href={`/lesson/${item.lessonId}#lesson-practice`}>
                 <BookOpen className="h-4 w-4" aria-hidden="true" />
-                Open lesson
+                Открыть урок
               </Link>
             </Button>
           </div>
@@ -464,7 +460,7 @@ function ReviewQueueCard({
           <Button asChild className="w-full" variant="outline">
             <Link href={`/lesson/${item.lessonId}#lesson-practice`}>
               <BookOpen className="h-4 w-4" aria-hidden="true" />
-              Review in lesson
+              Повторить в уроке
             </Link>
           </Button>
         ) : null}
@@ -484,7 +480,7 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
   const lessonById = new Map(lessons.map((lesson) => [lesson.id, lesson]));
   const activeFilterLabel =
     reviewFilters.find((filter) => filter.id === activeFilter)?.label ??
-    "Review";
+    "Повтор";
 
   useEffect(() => {
     if (process.env.NODE_ENV === "test") {
@@ -502,19 +498,19 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
     <div className="space-y-5" data-testid="practice-review-page">
       <section className="rounded-lg bg-[#16231f] p-5 text-white">
         <Dumbbell className="h-7 w-7 text-[#c9f269]" aria-hidden="true" />
-        <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-white/56">
-          Practice
+        <p className="mt-5 text-xs font-semibold text-white/56">
+          Практика
         </p>
         <h2 className="mt-1 text-2xl font-bold tracking-normal">
-          Review your weak spots
+          Повторите слабые места
         </h2>
         <p className="mt-3 text-sm leading-6 text-white/72">
-          Keep recent misses fresh with short, focused review.
+          Возвращайтесь к ошибкам короткими спокойными подходами.
         </p>
       </section>
 
       <section
-        aria-label="Practice progress summary"
+        aria-label="Сводка практики"
         className="grid grid-cols-2 gap-3"
         data-testid="practice-progress-summary"
       >
@@ -522,8 +518,8 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
           <p className="text-2xl font-bold tracking-normal">
             {summary.completedPracticeItems}
           </p>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            Completed
+          <p className="mt-1 text-xs font-semibold text-muted-foreground">
+            Готово
           </p>
         </div>
         <div
@@ -533,8 +529,8 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
           <p className="text-2xl font-bold tracking-normal">
             {summary.missedItemsCount}
           </p>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            Missed items
+          <p className="mt-1 text-xs font-semibold text-muted-foreground">
+            Ошибки
           </p>
         </div>
         <div
@@ -544,8 +540,8 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
           <p className="text-2xl font-bold tracking-normal">
             {summary.needsReviewCount}
           </p>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            Needs review
+          <p className="mt-1 text-xs font-semibold text-muted-foreground">
+            Повторить
           </p>
         </div>
         <div
@@ -555,8 +551,8 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
           <p className="text-2xl font-bold tracking-normal">
             {summary.correctedMissedItemsCount}
           </p>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            Corrected
+          <p className="mt-1 text-xs font-semibold text-muted-foreground">
+            Исправлено
           </p>
         </div>
       </section>
@@ -567,17 +563,17 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#eef7f1] text-[#27645a]">
               <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
             </div>
-            <CardTitle>Nothing to review yet</CardTitle>
+            <CardTitle>Пока нечего повторять</CardTitle>
             <CardDescription>
-              You&apos;re all clear for now. Complete a lesson and anything you
-              miss will appear here for quick review.
+              Сейчас всё чисто. После урока ошибки появятся здесь для короткого
+              повтора.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full">
               <Link href="/learn">
                 <BookOpen className="h-4 w-4" aria-hidden="true" />
-                Go to Learn
+                К урокам
               </Link>
             </Button>
           </CardContent>
@@ -586,21 +582,20 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
         <section className="space-y-4" data-testid="review-queue">
           <div className="flex items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                Review queue
+              <p className="text-xs font-semibold text-muted-foreground">
+                Очередь повтора
               </p>
               <h3 className="mt-1 text-lg font-bold tracking-normal">
-                Keep it fresh
+                Закрепить
               </h3>
             </div>
             <Badge variant={summary.needsReviewCount > 0 ? "warning" : "secondary"}>
-              {summary.needsReviewCount}{" "}
-              {pluralize(summary.needsReviewCount, "item", "items")} open
+              Нужно: {summary.needsReviewCount}
             </Badge>
           </div>
 
           <div
-            aria-label="Review queue filters"
+            aria-label="Фильтры повтора"
             className="grid grid-cols-3 gap-1 rounded-full border border-border bg-muted/50 p-1"
             data-testid="review-queue-filters"
             role="tablist"
@@ -639,9 +634,9 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
                   className="mt-0.5 h-5 w-5 shrink-0 text-[#2b8a68]"
                 />
                 <div>
-                  <p className="text-sm font-semibold">Review complete</p>
+                  <p className="text-sm font-semibold">Повтор завершён</p>
                   <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                    You fixed the current missed items. Keep going.
+                    Текущие ошибки исправлены. Продолжайте.
                   </p>
                 </div>
               </div>
@@ -656,22 +651,22 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
                 </div>
                 <CardTitle>
                   {activeFilter === "needs_review"
-                    ? "Nothing needs review right now"
+                    ? "Сейчас нечего повторять"
                     : null}
                   {activeFilter === "corrected"
-                    ? "No corrected items yet"
+                    ? "Пока нет исправленных"
                     : null}
-                  {activeFilter === "all" ? "Nothing to review yet" : null}
+                  {activeFilter === "all" ? "Пока нечего повторять" : null}
                 </CardTitle>
                 <CardDescription>
                   {activeFilter === "needs_review"
-                    ? "Nice - you're all clear. Corrected items stay in your review history."
+                    ? "Всё чисто. Исправленные ответы остаются в истории."
                     : null}
                   {activeFilter === "corrected"
-                    ? "Corrected items will appear here after you fix missed answers."
+                    ? "Исправленные ответы появятся здесь после повтора ошибок."
                     : null}
                   {activeFilter === "all"
-                    ? "Complete a lesson and anything you miss will appear here for quick review."
+                    ? "После уроков ошибки появятся здесь для быстрого повтора."
                     : null}
                 </CardDescription>
               </CardHeader>
@@ -686,12 +681,11 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
                 <div className="flex items-center justify-between gap-3 px-1">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold">
-                      {lesson?.title.en ?? "Lesson review"}
+                      {lesson?.title.ru ?? "Повтор урока"}
                     </p>
                     <p className="text-xs font-medium text-muted-foreground">
-                      {lesson?.levelId ?? "Lesson"} - {activeFilterLabel} -{" "}
-                      {items.length}{" "}
-                      {pluralize(items.length, "item", "items")}
+                      {lesson?.levelId ?? "Урок"} · {activeFilterLabel} ·{" "}
+                      {items.length}
                     </p>
                   </div>
                 </div>

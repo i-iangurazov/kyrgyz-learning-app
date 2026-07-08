@@ -22,16 +22,16 @@ export function HomeDashboard({ lessons }: { lessons: Lesson[] }) {
   return (
     <div className="space-y-5">
       <section className="rounded-lg bg-[#16231f] p-5 text-white">
-        <p className="text-sm font-semibold text-[#c9f269]">Today</p>
+        <p className="text-sm font-semibold text-[#c9f269]">Сегодня</p>
         <h2 className="mt-2 text-3xl font-bold tracking-normal">
-          Build your Kyrgyz base
+          Начните говорить по-кыргызски
         </h2>
         <p className="mt-3 text-sm leading-6 text-white/72">
-          Short lessons, practical phrases, and steady daily progress.
+          Короткие уроки, живые фразы и спокойный ежедневный прогресс.
         </p>
         <Button asChild className="mt-5 bg-white text-[#16231f] hover:bg-white/90">
           <Link href={`/lesson/${activeLesson.id}`}>
-            Continue lesson
+            Продолжить урок
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </Button>
@@ -42,42 +42,42 @@ export function HomeDashboard({ lessons }: { lessons: Lesson[] }) {
           <CardContent className="p-4">
             <BookMarked className="h-5 w-5 text-[#27645a]" aria-hidden="true" />
             <p className="mt-3 text-2xl font-bold">{lessons.length}</p>
-            <p className="text-sm text-muted-foreground">Lessons ready</p>
+            <p className="text-sm text-muted-foreground">Готовые уроки</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <Trophy className="h-5 w-5 text-[#936600]" aria-hidden="true" />
             <p className="mt-3 text-2xl font-bold">{progress.xp}</p>
-            <p className="text-sm text-muted-foreground">Practice XP</p>
+            <p className="text-sm text-muted-foreground">Очки практики</p>
           </CardContent>
         </Card>
       </section>
 
       <Card>
         <CardHeader>
-          <CardTitle>Your progress</CardTitle>
+          <CardTitle>Ваш прогресс</CardTitle>
         </CardHeader>
         <CardContent>
           <Progress value={completion} />
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            {completion}% complete across your current starter path. Keep going
-            one short lesson at a time.
+            {completion}% текущего маршрута уже пройдено. Двигайтесь короткими
+            шагами.
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Current lesson</CardTitle>
+          <CardTitle>Текущий урок</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-lg font-bold">{activeLesson.title.en}</p>
+          <p className="text-lg font-bold">{activeLesson.title.ru}</p>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            {activeLesson.subtitle.en}
+            {activeLesson.subtitle.ru}
           </p>
           <Button asChild variant="secondary" className="mt-4 w-full">
-            <Link href={`/lesson/${activeLesson.id}`}>Open lesson</Link>
+            <Link href={`/lesson/${activeLesson.id}`}>Открыть урок</Link>
           </Button>
         </CardContent>
       </Card>

@@ -37,8 +37,8 @@ function makeProgress({
           submittedAnswer: "салам",
           submittedAnswerDisplay: "салам",
           correctAnswerDisplay: "рахмат",
-          explanation: "Jakshy, rahmat is a short polite reply.",
-          feedback: "Not quite. Look at the lesson words again.",
+          explanation: "Жакшы, рахмат - короткий вежливый ответ.",
+          feedback: "Не совсем. Посмотрите ещё раз на слова урока.",
           corrected,
           retryAnswer: corrected ? "рахмат" : undefined,
           retryAnswerDisplay: corrected ? "рахмат" : undefined,
@@ -54,8 +54,8 @@ function makeProgress({
             submittedAnswerDisplay: "Элина Атым",
             correctAnswerDisplay: "Атым Элина",
             explanation:
-              "Atym Elina is a short sentence for giving your name.",
-            feedback: "Almost. Check the order and try again.",
+              "Атым Элина - короткое предложение, чтобы назвать свое имя.",
+            feedback: "Почти. Проверьте порядок слов и попробуйте ещё раз.",
             corrected,
             retryAnswer: corrected ? "tile-atym tile-elina" : undefined,
             retryAnswerDisplay: corrected ? "Атым Элина" : undefined,
@@ -70,18 +70,18 @@ function makeProgress({
             submittedAnswer:
               "left-atym:right-and-you|left-atyn-kim:right-your-name|left-senchi:right-my-name",
             submittedAnswerDisplay:
-              "Атым ... -> And you?; Атың ким? -> What is your name?; Сенчи? -> My name is ...",
+              "Атым ... → А ты?; Атың ким? → Как тебя зовут?; Сенчи? → Меня зовут ...",
             correctAnswerDisplay:
-              "Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
+              "Атым ... → Меня зовут ...; Атың ким? → Как тебя зовут?; Сенчи? → А ты?",
             explanation:
-              "These pairs are short phrases used in introductions.",
-            feedback: "Almost. Review the pairs and try again.",
+              "Эти пары - короткие фразы для знакомства.",
+            feedback: "Почти. Проверьте пары и попробуйте ещё раз.",
             corrected,
             retryAnswer: corrected
               ? "left-atym:right-my-name|left-atyn-kim:right-your-name|left-senchi:right-and-you"
               : undefined,
             retryAnswerDisplay: corrected
-              ? "Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?"
+              ? "Атым ... → Меня зовут ...; Атың ким? → Как тебя зовут?; Сенчи? → А ты?"
               : undefined,
             retryAttempts: corrected ? 1 : 0,
             updatedAt: "2026-07-08T00:00:00.000Z",
@@ -95,8 +95,8 @@ function makeProgress({
             submittedAnswerDisplay: "Атым ким?",
             correctAnswerDisplay: "Атың ким?",
             explanation:
-              "Atym means my name. Atyn means your name. For the question, use Atyn kim?",
-            feedback: "Almost. Look at the ending.",
+              "Атым значит мое имя. Атың значит твое имя. В вопросе используйте Атың ким?",
+            feedback: "Почти. Посмотрите на окончание.",
             corrected,
             retryAnswer: corrected ? "Атың ким?" : undefined,
             retryAnswerDisplay: corrected ? "Атың ким?" : undefined,
@@ -111,13 +111,13 @@ function makeProgress({
               : "ex-greeting-match",
           itemId: missedKind === "fallback" ? "item-review-later" : "item-rahmat",
           submittedAnswer: "hello",
-          submittedAnswerDisplay: "hello",
-          correctAnswerDisplay: "ыраазычылык",
-          explanation: "Rahmat means thank you.",
-          feedback: "Not quite. Look at the lesson words again.",
+          submittedAnswerDisplay: "привет",
+          correctAnswerDisplay: "спасибо",
+          explanation: "Рахмат значит спасибо.",
+          feedback: "Не совсем. Посмотрите ещё раз на слова урока.",
           corrected,
           retryAnswer: corrected ? "thank-you" : undefined,
-          retryAnswerDisplay: corrected ? "thank you" : undefined,
+          retryAnswerDisplay: corrected ? "спасибо" : undefined,
           retryAttempts: corrected ? 1 : 0,
           updatedAt: "2026-07-08T00:00:00.000Z",
         };
@@ -214,13 +214,13 @@ describe("PracticeReviewQueue", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("review-queue-empty")).toHaveTextContent(
-        "Nothing to review yet",
+        "Пока нечего повторять",
       );
     });
     expect(screen.getByTestId("review-queue-empty")).toHaveTextContent(
-      "Complete a lesson and anything you miss will appear here",
+      "После урока ошибки появятся здесь",
     );
-    expect(screen.getByRole("link", { name: "Go to Learn" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "К урокам" })).toHaveAttribute(
       "href",
       "/learn",
     );
@@ -232,27 +232,27 @@ describe("PracticeReviewQueue", () => {
 
     const summary = await screen.findByTestId("practice-progress-summary");
 
-    expect(summary).toHaveTextContent("Completed");
-    expect(summary).toHaveTextContent("Missed items");
-    expect(summary).toHaveTextContent("Needs review");
-    expect(summary).toHaveTextContent("Corrected");
+    expect(summary).toHaveTextContent("Готово");
+    expect(summary).toHaveTextContent("Ошибки");
+    expect(summary).toHaveTextContent("Повторить");
+    expect(summary).toHaveTextContent("Исправлено");
     expect(summary).toHaveTextContent("2");
     expect(summary).toHaveTextContent("1");
     expect(summary).toHaveTextContent("0");
   });
 
-  it("renders review queue filters with Needs review selected by default", async () => {
+  it("renders review queue filters with needs review selected by default", async () => {
     seedProgress(makeProgress());
     render(<PracticeReviewQueue lessons={lessons} />);
 
     const filters = await screen.findByTestId("review-queue-filters");
 
-    expect(within(filters).getByRole("tab", { name: "Needs review" })).toHaveAttribute(
+    expect(within(filters).getByRole("tab", { name: "Повторить" })).toHaveAttribute(
       "aria-selected",
       "true",
     );
-    expect(within(filters).getByRole("tab", { name: "Corrected" })).toBeVisible();
-    expect(within(filters).getByRole("tab", { name: "All" })).toBeVisible();
+    expect(within(filters).getByRole("tab", { name: "Исправлено" })).toBeVisible();
+    expect(within(filters).getByRole("tab", { name: "Все" })).toBeVisible();
   });
 
   it("filters review queue items by needs review, corrected, and all", async () => {
@@ -264,19 +264,19 @@ describe("PracticeReviewQueue", () => {
     const queue = await screen.findByTestId("review-queue");
 
     expect(within(queue).getAllByTestId("review-queue-item")).toHaveLength(1);
-    expect(queue).toHaveTextContent("hello");
+    expect(queue).toHaveTextContent("привет");
     expect(queue).not.toHaveTextContent("Атым ким?");
 
-    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+    await user.click(screen.getByRole("tab", { name: "Исправлено" }));
 
     expect(within(queue).getAllByTestId("review-queue-item")).toHaveLength(1);
     expect(queue).toHaveTextContent("Атым ким?");
-    expect(queue).not.toHaveTextContent("hello");
+    expect(queue).not.toHaveTextContent("привет");
 
-    await user.click(screen.getByRole("tab", { name: "All" }));
+    await user.click(screen.getByRole("tab", { name: "Все" }));
 
     expect(within(queue).getAllByTestId("review-queue-item")).toHaveLength(2);
-    expect(queue).toHaveTextContent("hello");
+    expect(queue).toHaveTextContent("привет");
     expect(queue).toHaveTextContent("Атым ким?");
   });
 
@@ -287,10 +287,10 @@ describe("PracticeReviewQueue", () => {
     const { unmount } = render(<PracticeReviewQueue lessons={lessons} />);
 
     await screen.findByTestId("review-queue");
-    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+    await user.click(screen.getByRole("tab", { name: "Исправлено" }));
 
     expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
-      "Corrected items will appear here after you fix missed answers.",
+      "Исправленные ответы появятся здесь после повтора ошибок.",
     );
 
     unmount();
@@ -300,7 +300,7 @@ describe("PracticeReviewQueue", () => {
 
     await screen.findByTestId("review-queue");
     expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
-      "Nothing needs review right now",
+      "Сейчас нечего повторять",
     );
   });
 
@@ -311,16 +311,18 @@ describe("PracticeReviewQueue", () => {
     const queue = await screen.findByTestId("review-queue");
     const item = within(queue).getByTestId("review-queue-item");
 
-    expect(queue).toHaveTextContent("Keep it fresh");
-    expect(queue).toHaveTextContent("First Kyrgyz greetings");
-    expect(item).toHaveTextContent("Missed item");
-    expect(item).toHaveTextContent("Needs review");
-    expect(item).toHaveTextContent("Your answer");
-    expect(item).toHaveTextContent("hello");
-    expect(item).toHaveTextContent("Answer to remember");
-    expect(item).toHaveTextContent("ыраазычылык");
-    expect(item).toHaveTextContent("Rahmat means thank you.");
-    expect(within(item).getByRole("button", { name: "Try again" })).toBeInTheDocument();
+    expect(queue).toHaveTextContent("Закрепить");
+    expect(queue).toHaveTextContent("Первые кыргызские приветствия");
+    expect(item).toHaveTextContent("Нужно повторить");
+    expect(item).toHaveTextContent("Повторить");
+    expect(item).toHaveTextContent("Ваш ответ");
+    expect(item).toHaveTextContent("привет");
+    expect(item).toHaveTextContent("Правильный ответ");
+    expect(item).toHaveTextContent("спасибо");
+    expect(item).toHaveTextContent("Рахмат значит спасибо.");
+    expect(
+      within(item).getByRole("button", { name: "Попробовать ещё раз" }),
+    ).toBeInTheDocument();
   });
 
   it("shows corrected status for corrected missed items", async () => {
@@ -330,17 +332,16 @@ describe("PracticeReviewQueue", () => {
     render(<PracticeReviewQueue lessons={lessons} />);
 
     await screen.findByTestId("review-queue");
-    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+    await user.click(screen.getByRole("tab", { name: "Исправлено" }));
     const item = await screen.findByTestId("review-queue-item");
 
-    expect(item).toHaveTextContent("Corrected");
-    expect(item).toHaveTextContent("You fixed this one.");
-    expect(item).toHaveTextContent("Nice - corrected");
+    expect(item).toHaveTextContent("Исправлено");
+    expect(item).toHaveTextContent("Вы уже закрепили этот ответ.");
     expect(
-      within(item).getByRole("link", { name: "Review in lesson" }),
+      within(item).getByRole("link", { name: "Повторить в уроке" }),
     ).toHaveAttribute("href", "/lesson/k0-u1-l1#lesson-practice");
     expect(
-      within(item).queryByRole("button", { name: "Try again" }),
+      within(item).queryByRole("button", { name: "Попробовать ещё раз" }),
     ).not.toBeInTheDocument();
   });
 
@@ -352,15 +353,15 @@ describe("PracticeReviewQueue", () => {
 
     const item = await screen.findByTestId("review-queue-item");
 
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
-    await user.click(within(item).getByRole("button", { name: "thank you" }));
+    await user.click(within(item).getByRole("button", { name: "Попробовать ещё раз" }));
+    await user.click(within(item).getByRole("button", { name: "спасибо" }));
 
     await waitFor(() => {
       expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
-        "Nothing needs review right now",
+        "Сейчас нечего повторять",
       );
       expect(screen.getByTestId("review-queue-complete")).toHaveTextContent(
-        "Review complete",
+        "Повтор завершён",
       );
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "0",
@@ -370,10 +371,10 @@ describe("PracticeReviewQueue", () => {
       );
     });
 
-    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+    await user.click(screen.getByRole("tab", { name: "Исправлено" }));
 
     expect(await screen.findByTestId("review-queue-item")).toHaveTextContent(
-      "Nice - corrected",
+      "Исправлено",
     );
   });
 
@@ -385,14 +386,14 @@ describe("PracticeReviewQueue", () => {
 
     const item = await screen.findByTestId("review-queue-item");
 
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
-    await user.click(within(item).getByRole("button", { name: "goodbye" }));
+    await user.click(within(item).getByRole("button", { name: "Попробовать ещё раз" }));
+    await user.click(within(item).getByRole("button", { name: "пока" }));
 
     await waitFor(() => {
       expect(item).toHaveTextContent(
-        "Not quite yet. Use the answer above and try once more.",
+        "Почти. Посмотрите на ответ и попробуйте ещё раз.",
       );
-      expect(item).toHaveTextContent("Needs review");
+      expect(item).toHaveTextContent("Повторить");
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "1",
       );
@@ -407,13 +408,13 @@ describe("PracticeReviewQueue", () => {
 
     const item = await screen.findByTestId("review-queue-item");
 
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
-    await user.type(within(item).getByLabelText("Try the answer again"), "рахмат");
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Попробовать ещё раз" }));
+    await user.type(within(item).getByLabelText("Введите ответ ещё раз"), "рахмат");
+    await user.click(within(item).getByRole("button", { name: "Проверить" }));
 
     await waitFor(() => {
       expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
-        "Nothing needs review right now",
+        "Сейчас нечего повторять",
       );
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "0",
@@ -423,10 +424,10 @@ describe("PracticeReviewQueue", () => {
       );
     });
 
-    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+    await user.click(screen.getByRole("tab", { name: "Исправлено" }));
 
     expect(await screen.findByTestId("review-queue-item")).toHaveTextContent(
-      "Nice - corrected",
+      "Исправлено",
     );
   });
 
@@ -438,15 +439,15 @@ describe("PracticeReviewQueue", () => {
 
     const item = await screen.findByTestId("review-queue-item");
 
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
-    await user.type(within(item).getByLabelText("Try the answer again"), "салам");
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Попробовать ещё раз" }));
+    await user.type(within(item).getByLabelText("Введите ответ ещё раз"), "салам");
+    await user.click(within(item).getByRole("button", { name: "Проверить" }));
 
     await waitFor(() => {
       expect(item).toHaveTextContent(
-        "Not quite yet. Use the answer above and try once more.",
+        "Почти. Посмотрите на ответ и попробуйте ещё раз.",
       );
-      expect(item).toHaveTextContent("Needs review");
+      expect(item).toHaveTextContent("Повторить");
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "1",
       );
@@ -462,18 +463,18 @@ describe("PracticeReviewQueue", () => {
     const queue = await screen.findByTestId("review-queue");
     const item = await screen.findByTestId("review-queue-item");
 
-    expect(queue).toHaveTextContent("Introductions");
+    expect(queue).toHaveTextContent("Знакомство");
     expect(item).toHaveTextContent("Элина Атым");
     expect(item).toHaveTextContent("Атым Элина");
 
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
-    await user.click(within(item).getByRole("button", { name: "Add Атым" }));
-    await user.click(within(item).getByRole("button", { name: "Add Элина" }));
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Попробовать ещё раз" }));
+    await user.click(within(item).getByRole("button", { name: "Добавить Атым" }));
+    await user.click(within(item).getByRole("button", { name: "Добавить Элина" }));
+    await user.click(within(item).getByRole("button", { name: "Проверить" }));
 
     await waitFor(() => {
       expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
-        "Nothing needs review right now",
+        "Сейчас нечего повторять",
       );
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "0",
@@ -483,10 +484,10 @@ describe("PracticeReviewQueue", () => {
       );
     });
 
-    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+    await user.click(screen.getByRole("tab", { name: "Исправлено" }));
 
     expect(await screen.findByTestId("review-queue-item")).toHaveTextContent(
-      "Nice - corrected",
+      "Исправлено",
     );
   });
 
@@ -498,16 +499,16 @@ describe("PracticeReviewQueue", () => {
 
     const item = await screen.findByTestId("review-queue-item");
 
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
-    await user.click(within(item).getByRole("button", { name: "Add Элина" }));
-    await user.click(within(item).getByRole("button", { name: "Add Атым" }));
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Попробовать ещё раз" }));
+    await user.click(within(item).getByRole("button", { name: "Добавить Элина" }));
+    await user.click(within(item).getByRole("button", { name: "Добавить Атым" }));
+    await user.click(within(item).getByRole("button", { name: "Проверить" }));
 
     await waitFor(() => {
       expect(item).toHaveTextContent(
-        "Not quite yet. Use the answer above and try once more.",
+        "Почти. Посмотрите на ответ и попробуйте ещё раз.",
       );
-      expect(item).toHaveTextContent("Needs review");
+      expect(item).toHaveTextContent("Повторить");
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "1",
       );
@@ -523,26 +524,26 @@ describe("PracticeReviewQueue", () => {
     const queue = await screen.findByTestId("review-queue");
     const item = await screen.findByTestId("review-queue-item");
 
-    expect(queue).toHaveTextContent("Introductions");
-    expect(item).toHaveTextContent("Атым ... -> And you?");
-    expect(item).toHaveTextContent("Атым ... -> My name is ...");
+    expect(queue).toHaveTextContent("Знакомство");
+    expect(item).toHaveTextContent("Атым ... → А ты?");
+    expect(item).toHaveTextContent("Атым ... → Меня зовут ...");
 
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Попробовать ещё раз" }));
     await user.click(within(item).getByRole("button", { name: "Атым ..." }));
     await user.click(
-      within(item).getByRole("button", { name: "My name is ..." }),
+      within(item).getByRole("button", { name: "Меня зовут ..." }),
     );
     await user.click(within(item).getByRole("button", { name: "Атың ким?" }));
     await user.click(
-      within(item).getByRole("button", { name: "What is your name?" }),
+      within(item).getByRole("button", { name: "Как тебя зовут?" }),
     );
     await user.click(within(item).getByRole("button", { name: "Сенчи?" }));
-    await user.click(within(item).getByRole("button", { name: "And you?" }));
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "А ты?" }));
+    await user.click(within(item).getByRole("button", { name: "Проверить" }));
 
     await waitFor(() => {
       expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
-        "Nothing needs review right now",
+        "Сейчас нечего повторять",
       );
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "0",
@@ -552,10 +553,10 @@ describe("PracticeReviewQueue", () => {
       );
     });
 
-    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+    await user.click(screen.getByRole("tab", { name: "Исправлено" }));
 
     expect(await screen.findByTestId("review-queue-item")).toHaveTextContent(
-      "Nice - corrected",
+      "Исправлено",
     );
   });
 
@@ -567,24 +568,24 @@ describe("PracticeReviewQueue", () => {
 
     const item = await screen.findByTestId("review-queue-item");
 
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Попробовать ещё раз" }));
     await user.click(within(item).getByRole("button", { name: "Атым ..." }));
-    await user.click(within(item).getByRole("button", { name: "And you?" }));
+    await user.click(within(item).getByRole("button", { name: "А ты?" }));
     await user.click(within(item).getByRole("button", { name: "Атың ким?" }));
     await user.click(
-      within(item).getByRole("button", { name: "What is your name?" }),
+      within(item).getByRole("button", { name: "Как тебя зовут?" }),
     );
     await user.click(within(item).getByRole("button", { name: "Сенчи?" }));
     await user.click(
-      within(item).getByRole("button", { name: "My name is ..." }),
+      within(item).getByRole("button", { name: "Меня зовут ..." }),
     );
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Проверить" }));
 
     await waitFor(() => {
       expect(item).toHaveTextContent(
-        "Not quite yet. Use the answer above and try once more.",
+        "Почти. Посмотрите на ответ и попробуйте ещё раз.",
       );
-      expect(item).toHaveTextContent("Needs review");
+      expect(item).toHaveTextContent("Повторить");
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "1",
       );
@@ -600,17 +601,17 @@ describe("PracticeReviewQueue", () => {
     const queue = await screen.findByTestId("review-queue");
     const item = await screen.findByTestId("review-queue-item");
 
-    expect(queue).toHaveTextContent("Introductions");
+    expect(queue).toHaveTextContent("Знакомство");
     expect(item).toHaveTextContent("Атым ким?");
     expect(item).toHaveTextContent("Атың ким?");
 
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
-    await user.type(within(item).getByLabelText("Correct version"), "Атың ким?");
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Попробовать ещё раз" }));
+    await user.type(within(item).getByLabelText("Правильный вариант"), "Атың ким?");
+    await user.click(within(item).getByRole("button", { name: "Проверить" }));
 
     await waitFor(() => {
       expect(screen.getByTestId("review-queue-filter-empty")).toHaveTextContent(
-        "Nothing needs review right now",
+        "Сейчас нечего повторять",
       );
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "0",
@@ -620,10 +621,10 @@ describe("PracticeReviewQueue", () => {
       );
     });
 
-    await user.click(screen.getByRole("tab", { name: "Corrected" }));
+    await user.click(screen.getByRole("tab", { name: "Исправлено" }));
 
     expect(await screen.findByTestId("review-queue-item")).toHaveTextContent(
-      "Nice - corrected",
+      "Исправлено",
     );
   });
 
@@ -635,15 +636,15 @@ describe("PracticeReviewQueue", () => {
 
     const item = await screen.findByTestId("review-queue-item");
 
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
-    await user.type(within(item).getByLabelText("Correct version"), "Атым ким?");
-    await user.click(within(item).getByRole("button", { name: "Try again" }));
+    await user.click(within(item).getByRole("button", { name: "Попробовать ещё раз" }));
+    await user.type(within(item).getByLabelText("Правильный вариант"), "Атым ким?");
+    await user.click(within(item).getByRole("button", { name: "Проверить" }));
 
     await waitFor(() => {
       expect(item).toHaveTextContent(
-        "Not quite yet. Use the answer above and try once more.",
+        "Почти. Посмотрите на ответ и попробуйте ещё раз.",
       );
-      expect(item).toHaveTextContent("Needs review");
+      expect(item).toHaveTextContent("Повторить");
       expect(screen.getByTestId("practice-summary-needs-review")).toHaveTextContent(
         "1",
       );
@@ -656,16 +657,16 @@ describe("PracticeReviewQueue", () => {
 
     const item = await screen.findByTestId("review-queue-item");
 
-    expect(item).toHaveTextContent("Open the lesson to review this item");
+    expect(item).toHaveTextContent("Откройте урок для повтора");
     expect(item).toHaveTextContent(
-      "This review works best inside the lesson for now.",
+      "Этот формат пока удобнее повторять внутри урока.",
     );
-    expect(within(item).getByRole("link", { name: "Open lesson" })).toHaveAttribute(
+    expect(within(item).getByRole("link", { name: "Открыть урок" })).toHaveAttribute(
       "href",
       "/lesson/k0-u1-l1#lesson-practice",
     );
     expect(
-      within(item).queryByRole("button", { name: "Try again" }),
+      within(item).queryByRole("button", { name: "Попробовать ещё раз" }),
     ).not.toBeInTheDocument();
   });
 

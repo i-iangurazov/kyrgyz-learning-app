@@ -27,9 +27,9 @@ export function LevelMap({ levels, units, lessons }: LevelMapProps) {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-2xl font-bold tracking-normal">Level map</h2>
+        <h2 className="text-2xl font-bold tracking-normal">Маршрут</h2>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Follow a clear path from first sounds to everyday phrases.
+          Идите от первых звуков к простым фразам на каждый день.
         </p>
       </div>
 
@@ -39,14 +39,14 @@ export function LevelMap({ levels, units, lessons }: LevelMapProps) {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <Badge variant="secondary">{level.id}</Badge>
-                <CardTitle className="mt-3">{level.title.en}</CardTitle>
+                <CardTitle className="mt-3">{level.title.ru}</CardTitle>
               </div>
               <span className="rounded-full bg-[#e8f7ee] px-3 py-1 text-xs font-semibold text-[#27645a]">
-                Starter
+                Старт
               </span>
             </div>
             <p className="text-sm leading-6 text-muted-foreground">
-              {level.description.en}
+              {level.description.ru}
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -59,9 +59,9 @@ export function LevelMap({ levels, units, lessons }: LevelMapProps) {
               return (
                 <div key={unit.id} className="space-y-3">
                   <div>
-                    <p className="font-semibold">{unit.title.en}</p>
+                    <p className="font-semibold">{unit.title.ru}</p>
                     <p className="text-sm leading-6 text-muted-foreground">
-                      {unit.description.en}
+                      {unit.description.ru}
                     </p>
                   </div>
                   <div className="space-y-3">
@@ -95,10 +95,10 @@ export function LevelMap({ levels, units, lessons }: LevelMapProps) {
                           </div>
                           <div className="min-w-0">
                             <p className="truncate text-sm font-semibold">
-                              {lesson.title.en}
+                              {lesson.title.ru}
                             </p>
                             <p className="truncate text-xs text-muted-foreground">
-                              {lesson.subtitle.en}
+                              {lesson.subtitle.ru}
                             </p>
                           </div>
                         </Link>

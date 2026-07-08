@@ -52,7 +52,7 @@ describe("exercise checking", () => {
 
     expect(isCorrectOption(multipleChoiceItem, correctOption)).toBe(true);
     expect(isCorrectOption(multipleChoiceItem, incorrectOption)).toBe(false);
-    expect(getCorrectAnswerText(multipleChoiceItem)).toBe("ыраазычылык");
+    expect(getCorrectAnswerText(multipleChoiceItem)).toBe("спасибо");
   });
 
   it("checks fill blank answers with normalized text", () => {
@@ -89,10 +89,10 @@ describe("exercise checking", () => {
     expect(isCorrectMatchPairs(matchPairsItem, correctPairs)).toBe(true);
     expect(isCorrectMatchPairs(matchPairsItem, incorrectPairs)).toBe(false);
     expect(getMatchPairsDisplay(matchPairsItem, correctPairs)).toBe(
-      "Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
+      "Атым ... → Меня зовут ...; Атың ким? → Как тебя зовут?; Сенчи? → А ты?",
     );
     expect(getCorrectAnswerText(matchPairsItem)).toBe(
-      "Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
+      "Атым ... → Меня зовут ...; Атың ким? → Как тебя зовут?; Сенчи? → А ты?",
     );
   });
 

@@ -38,21 +38,21 @@ describe("ExerciseRenderer", () => {
     renderExercise(multipleChoiceExercise);
 
     expect(screen.getByTestId("exercise-renderer")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "hello" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "thank you" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "привет" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "спасибо" })).toBeInTheDocument();
   });
 
   it("shows correct feedback for a correct multiple choice answer", async () => {
     const user = userEvent.setup();
     const { onAttempt } = renderExercise(multipleChoiceExercise);
 
-    await user.click(screen.getByRole("button", { name: "thank you" }));
+    await user.click(screen.getByRole("button", { name: "спасибо" }));
 
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Good. That fits this lesson.",
+      "Верно. Это подходит к уроку.",
     );
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Rahmat means thank you.",
+      "Рахмат значит спасибо.",
     );
     expect(onAttempt).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -68,16 +68,16 @@ describe("ExerciseRenderer", () => {
     const user = userEvent.setup();
     const { onAttempt } = renderExercise(multipleChoiceExercise);
 
-    await user.click(screen.getByRole("button", { name: "hello" }));
+    await user.click(screen.getByRole("button", { name: "привет" }));
 
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Not quite yet.",
+      "Почти.",
     );
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Look at the lesson words again.",
+      "Посмотрите ещё раз на слова урока.",
     );
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Answer: ыраазычылык",
+      "Ответ: спасибо",
     );
     expect(onAttempt).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -91,11 +91,11 @@ describe("ExerciseRenderer", () => {
     const user = userEvent.setup();
     const { onAttempt } = renderExercise(fillBlankExercise);
 
-    await user.type(screen.getByLabelText("___ Elina."), "  атым ");
-    await user.click(screen.getByRole("button", { name: "Check answer" }));
+    await user.type(screen.getByLabelText("___ Элина."), "  атым ");
+    await user.click(screen.getByRole("button", { name: "Проверить" }));
 
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Good. That fits this lesson.",
+      "Верно. Это подходит к уроку.",
     );
     expect(onAttempt).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -111,14 +111,14 @@ describe("ExerciseRenderer", () => {
     const user = userEvent.setup();
     renderExercise(fillBlankExercise);
 
-    await user.type(screen.getByLabelText("___ Elina."), "Ким");
-    await user.click(screen.getByRole("button", { name: "Check answer" }));
+    await user.type(screen.getByLabelText("___ Элина."), "Ким");
+    await user.click(screen.getByRole("button", { name: "Проверить" }));
 
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Not quite yet.",
+      "Почти.",
     );
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Answer: Атым",
+      "Ответ: Атым",
     );
   });
 
@@ -127,13 +127,13 @@ describe("ExerciseRenderer", () => {
     renderExercise(sentenceBuilderExercise);
 
     expect(screen.getByTestId("exercise-renderer")).toBeInTheDocument();
-    expect(screen.getByText("Build: My name is Elina.")).toBeInTheDocument();
+    expect(screen.getByText("Составьте: Меня зовут Элина.")).toBeInTheDocument();
     expect(screen.getByTestId("sentence-builder-answer")).toHaveTextContent(
-      "Tap the words in order",
+      "Нажимайте слова по порядку",
     );
 
-    await user.click(screen.getByRole("button", { name: "Add Атым" }));
-    await user.click(screen.getByRole("button", { name: "Add Элина" }));
+    await user.click(screen.getByRole("button", { name: "Добавить Атым" }));
+    await user.click(screen.getByRole("button", { name: "Добавить Элина" }));
 
     expect(screen.getByTestId("sentence-builder-answer")).toHaveTextContent(
       "Атым",
@@ -142,7 +142,7 @@ describe("ExerciseRenderer", () => {
       "Элина",
     );
 
-    await user.click(screen.getByRole("button", { name: "Remove Атым" }));
+    await user.click(screen.getByRole("button", { name: "Убрать Атым" }));
 
     expect(screen.getByTestId("sentence-builder-answer")).not.toHaveTextContent(
       "Атым",
@@ -151,10 +151,10 @@ describe("ExerciseRenderer", () => {
       "Элина",
     );
 
-    await user.click(screen.getByRole("button", { name: "Clear" }));
+    await user.click(screen.getByRole("button", { name: "Очистить" }));
 
     expect(screen.getByTestId("sentence-builder-answer")).toHaveTextContent(
-      "Tap the words in order",
+      "Нажимайте слова по порядку",
     );
   });
 
@@ -162,12 +162,12 @@ describe("ExerciseRenderer", () => {
     const user = userEvent.setup();
     const { onAttempt } = renderExercise(sentenceBuilderExercise);
 
-    await user.click(screen.getByRole("button", { name: "Add Атым" }));
-    await user.click(screen.getByRole("button", { name: "Add Элина" }));
-    await user.click(screen.getByRole("button", { name: "Check" }));
+    await user.click(screen.getByRole("button", { name: "Добавить Атым" }));
+    await user.click(screen.getByRole("button", { name: "Добавить Элина" }));
+    await user.click(screen.getByRole("button", { name: "Проверить" }));
 
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Nice - that works.",
+      "Верно. Так подходит.",
     );
     expect(onAttempt).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -185,18 +185,18 @@ describe("ExerciseRenderer", () => {
     const user = userEvent.setup();
     const { onAttempt } = renderExercise(sentenceBuilderExercise);
 
-    await user.click(screen.getByRole("button", { name: "Add Элина" }));
-    await user.click(screen.getByRole("button", { name: "Add Атым" }));
-    await user.click(screen.getByRole("button", { name: "Check" }));
+    await user.click(screen.getByRole("button", { name: "Добавить Элина" }));
+    await user.click(screen.getByRole("button", { name: "Добавить Атым" }));
+    await user.click(screen.getByRole("button", { name: "Проверить" }));
 
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Not quite yet.",
+      "Почти.",
     );
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Almost. Check the order and try again.",
+      "Почти. Проверьте порядок слов и попробуйте ещё раз.",
     );
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Answer: Атым Элина",
+      "Ответ: Атым Элина",
     );
     expect(onAttempt).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -211,22 +211,24 @@ describe("ExerciseRenderer", () => {
     const user = userEvent.setup();
     renderExercise(matchPairsExercise);
 
-    expect(screen.getByText("Match the pairs")).toBeInTheDocument();
+    expect(
+      screen.getByText("Сопоставьте кыргызские фразы с их значениями."),
+    ).toBeInTheDocument();
     expect(screen.getByTestId("match-pairs-empty")).toHaveTextContent(
-      "Tap a pair to connect it",
+      "Нажмите элементы, чтобы соединить пару",
     );
 
     await user.click(screen.getByRole("button", { name: "Атым ..." }));
-    await user.click(screen.getByRole("button", { name: "My name is ..." }));
+    await user.click(screen.getByRole("button", { name: "Меня зовут ..." }));
 
     expect(screen.getByTestId("match-pairs-selected")).toHaveTextContent(
-      "Атым ... -> My name is ...",
+      "Атым ... → Меня зовут ...",
     );
 
-    await user.click(screen.getByRole("button", { name: "Reset" }));
+    await user.click(screen.getByRole("button", { name: "Сбросить" }));
 
     expect(screen.getByTestId("match-pairs-empty")).toHaveTextContent(
-      "Tap a pair to connect it",
+      "Нажмите элементы, чтобы соединить пару",
     );
   });
 
@@ -235,25 +237,25 @@ describe("ExerciseRenderer", () => {
     const { onAttempt } = renderExercise(matchPairsExercise);
 
     await user.click(screen.getByRole("button", { name: "Атым ..." }));
-    await user.click(screen.getByRole("button", { name: "My name is ..." }));
+    await user.click(screen.getByRole("button", { name: "Меня зовут ..." }));
     await user.click(screen.getByRole("button", { name: "Атың ким?" }));
-    await user.click(screen.getByRole("button", { name: "What is your name?" }));
+    await user.click(screen.getByRole("button", { name: "Как тебя зовут?" }));
     await user.click(screen.getByRole("button", { name: "Сенчи?" }));
-    await user.click(screen.getByRole("button", { name: "And you?" }));
-    await user.click(screen.getByRole("button", { name: "Check" }));
+    await user.click(screen.getByRole("button", { name: "А ты?" }));
+    await user.click(screen.getByRole("button", { name: "Проверить" }));
 
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Nice - these match.",
+      "Верно. Эти пары совпадают.",
     );
     expect(onAttempt).toHaveBeenCalledWith(
       expect.objectContaining({
         answer:
           "left-atym:right-my-name|left-atyn-kim:right-your-name|left-senchi:right-and-you",
         answerDisplay:
-          "Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
+          "Атым ... → Меня зовут ...; Атың ким? → Как тебя зовут?; Сенчи? → А ты?",
         correct: true,
         correctAnswerDisplay:
-          "Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
+          "Атым ... → Меня зовут ...; Атың ким? → Как тебя зовут?; Сенчи? → А ты?",
         exerciseId: "ex-intro-match",
         itemId: "item-intro-pairs",
       }),
@@ -265,21 +267,21 @@ describe("ExerciseRenderer", () => {
     const { onAttempt } = renderExercise(matchPairsExercise);
 
     await user.click(screen.getByRole("button", { name: "Атым ..." }));
-    await user.click(screen.getByRole("button", { name: "And you?" }));
+    await user.click(screen.getByRole("button", { name: "А ты?" }));
     await user.click(screen.getByRole("button", { name: "Атың ким?" }));
-    await user.click(screen.getByRole("button", { name: "What is your name?" }));
+    await user.click(screen.getByRole("button", { name: "Как тебя зовут?" }));
     await user.click(screen.getByRole("button", { name: "Сенчи?" }));
-    await user.click(screen.getByRole("button", { name: "My name is ..." }));
-    await user.click(screen.getByRole("button", { name: "Check" }));
+    await user.click(screen.getByRole("button", { name: "Меня зовут ..." }));
+    await user.click(screen.getByRole("button", { name: "Проверить" }));
 
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Not quite yet.",
+      "Почти.",
     );
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Almost. Review the pairs and try again.",
+      "Почти. Проверьте пары и попробуйте ещё раз.",
     );
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Answer: Атым ... -> My name is ...; Атың ким? -> What is your name?; Сенчи? -> And you?",
+      "Ответ: Атым ... → Меня зовут ...; Атың ким? → Как тебя зовут?; Сенчи? → А ты?",
     );
     expect(onAttempt).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -293,25 +295,25 @@ describe("ExerciseRenderer", () => {
   it("renders error correction with the incorrect Kyrgyz phrase and input", () => {
     renderExercise(errorCorrectionExercise);
 
-    expect(screen.getByText("Fix the sentence")).toBeInTheDocument();
+    expect(screen.getByText("Исправьте фразу")).toBeInTheDocument();
     expect(screen.getByTestId("error-correction-source")).toHaveTextContent(
       "Атым ким?",
     );
-    expect(screen.getByLabelText("Correct version")).toBeInTheDocument();
+    expect(screen.getByLabelText("Правильный вариант")).toBeInTheDocument();
   });
 
   it("accepts a correct error correction answer", async () => {
     const user = userEvent.setup();
     const { onAttempt } = renderExercise(errorCorrectionExercise);
 
-    await user.type(screen.getByLabelText("Correct version"), "  атың ким? ");
-    await user.click(screen.getByRole("button", { name: "Check" }));
+    await user.type(screen.getByLabelText("Правильный вариант"), "  атың ким? ");
+    await user.click(screen.getByRole("button", { name: "Проверить" }));
 
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Nice - you fixed it.",
+      "Верно. Вы исправили фразу.",
     );
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Atym means my name. Atyn means your name.",
+      "Атым значит мое имя. Атың значит твое имя.",
     );
     expect(onAttempt).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -329,17 +331,17 @@ describe("ExerciseRenderer", () => {
     const user = userEvent.setup();
     const { onAttempt } = renderExercise(errorCorrectionExercise);
 
-    await user.type(screen.getByLabelText("Correct version"), "Атым ким?");
-    await user.click(screen.getByRole("button", { name: "Check" }));
+    await user.type(screen.getByLabelText("Правильный вариант"), "Атым ким?");
+    await user.click(screen.getByRole("button", { name: "Проверить" }));
 
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Not quite yet.",
+      "Почти.",
     );
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Almost. Look at the ending.",
+      "Почти. Посмотрите на окончание.",
     );
     expect(screen.getByTestId("exercise-feedback")).toHaveTextContent(
-      "Correct version: Атың ким?",
+      "Правильный вариант: Атың ким?",
     );
     expect(onAttempt).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -356,7 +358,7 @@ describe("ExerciseRenderer", () => {
     });
 
     expect(screen.getByTestId("unsupported-exercise")).toHaveTextContent(
-      "Practice type coming soon",
+      "Этот формат скоро появится",
     );
     expect(screen.getByTestId("unsupported-exercise").textContent).not.toMatch(
       /schema|unsupported|methodist|source/i,

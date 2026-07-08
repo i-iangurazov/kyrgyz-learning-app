@@ -6,9 +6,9 @@ export default function ProfilePage() {
   return (
     <AppPlaceholder
       icon={UserRound}
-      title="Profile"
-      body="Your learning track, daily goal, progress history, and account settings will live here."
-      chips={["Progress", "Track settings", "Daily goal", "History"]}
+      title="Профиль"
+      body="Здесь будут маршрут обучения, дневная цель, история и настройки."
+      chips={["Прогресс", "Маршрут", "Дневная цель", "История"]}
     />
   );
 }

@@ -30,19 +30,22 @@ const pendingAudio: AudioAsset = {
 
 describe("AudioButton", () => {
   it("renders an enabled play control when a URL exists", () => {
-    render(<AudioButton audio={playableAudio} label="Play word Салам" />);
+    render(<AudioButton audio={playableAudio} ariaLabel="Слушать слово" />);
 
-    expect(
-      screen.getByRole("button", { name: "Play word Салам" }),
-    ).toBeEnabled();
+    const button = screen.getByRole("button", { name: "Слушать слово" });
+
+    expect(button).toBeEnabled();
+    expect(button).toHaveTextContent("Слушать");
+    expect(button).not.toHaveTextContent("Салам");
   });
 
   it("renders a clean disabled state when audio is unavailable", () => {
-    render(<AudioButton audio={pendingAudio} label="Play word Рахмат" />);
+    render(<AudioButton audio={pendingAudio} ariaLabel="Слушать слово" />);
 
-    const button = screen.getByRole("button", { name: "Audio coming soon" });
+    const button = screen.getByRole("button", { name: "Слушать слово: скоро" });
 
     expect(button).toBeDisabled();
-    expect(button).toHaveTextContent("Audio coming soon");
+    expect(button).toHaveTextContent("Скоро");
+    expect(button).not.toHaveTextContent("Рахмат");
   });
 });

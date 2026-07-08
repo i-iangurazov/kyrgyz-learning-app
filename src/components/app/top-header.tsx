@@ -12,11 +12,11 @@ export function TopHeader() {
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/95 px-5 py-4 backdrop-blur-xl">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            Kyrgyz K0/K1
+          <p className="text-xs font-semibold text-muted-foreground">
+            Кыргызский K0/K1
           </p>
           <h1 className="truncate text-xl font-bold tracking-normal">
-            Kyrgyz Path
+            Кыргызча
           </h1>
         </div>
         <div className="flex items-center gap-2">
@@ -24,7 +24,7 @@ export function TopHeader() {
             <Flame className="h-4 w-4" aria-hidden="true" />
             {progress.streakDays}
           </div>
-          <Button variant="outline" size="icon" aria-label="Settings">
+          <Button variant="outline" size="icon" aria-label="Настройки">
             <Settings2 className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>

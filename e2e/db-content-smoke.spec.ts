@@ -12,25 +12,25 @@ test.describe("DB-backed content smoke", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
 
-    await expect(page.getByText("Build your Kyrgyz base")).toBeVisible();
-    await expect(page.getByText("Lessons ready")).toBeVisible();
+    await expect(page.getByText("Начните говорить по-кыргызски")).toBeVisible();
+    await expect(page.getByText("Готовые уроки")).toBeVisible();
 
     await page
-      .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "Learn" })
+      .getByRole("navigation", { name: "Основная навигация" })
+      .getByRole("link", { name: "Учиться" })
       .click();
     await expect(page).toHaveURL(/\/learn$/);
-    await expect(page.getByRole("heading", { name: "Level map" })).toBeVisible();
-    await expect(page.getByText("K0 Absolute beginner")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Маршрут" })).toBeVisible();
+    await expect(page.getByText("K0 С нуля")).toBeVisible();
 
     await page
-      .getByRole("link", { name: /First Kyrgyz greetings/i })
+      .getByRole("link", { name: /Первые кыргызские приветствия/i })
       .first()
       .click();
     await expect(page).toHaveURL(/\/lesson\/k0-u1-l1$/);
     await expect(page.getByTestId("lesson-player")).toBeVisible();
     await expect(page.getByTestId("lesson-step-progress")).toContainText(
-      "Step 1 of 11",
+      "1/11",
     );
     await expect(page.getByTestId("section-story")).toBeVisible();
     await expect(page.getByTestId("section-goals")).toBeVisible();
@@ -43,17 +43,17 @@ test.describe("DB-backed content smoke", () => {
     await practice.scrollIntoViewIfNeeded();
     await expect(practice).toBeVisible();
     await expect(practice.getByTestId("practice-progress")).toContainText(
-      "Practice 1 of 2",
+      "Практика 1 из 2",
     );
 
     await page
-      .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "Practice" })
+      .getByRole("navigation", { name: "Основная навигация" })
+      .getByRole("link", { name: "Практика" })
       .click();
     await expect(page).toHaveURL(/\/practice$/);
     await expect(page.getByTestId("practice-review-page")).toBeVisible();
     await expect(page.getByTestId("practice-review-page")).toContainText(
-      "Review your weak spots",
+      "Повторите слабые места",
     );
 
     await expect(page.locator("body")).not.toContainText(
