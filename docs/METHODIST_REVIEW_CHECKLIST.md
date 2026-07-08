@@ -2,6 +2,15 @@
 
 Use this checklist before any lesson is treated as final learner-facing content.
 
+## Review Backlog
+
+- [ ] The lesson is listed in `docs/METHODIST_REVIEW_BACKLOG.md` or has a tracked review task.
+- [ ] Backlog status is correct: `not_reviewed`, `needs_methodist_review`, `needs_revision`, `approved_for_beta`, or `approved_for_production`.
+- [ ] Backlog priority is correct: P0, P1, or P2.
+- [ ] Seed lessons remain prototype/not methodist reviewed until explicitly validated.
+- [ ] Any beta release candidate is marked `approved_for_beta` only after Kyrgyz language, translation, exercise, and audio review.
+- [ ] Any production release candidate is marked `approved_for_production` only after final methodist/linguist approval and rights review.
+
 ## Lesson Metadata
 
 - [ ] Lesson ID is stable.

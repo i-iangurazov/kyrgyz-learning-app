@@ -9,6 +9,7 @@ Rules for future Codex tasks in this repository:
 - Future lesson or content-related work must follow the methodology docs in `/docs`.
 - Future content quality work must follow `docs/CONTENT_QUALITY_RESET.md`.
 - Future source ingestion, book/material adaptation, or curriculum sourcing work must follow `docs/SOURCE_INGESTION_AND_ADAPTATION_PLAN.md`.
+- Future content work must check `docs/METHODIST_REVIEW_BACKLOG.md`.
 - Future curriculum work must explicitly follow `docs/SOURCE_METHODOLOGY.md`.
 - Future UI tasks must follow `docs/UX_EXPERIENCE_BLUEPRINT.md`.
 - Future lesson UI must follow `docs/LESSON_UX_PRINCIPLES.md`.
@@ -30,6 +31,8 @@ Rules for future Codex tasks in this repository:
 - Codex must visually check mobile viewport around 390px for UI changes.
 - Visual QA for UI changes must check text overflow, button overflow, repeated labels, accidental English copy in the Russian-default learner UI, audio controls fitting inside cards, bottom nav clearance, 390px readability, and desktop centered mobile-frame behavior.
 - Codex must avoid clutter and avoid exposing internal methodology/source metadata to learners unless it helps UX.
+- Future UI copy changes must use `src/lib/copy.ts` when the text is app chrome or common UI.
+- Future curriculum or lesson text must stay in typed content data, not in `src/lib/copy.ts`.
 - Before finishing any task, run typecheck, lint, tests, Playwright where relevant, and a production build.
 - If a check fails, report it honestly and include the failure context.
 - Do not add database migrations, Supabase clients, auth, backend storage, or schema-changing infrastructure unless the task explicitly asks to implement database/backend behavior.
@@ -43,6 +46,7 @@ Rules for future Codex tasks in this repository:
 Content rules:
 
 - Demo lesson content is sample material only and requires methodist/linguist validation.
+- Seed lessons must remain marked as not methodist reviewed until explicitly validated.
 - Do not copy textbook content.
 - HSK may be used as structural inspiration only; do not copy HSK content.
 - Kyrgyz textbooks and literature may be used for methodology, sequencing, validation, and theme selection only unless licensed.
