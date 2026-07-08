@@ -39,6 +39,21 @@ Every real lesson rewrite must reference cataloged sources or methodist decision
 - `METHODIST_DECISION_TEMPLATE.md`: reusable methodist/native speaker decision template.
 - `initial-k0-k1-candidates.md`: first candidate categories for K0/K1 grounding.
 
+## Current K0/K1 Starter Records
+
+Initial source records for `k0-u1-l1` grounding:
+
+- [`kyrgyztest-a1-level-reference.md`](./kyrgyztest-a1-level-reference.md): candidate official A1/beginner level reference, pending exact source and rights verification.
+- [`beginner-grammar-reference-needed.md`](./beginner-grammar-reference-needed.md): candidate beginner grammar/reference need for greetings, short replies, and formal/informal handling.
+- [`dictionary-translation-reference-needed.md`](./dictionary-translation-reference-needed.md): candidate dictionary/translation reference need for first words and phrase meanings.
+
+Open methodist decision records for `k0-u1-l1`:
+
+- [`methodist-decisions/k0-u1-l1-greeting-choice.md`](./methodist-decisions/k0-u1-l1-greeting-choice.md): whether lesson 1 should teach `Салам`, `Саламатсызбы`, or both.
+- [`methodist-decisions/k0-u1-l1-formal-informal.md`](./methodist-decisions/k0-u1-l1-formal-informal.md): whether `сен` / `сиз` and register should appear in lesson 1.
+- [`methodist-decisions/k0-u1-l1-first-dialogue-naturalness.md`](./methodist-decisions/k0-u1-l1-first-dialogue-naturalness.md): whether the prototype dialogue is natural and what should replace it if needed.
+- [`methodist-decisions/k0-u1-l1-audio-transcripts.md`](./methodist-decisions/k0-u1-l1-audio-transcripts.md): whether current audio transcripts are suitable for review and temporary TTS work.
+
 ## Workflow
 
 1. Add or update a source entry using `SOURCE_TEMPLATE.md`.

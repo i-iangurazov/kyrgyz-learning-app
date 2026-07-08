@@ -44,6 +44,19 @@ Level/unit: K0 / `k0-u1`
 Lesson focus: first greetings and short polite replies.
 Revision brief: [docs/revision-briefs/k0-u1-l1-revision-brief.md](./revision-briefs/k0-u1-l1-revision-brief.md)
 
+Source records:
+
+- [Кыргызтест A1 level reference needed](./source-catalog/kyrgyztest-a1-level-reference.md)
+- [Beginner grammar reference needed](./source-catalog/beginner-grammar-reference-needed.md)
+- [Dictionary and translation reference needed](./source-catalog/dictionary-translation-reference-needed.md)
+
+Open methodist decision records:
+
+- [Greeting choice](./source-catalog/methodist-decisions/k0-u1-l1-greeting-choice.md)
+- [Formal / informal handling](./source-catalog/methodist-decisions/k0-u1-l1-formal-informal.md)
+- [First dialogue naturalness](./source-catalog/methodist-decisions/k0-u1-l1-first-dialogue-naturalness.md)
+- [Audio transcripts](./source-catalog/methodist-decisions/k0-u1-l1-audio-transcripts.md)
+
 ### Vocabulary To Review
 
 - `salam`: `Салам`, translation `привет` / `hello`; confirm beginner register and whether it is appropriate as the first greeting.

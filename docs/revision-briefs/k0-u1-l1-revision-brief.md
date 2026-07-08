@@ -8,6 +8,16 @@ Before rewriting this lesson, use:
 - `docs/K0_K1_CONTENT_GROUNDING_CHECKLIST.md`
 - `docs/source-catalog/`
 
+Current source and decision records for this brief:
+
+- [`docs/source-catalog/kyrgyztest-a1-level-reference.md`](../source-catalog/kyrgyztest-a1-level-reference.md)
+- [`docs/source-catalog/beginner-grammar-reference-needed.md`](../source-catalog/beginner-grammar-reference-needed.md)
+- [`docs/source-catalog/dictionary-translation-reference-needed.md`](../source-catalog/dictionary-translation-reference-needed.md)
+- [`docs/source-catalog/methodist-decisions/k0-u1-l1-greeting-choice.md`](../source-catalog/methodist-decisions/k0-u1-l1-greeting-choice.md)
+- [`docs/source-catalog/methodist-decisions/k0-u1-l1-formal-informal.md`](../source-catalog/methodist-decisions/k0-u1-l1-formal-informal.md)
+- [`docs/source-catalog/methodist-decisions/k0-u1-l1-first-dialogue-naturalness.md`](../source-catalog/methodist-decisions/k0-u1-l1-first-dialogue-naturalness.md)
+- [`docs/source-catalog/methodist-decisions/k0-u1-l1-audio-transcripts.md`](../source-catalog/methodist-decisions/k0-u1-l1-audio-transcripts.md)
+
 ## 1. Current Lesson Summary
 
 - Lesson ID: `k0-u1-l1`
@@ -134,6 +144,7 @@ Before rewriting content, check:
 - `docs/K0_K1_SOURCE_SELECTION_PLAN.md` for source categories and source-record fields.
 - `docs/K0_K1_CONTENT_GROUNDING_CHECKLIST.md` for the K0/K1 rewrite gate.
 - `docs/source-catalog/` for recording source IDs, rights status, allowed usage, and methodist decisions.
+- The open source and decision records linked at the top of this brief.
 - Кыргызтест A1 starter expectations, if accessible and rights-safe.
 - Kyrgyz grammar/alphabet beginner references for any explanation that touches form, politeness, or short replies.
 - Kyrgyz-as-foreign-language beginner materials for sequencing and pacing only.
