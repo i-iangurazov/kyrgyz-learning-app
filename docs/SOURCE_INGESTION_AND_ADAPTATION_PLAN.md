@@ -6,6 +6,11 @@ This plan explains how books and learning materials can inform Kyrgyz lessons sa
 
 Book/source -> extract topics/vocabulary/grammar -> map to level/unit -> create original lesson -> validate -> publish.
 
+For K0/K1 lesson rewrites, first apply:
+
+- `docs/K0_K1_SOURCE_SELECTION_PLAN.md`
+- `docs/K0_K1_CONTENT_GROUNDING_CHECKLIST.md`
+
 ## 1. Source Catalog
 
 Every source considered for curriculum work should be cataloged with:

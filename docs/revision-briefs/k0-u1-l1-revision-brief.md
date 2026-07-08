@@ -2,6 +2,11 @@
 
 This brief prepares the first seed lesson for methodist/linguist revision. It does not approve content and does not rewrite the lesson. The current lesson remains prototype / not methodist reviewed.
 
+Before rewriting this lesson, use:
+
+- `docs/K0_K1_SOURCE_SELECTION_PLAN.md`
+- `docs/K0_K1_CONTENT_GROUNDING_CHECKLIST.md`
+
 ## 1. Current Lesson Summary
 
 - Lesson ID: `k0-u1-l1`
@@ -125,6 +130,8 @@ Preferred learner outcome:
 
 Before rewriting content, check:
 
+- `docs/K0_K1_SOURCE_SELECTION_PLAN.md` for source categories and source-record fields.
+- `docs/K0_K1_CONTENT_GROUNDING_CHECKLIST.md` for the K0/K1 rewrite gate.
 - Кыргызтест A1 starter expectations, if accessible and rights-safe.
 - Kyrgyz grammar/alphabet beginner references for any explanation that touches form, politeness, or short replies.
 - Kyrgyz-as-foreign-language beginner materials for sequencing and pacing only.
