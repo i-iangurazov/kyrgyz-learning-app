@@ -26,6 +26,15 @@ These backlog values are a content QA workflow. They do not replace existing sch
 - Copyright/source safety must remain documented internally; no protected textbook, course, or literary content may be copied into lessons unless licensed.
 - Learners should not see internal review, source, rights, or demo metadata in the main UI.
 
+## Reviewer Packet Workflow
+
+Run `pnpm content:review-packets` to export reviewer-friendly packets from the current seed lessons.
+
+- Markdown packets are written to `docs/review-packets/` and are intended for human review.
+- Generated JSON is written to ignored `test-results/review-packets/` for tooling and QA.
+- Reviewer feedback should be applied later through an explicit content revision task.
+- Reviewed fixes must update seed or database content directly; editing packet Markdown alone does not approve or change curriculum.
+
 ## Lesson `k0-u1-l1`
 
 Status: prototype / not methodist reviewed  

@@ -14,6 +14,7 @@
     "test:e2e:db": "DB_E2E=1 playwright test --config=playwright.db.config.ts",
     "content:export-db-json": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/export-seed-to-db-json.ts",
     "content:validate-db-roundtrip": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-db-seed-roundtrip.ts",
+    "content:review-packets": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/export-methodist-review-packets.ts",
     "content:db:apply-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/apply-slice-1-migration-local.ts",
     "content:db:import-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-seed-db-json-to-postgres.ts",
     "content:db:validate-local": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-postgres-seed-roundtrip.ts",
