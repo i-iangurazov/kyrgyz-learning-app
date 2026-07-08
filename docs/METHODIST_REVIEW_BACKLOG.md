@@ -42,6 +42,7 @@ Backlog status: `needs_methodist_review`
 Priority: P0  
 Level/unit: K0 / `k0-u1`  
 Lesson focus: first greetings and short polite replies.
+Revision brief: [docs/revision-briefs/k0-u1-l1-revision-brief.md](./revision-briefs/k0-u1-l1-revision-brief.md)
 
 ### Vocabulary To Review
 
