@@ -28,6 +28,7 @@ import {
   type Exercise,
   type ExerciseItem,
 } from "@/lib/exercise-checking";
+import { defaultUiCopy as copy } from "@/lib/copy";
 import {
   filterReviewQueueItems,
   getPracticeSummary,
@@ -49,9 +50,9 @@ const reviewFilters: Array<{
   id: ReviewQueueFilter;
   label: string;
 }> = [
-  { id: "needs_review", label: "Повторить" },
-  { id: "corrected", label: "Исправлено" },
-  { id: "all", label: "Все" },
+  { id: "needs_review", label: copy.reviewQueue.filters.needs_review },
+  { id: "corrected", label: copy.reviewQueue.filters.corrected },
+  { id: "all", label: copy.reviewQueue.filters.all },
 ];
 
 function groupQueueByLesson(queue: ReviewQueueItem[]) {
@@ -127,14 +128,14 @@ function ReviewQueueCard({
     if (!correct) {
       setRetryFeedback({
         kind: "incorrect",
-        message: "Почти. Посмотрите на ответ и попробуйте ещё раз.",
+        message: copy.practice.retryFeedback,
       });
       return;
     }
 
     setRetryFeedback({
       kind: "correct",
-      message: "Исправлено",
+      message: copy.reviewQueue.retryCorrect,
     });
     setDraftAnswer("");
     setSelectedSentenceTiles([]);
@@ -186,15 +187,19 @@ function ReviewQueueCard({
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <CardTitle>{item.corrected ? "Исправлено" : "Нужно повторить"}</CardTitle>
+            <CardTitle>
+              {item.corrected
+                ? copy.common.corrected
+                : copy.reviewQueue.cardNeedsReview}
+            </CardTitle>
             <CardDescription>
               {item.corrected
-                ? "Вы уже закрепили этот ответ."
-                : "Короткий повтор поможет запомнить."}
+                ? copy.reviewQueue.cardCorrectedDescription
+                : copy.reviewQueue.cardNeedsReviewDescription}
             </CardDescription>
           </div>
           <Badge variant={item.corrected ? "secondary" : "warning"}>
-            {item.corrected ? "Готово" : "Повторить"}
+            {item.corrected ? copy.reviewQueue.readyBadge : copy.common.retry}
           </Badge>
         </div>
       </CardHeader>
@@ -202,13 +207,13 @@ function ReviewQueueCard({
         <div className="grid gap-3 text-sm">
           <div className="rounded-lg bg-white p-3">
             <p className="text-xs font-semibold text-muted-foreground">
-              Ваш ответ
+              {copy.common.yourAnswer}
             </p>
             <p className="mt-1 font-semibold">{item.submittedAnswerDisplay}</p>
           </div>
           <div className="rounded-lg bg-white p-3">
             <p className="text-xs font-semibold text-muted-foreground">
-              Правильный ответ
+              {copy.common.correctAnswer}
             </p>
             <p className="mt-1 font-semibold">{correctAnswerText}</p>
           </div>
@@ -230,9 +235,9 @@ function ReviewQueueCard({
                 className="mt-0.5 h-4 w-4 shrink-0 text-[#2b8a68]"
               />
               <div>
-                <p className="text-sm font-semibold">Исправлено</p>
+                <p className="text-sm font-semibold">{copy.common.corrected}</p>
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  Этот ответ закреплён. Продолжайте.
+                  {copy.reviewQueue.correctedBody}
                 </p>
               </div>
             </div>
@@ -247,7 +252,7 @@ function ReviewQueueCard({
             type="button"
           >
             <RotateCcw className="h-4 w-4" aria-hidden="true" />
-            Попробовать ещё раз
+            {copy.common.tryAgain}
           </Button>
         ) : null}
 
@@ -258,7 +263,7 @@ function ReviewQueueCard({
           >
             <div>
               <p className="text-xs font-semibold text-muted-foreground">
-                Ещё раз
+                {copy.common.again}
               </p>
               <p className="mt-1 text-sm font-semibold">
                 {exerciseItem.question.ru}
@@ -292,14 +297,14 @@ function ReviewQueueCard({
                   className="block text-sm font-semibold"
                   htmlFor={`review-retry-${item.key}`}
                 >
-                  Введите ответ ещё раз
+                  {copy.practice.repeatFillBlank}
                 </label>
                 <input
                   className="min-h-12 w-full rounded-lg border border-border bg-background px-4 py-3 text-base font-medium outline-none transition focus:border-[#27645a] focus:ring-2 focus:ring-[#27645a]/18"
                   id={`review-retry-${item.key}`}
                   inputMode="text"
                   onChange={(event) => setDraftAnswer(event.target.value)}
-                  placeholder="Введите ответ"
+                  placeholder={copy.exercise.answerInputPlaceholder}
                   value={draftAnswer}
                 />
                 <Button
@@ -307,7 +312,7 @@ function ReviewQueueCard({
                   disabled={draftAnswer.trim().length === 0}
                   type="submit"
                 >
-                  Проверить
+                  {copy.common.check}
                 </Button>
               </form>
             ) : null}
@@ -315,9 +320,11 @@ function ReviewQueueCard({
             {exercise?.kind === "sentence_builder" && exerciseItem.options?.length ? (
               <form className="space-y-3" onSubmit={handleSentenceBuilderRetry}>
                 <div>
-                  <p className="text-sm font-semibold">Соберите фразу</p>
+                  <p className="text-sm font-semibold">
+                    {copy.practice.repeatSentence}
+                  </p>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                    Нажимайте слова по порядку.
+                    {copy.exercise.sentenceBuilderEmpty}.
                   </p>
                 </div>
                 <div
@@ -336,7 +343,7 @@ function ReviewQueueCard({
 
                         return (
                           <button
-                            aria-label={`Убрать ${optionText}`}
+                            aria-label={copy.exercise.removeTile(optionText)}
                             className="min-h-10 rounded-full bg-[#27645a] px-3 py-2 text-sm font-semibold text-white"
                             key={`${optionId}-${index}`}
                             onClick={() =>
@@ -355,7 +362,7 @@ function ReviewQueueCard({
                     </div>
                   ) : (
                     <p className="text-sm font-medium text-muted-foreground">
-                      Нажимайте слова по порядку
+                      {copy.exercise.sentenceBuilderEmpty}
                     </p>
                   )}
                 </div>
@@ -365,7 +372,7 @@ function ReviewQueueCard({
 
                     return (
                       <button
-                        aria-label={`Добавить ${optionText}`}
+                        aria-label={copy.exercise.addTile(optionText)}
                         className="min-h-11 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition hover:bg-accent disabled:cursor-default disabled:bg-muted disabled:text-muted-foreground"
                         disabled={selectedSentenceTiles.includes(option.id)}
                         key={option.id}
@@ -388,7 +395,7 @@ function ReviewQueueCard({
                     disabled={selectedSentenceTiles.length === 0}
                     type="submit"
                   >
-                    Проверить
+                    {copy.common.check}
                   </Button>
                   <Button
                     disabled={selectedSentenceTiles.length === 0}
@@ -396,7 +403,7 @@ function ReviewQueueCard({
                     type="button"
                     variant="outline"
                   >
-                    Очистить
+                    {copy.common.clear}
                   </Button>
                 </div>
               </form>
@@ -408,7 +415,7 @@ function ReviewQueueCard({
                 onSubmit={({ answer, answerDisplay, correct }) =>
                   submitRetry(answer, answerDisplay, correct)
                 }
-                submitLabel="Проверить"
+                submitLabel={copy.common.check}
               />
             ) : null}
 
@@ -418,7 +425,7 @@ function ReviewQueueCard({
                 onSubmit={({ answer, answerDisplay, correct }) =>
                   submitRetry(answer, answerDisplay, correct)
                 }
-                submitLabel="Проверить"
+                submitLabel={copy.common.check}
               />
             ) : null}
           </div>
@@ -443,14 +450,16 @@ function ReviewQueueCard({
             className="space-y-3 rounded-lg border border-dashed border-[#b6c6bf] bg-white p-3"
             data-testid="review-queue-lesson-fallback"
           >
-            <p className="text-sm font-semibold">Откройте урок для повтора</p>
+            <p className="text-sm font-semibold">
+              {copy.reviewQueue.openLessonForReview}
+            </p>
             <p className="text-sm leading-6 text-muted-foreground">
-              Этот формат пока удобнее повторять внутри урока.
+              {copy.reviewQueue.unsupportedReview}
             </p>
             <Button asChild className="w-full" variant="outline">
               <Link href={`/lesson/${item.lessonId}#lesson-practice`}>
                 <BookOpen className="h-4 w-4" aria-hidden="true" />
-                Открыть урок
+                {copy.common.openLesson}
               </Link>
             </Button>
           </div>
@@ -460,7 +469,7 @@ function ReviewQueueCard({
           <Button asChild className="w-full" variant="outline">
             <Link href={`/lesson/${item.lessonId}#lesson-practice`}>
               <BookOpen className="h-4 w-4" aria-hidden="true" />
-              Повторить в уроке
+              {copy.reviewQueue.repeatInLesson}
             </Link>
           </Button>
         ) : null}
@@ -480,7 +489,7 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
   const lessonById = new Map(lessons.map((lesson) => [lesson.id, lesson]));
   const activeFilterLabel =
     reviewFilters.find((filter) => filter.id === activeFilter)?.label ??
-    "Повтор";
+    copy.common.retry;
 
   useEffect(() => {
     if (process.env.NODE_ENV === "test") {
@@ -499,18 +508,18 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
       <section className="rounded-lg bg-[#16231f] p-5 text-white">
         <Dumbbell className="h-7 w-7 text-[#c9f269]" aria-hidden="true" />
         <p className="mt-5 text-xs font-semibold text-white/56">
-          Практика
+          {copy.reviewQueue.heroEyebrow}
         </p>
         <h2 className="mt-1 text-2xl font-bold tracking-normal">
-          Повторите слабые места
+          {copy.reviewQueue.heroTitle}
         </h2>
         <p className="mt-3 text-sm leading-6 text-white/72">
-          Возвращайтесь к ошибкам короткими спокойными подходами.
+          {copy.reviewQueue.heroBody}
         </p>
       </section>
 
       <section
-        aria-label="Сводка практики"
+        aria-label={copy.reviewQueue.summaryAria}
         className="grid grid-cols-2 gap-3"
         data-testid="practice-progress-summary"
       >
@@ -519,7 +528,7 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
             {summary.completedPracticeItems}
           </p>
           <p className="mt-1 text-xs font-semibold text-muted-foreground">
-            Готово
+            {copy.reviewQueue.completed}
           </p>
         </div>
         <div
@@ -530,7 +539,7 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
             {summary.missedItemsCount}
           </p>
           <p className="mt-1 text-xs font-semibold text-muted-foreground">
-            Ошибки
+            {copy.reviewQueue.missed}
           </p>
         </div>
         <div
@@ -541,7 +550,7 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
             {summary.needsReviewCount}
           </p>
           <p className="mt-1 text-xs font-semibold text-muted-foreground">
-            Повторить
+            {copy.reviewQueue.needsReview}
           </p>
         </div>
         <div
@@ -552,7 +561,7 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
             {summary.correctedMissedItemsCount}
           </p>
           <p className="mt-1 text-xs font-semibold text-muted-foreground">
-            Исправлено
+            {copy.reviewQueue.corrected}
           </p>
         </div>
       </section>
@@ -563,17 +572,16 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#eef7f1] text-[#27645a]">
               <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
             </div>
-            <CardTitle>Пока нечего повторять</CardTitle>
+            <CardTitle>{copy.reviewQueue.emptyTitle}</CardTitle>
             <CardDescription>
-              Сейчас всё чисто. После урока ошибки появятся здесь для короткого
-              повтора.
+              {copy.reviewQueue.emptyBody}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full">
               <Link href="/learn">
                 <BookOpen className="h-4 w-4" aria-hidden="true" />
-                К урокам
+                {copy.reviewQueue.toLessons}
               </Link>
             </Button>
           </CardContent>
@@ -583,19 +591,19 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
           <div className="flex items-end justify-between gap-3">
             <div>
               <p className="text-xs font-semibold text-muted-foreground">
-                Очередь повтора
+                {copy.reviewQueue.queueEyebrow}
               </p>
               <h3 className="mt-1 text-lg font-bold tracking-normal">
-                Закрепить
+                {copy.reviewQueue.queueTitle}
               </h3>
             </div>
             <Badge variant={summary.needsReviewCount > 0 ? "warning" : "secondary"}>
-              Нужно: {summary.needsReviewCount}
+              {copy.reviewQueue.needsBadge(summary.needsReviewCount)}
             </Badge>
           </div>
 
           <div
-            aria-label="Фильтры повтора"
+            aria-label={copy.reviewQueue.filtersAria}
             className="grid grid-cols-3 gap-1 rounded-full border border-border bg-muted/50 p-1"
             data-testid="review-queue-filters"
             role="tablist"
@@ -634,9 +642,11 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
                   className="mt-0.5 h-5 w-5 shrink-0 text-[#2b8a68]"
                 />
                 <div>
-                  <p className="text-sm font-semibold">Повтор завершён</p>
+                  <p className="text-sm font-semibold">
+                    {copy.reviewQueue.allClearTitle}
+                  </p>
                   <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                    Текущие ошибки исправлены. Продолжайте.
+                    {copy.reviewQueue.allClearBody}
                   </p>
                 </div>
               </div>
@@ -650,24 +660,10 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
                   <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <CardTitle>
-                  {activeFilter === "needs_review"
-                    ? "Сейчас нечего повторять"
-                    : null}
-                  {activeFilter === "corrected"
-                    ? "Пока нет исправленных"
-                    : null}
-                  {activeFilter === "all" ? "Пока нечего повторять" : null}
+                  {copy.reviewQueue.emptyFilterTitle[activeFilter]}
                 </CardTitle>
                 <CardDescription>
-                  {activeFilter === "needs_review"
-                    ? "Всё чисто. Исправленные ответы остаются в истории."
-                    : null}
-                  {activeFilter === "corrected"
-                    ? "Исправленные ответы появятся здесь после повтора ошибок."
-                    : null}
-                  {activeFilter === "all"
-                    ? "После уроков ошибки появятся здесь для быстрого повтора."
-                    : null}
+                  {copy.reviewQueue.emptyFilterBody[activeFilter]}
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -681,10 +677,10 @@ export function PracticeReviewQueue({ lessons }: PracticeReviewQueueProps) {
                 <div className="flex items-center justify-between gap-3 px-1">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold">
-                      {lesson?.title.ru ?? "Повтор урока"}
+                      {lesson?.title.ru ?? copy.reviewQueue.fallbackLessonTitle}
                     </p>
                     <p className="text-xs font-medium text-muted-foreground">
-                      {lesson?.levelId ?? "Урок"} · {activeFilterLabel} ·{" "}
+                      {lesson?.levelId ?? copy.common.lesson} · {activeFilterLabel} ·{" "}
                       {items.length}
                     </p>
                   </div>

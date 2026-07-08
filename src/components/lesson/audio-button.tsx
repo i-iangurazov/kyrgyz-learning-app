@@ -5,6 +5,7 @@ import { Volume2, VolumeX } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { AudioAsset } from "@/content/schemas";
+import { defaultUiCopy as copy } from "@/lib/copy";
 import { cn } from "@/lib/utils";
 
 type AudioButtonProps = {
@@ -20,14 +21,16 @@ export function AudioButton({
   audio,
   ariaLabel,
   className,
-  label = "Слушать",
+  label = copy.audio.listen,
   testId = "audio-button",
-  unavailableLabel = "Скоро",
+  unavailableLabel = copy.audio.soon,
 }: AudioButtonProps) {
   const [playError, setPlayError] = useState(false);
   const hasPlayableAudio = Boolean(audio?.url);
   const visibleLabel = hasPlayableAudio ? label : unavailableLabel;
-  const buttonLabel = hasPlayableAudio ? ariaLabel : `${ariaLabel}: скоро`;
+  const buttonLabel = hasPlayableAudio
+    ? ariaLabel
+    : `${ariaLabel}: ${copy.audio.unavailableSuffix}`;
 
   const handlePlay = () => {
     if (!audio?.url) {
@@ -59,7 +62,7 @@ export function AudioButton({
       </Button>
       {playError ? (
         <p className="mt-1 text-xs font-medium text-[#87352f]" role="status">
-          Не удалось включить аудио.
+          {copy.audio.playError}
         </p>
       ) : null}
     </div>

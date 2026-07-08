@@ -16,21 +16,10 @@ import {
 import { SectionCard } from "@/components/lesson/section-card";
 import type { Lesson, LocalizedText } from "@/content/schemas";
 import { useLocalProgress } from "@/hooks/use-local-progress";
+import { defaultUiCopy as copy } from "@/lib/copy";
 import { emptyLessonPracticeProgress } from "@/lib/progress";
 
-const lessonSteps = [
-  { id: "story", label: "Ситуация", sectionId: "lesson-story" },
-  { id: "goals", label: "Цель", sectionId: "lesson-goals" },
-  { id: "words", label: "Слова", sectionId: "lesson-words" },
-  { id: "dialogue", label: "Диалог", sectionId: "lesson-dialogue" },
-  { id: "breakdown", label: "Разбор", sectionId: "lesson-breakdown" },
-  { id: "grammar", label: "Грамматика", sectionId: "lesson-grammar" },
-  { id: "practice", label: "Практика", sectionId: "lesson-practice" },
-  { id: "game", label: "Игра", sectionId: "lesson-game" },
-  { id: "speaking", label: "Речь", sectionId: "lesson-speaking" },
-  { id: "roleplay", label: "Диалог", sectionId: "lesson-roleplay" },
-  { id: "review", label: "Итог", sectionId: "lesson-review" },
-] satisfies LessonStep[];
+const lessonSteps = copy.lesson.steps.map((step) => ({ ...step })) satisfies LessonStep[];
 
 function ruText(value: LocalizedText) {
   return value.ru ?? value.en;
@@ -68,20 +57,34 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   const missedReviewRemaining = Math.max(missedCount - correctedMissedCount, 0);
   const practiceResult = practiceComplete
     ? missedCount > 0 && missedReviewRemaining === 0
-      ? `Вы сделали ${practiceProgress.completedCount} задания, сразу ответили верно на ${practiceProgress.correctCount} и исправили ${correctedMissedCount}.`
+      ? copy.lesson.practiceResultCompleteWithCorrections(
+          practiceProgress.completedCount,
+          practiceProgress.correctCount,
+          correctedMissedCount,
+        )
       : missedCount > 0
-        ? `Вы сделали ${practiceProgress.completedCount} задания. Нужно повторить: ${missedReviewRemaining}.`
-        : `Практика завершена: ${practiceProgress.correctCount} из ${totalPracticeItems} верно.`
+        ? copy.lesson.practiceResultNeedsReview(
+            practiceProgress.completedCount,
+            missedReviewRemaining,
+          )
+        : copy.lesson.practiceResultComplete(
+            practiceProgress.correctCount,
+            totalPracticeItems,
+          )
     : practiceProgress.completedCount > 0
-      ? `Готово: ${practiceProgress.completedCount} из ${totalPracticeItems}. Верно: ${practiceProgress.correctCount}.`
-      : "Сделайте практику, чтобы увидеть итог.";
+      ? copy.lesson.practiceResultInProgress(
+          practiceProgress.completedCount,
+          totalPracticeItems,
+          practiceProgress.correctCount,
+        )
+      : copy.lesson.practiceResultEmpty;
   const practiceNextStep = practiceComplete
     ? missedReviewRemaining > 0
-      ? "Лучше повторить ошибки перед следующим шагом."
-      : "Повторите фразы ещё раз и завершите урок."
+      ? copy.lesson.practiceNextReviewFirst
+      : copy.lesson.practiceNextComplete
     : totalPracticeItems === 0
-      ? "Практика для этого урока готовится."
-      : "Закончите карточку практики и вернитесь к итогу.";
+      ? copy.lesson.practiceNextPreparing
+      : copy.lesson.practiceNextInProgress;
 
   return (
     <article className="space-y-4" data-testid="lesson-player">
@@ -89,7 +92,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         <div className="mb-3 flex items-start justify-between gap-3">
           <div className="min-w-0">
             <Badge className="mb-2 bg-[#c9f269] text-[#152016] hover:bg-[#c9f269]">
-              Сегодня
+              {copy.common.today}
             </Badge>
             <h2 className="text-[22px] font-bold leading-7 tracking-normal">
               {ruText(lesson.title)}
@@ -101,7 +104,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           </div>
         </div>
         <p className="text-xs leading-5 text-white/68">
-          Короткий урок для повседневного кыргызского.
+          {copy.lesson.heroBody}
         </p>
       </div>
 
@@ -109,10 +112,10 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
       <SectionCard
         id="lesson-story"
-        eyebrow="Ситуация"
+        eyebrow={copy.lesson.steps[0].label}
         title={ruText(lesson.story.title)}
         compact
-        description="Сначала контекст, затем новые слова."
+        description={copy.lesson.storyDescription}
         testId="section-story"
       >
         <p className="text-sm leading-6 text-foreground">{ruText(lesson.story.body)}</p>
@@ -120,10 +123,10 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
       <SectionCard
         id="lesson-goals"
-        eyebrow="Цель"
-        title="После урока вы сможете"
+        eyebrow={copy.lesson.steps[1].label}
+        title={copy.lesson.goalsTitle}
         compact
-        description="2-3 понятных результата."
+        description={copy.lesson.goalsDescription}
         testId="section-goals"
       >
         <div className="space-y-2">
@@ -144,9 +147,9 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
       <SectionCard
         id="lesson-words"
-        eyebrow="Слова"
-        title="Главные слова"
-        description="Они встретятся в диалоге и практике."
+        eyebrow={copy.lesson.steps[2].label}
+        title={copy.lesson.vocabularyTitle}
+        description={copy.lesson.vocabularyDescription}
         testId="section-vocabulary"
       >
         <div className="grid gap-3">
@@ -174,7 +177,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                 </p>
                 <AudioButton
                   audio={item.audio}
-                  ariaLabel="Слушать слово"
+                  ariaLabel={copy.audio.wordAria}
                   className="w-[86px] shrink-0"
                   testId="vocabulary-audio-control"
                 />
@@ -186,7 +189,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
       <SectionCard
         id="lesson-dialogue"
-        eyebrow="Диалог"
+        eyebrow={copy.lesson.steps[3].label}
         title={ruText(dialogue.title)}
         description={dialogue.context ? ruText(dialogue.context) : undefined}
         testId="section-dialogue"
@@ -203,7 +206,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                 </p>
                 <AudioButton
                   audio={line.audio}
-                  ariaLabel="Слушать фразу"
+                  ariaLabel={copy.audio.phraseAria}
                   className="w-[86px] shrink-0"
                   testId="dialogue-audio-control"
                 />
@@ -219,9 +222,9 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
       {readingText ? (
         <SectionCard
-          eyebrow="Текст"
+          eyebrow={copy.lesson.readingTitle}
           title={ruText(readingText.title)}
-          description="Короткое чтение."
+          description={copy.lesson.readingDescription}
         >
           {readingText.paragraphs.map((paragraph) => (
             <div key={paragraph.id} className="space-y-3">
@@ -231,7 +234,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                 </p>
                 <AudioButton
                   audio={paragraph.audio}
-                  ariaLabel="Слушать текст"
+                  ariaLabel={copy.audio.textAria}
                   className="w-[86px] shrink-0"
                   testId="reading-audio-control"
                 />
@@ -246,9 +249,9 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
       <SectionCard
         id="lesson-breakdown"
-        eyebrow="Разбор"
-        title="Как это устроено"
-        description="Посмотрите на кусочки перед практикой."
+        eyebrow={copy.lesson.steps[4].label}
+        title={copy.lesson.breakdownTitle}
+        description={copy.lesson.breakdownDescription}
         testId="section-breakdown"
       >
         <div className="space-y-3">
@@ -265,7 +268,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           ))}
           <div className="rounded-lg border border-border p-4">
             <p className="text-xs font-semibold text-muted-foreground">
-              Полезный кусок
+              {copy.lesson.usefulChunk}
             </p>
             <p className="mt-2 font-semibold">{grammarExample.kyrgyz}</p>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -277,9 +280,9 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
       <SectionCard
         id="lesson-grammar"
-        eyebrow="Грамматика"
+        eyebrow={copy.lesson.steps[5].label}
         title={ruText(grammarPoint.title)}
-        description="Почему фраза работает."
+        description={copy.lesson.grammarDescription}
         testId="section-grammar"
       >
         <p className="text-sm leading-6 text-foreground">
@@ -299,9 +302,9 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
       <SectionCard
         id="lesson-practice"
-        eyebrow="Практика"
-        title="Проверьте себя"
-        description="Короткая серия заданий."
+        eyebrow={copy.lesson.steps[6].label}
+        title={copy.lesson.practiceTitle}
+        description={copy.lesson.practiceDescription}
         testId="section-exercise"
       >
         <PracticeSection
@@ -317,7 +320,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
       <SectionCard
         id="lesson-game"
-        eyebrow="Игра"
+        eyebrow={copy.lesson.steps[7].label}
         title={ruText(lesson.miniGame.title)}
         description={ruText(lesson.miniGame.description)}
         testId="section-mini-game"
@@ -325,27 +328,27 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         <div className="flex items-center gap-3 rounded-lg bg-[#eaf6f1] p-4 text-[#1d5c50]">
           <Sparkles className="h-5 w-5 shrink-0" aria-hidden="true" />
           <p className="text-sm font-semibold">
-            Быстрое повторение слов из урока.
+            {copy.lesson.gameBody}
           </p>
         </div>
       </SectionCard>
 
       <SectionCard
         id="lesson-speaking"
-        eyebrow="Речь"
+        eyebrow={copy.lesson.steps[8].label}
         title={ruText(lesson.speakingPrompt.title)}
         description={ruText(lesson.speakingPrompt.prompt)}
         testId="section-speaking"
       >
         <Button className="w-full" type="button">
           <Mic2 className="h-4 w-4" aria-hidden="true" />
-          Попробовать вслух
+          {copy.lesson.speakingAction}
         </Button>
       </SectionCard>
 
       <SectionCard
         id="lesson-roleplay"
-        eyebrow="Диалог"
+        eyebrow={copy.lesson.steps[9].label}
         title={ruText(lesson.aiRoleplay.title)}
         description={ruText(lesson.aiRoleplay.userGoal)}
         testId="section-ai-roleplay"
@@ -353,18 +356,18 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         <div className="rounded-lg border border-dashed border-[#66817b] p-4">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <MessageCircle className="h-4 w-4" aria-hidden="true" />
-            Тренировка ситуации
+            {copy.lesson.roleplayTitle}
           </div>
           <p className="mt-2 text-xs leading-5 text-muted-foreground">
-            Используйте слова урока в коротком безопасном диалоге.
+            {copy.lesson.roleplayBody}
           </p>
         </div>
       </SectionCard>
 
       <SectionCard
         id="lesson-review"
-        eyebrow="Повторение"
-        title="Итог урока"
+        eyebrow={copy.lesson.reviewEyebrow}
+        title={copy.lesson.reviewTitle}
         description={ruText(lesson.review.summary)}
         testId="section-review"
       >
@@ -372,7 +375,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           className="mb-5 rounded-lg bg-[#f4f8f4] p-4 text-sm"
           data-testid="practice-summary"
         >
-          <p className="font-semibold">Практика</p>
+          <p className="font-semibold">{copy.lesson.practiceSummaryTitle}</p>
           <p className="mt-1 leading-6 text-muted-foreground">{practiceResult}</p>
           <p className="mt-2 text-xs font-medium text-[#27645a]">
             {practiceNextStep}
@@ -391,7 +394,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           onClick={() => markLessonComplete(lesson.id)}
           type="button"
         >
-          {isComplete ? "Урок завершён" : "Завершить урок"}
+          {isComplete ? copy.lesson.lessonComplete : copy.lesson.completeLesson}
         </Button>
       </SectionCard>
     </article>

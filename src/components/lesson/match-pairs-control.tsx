@@ -11,6 +11,7 @@ import {
   isCorrectMatchPairs,
   serializeMatchPairs,
 } from "@/lib/exercise-checking";
+import { defaultUiCopy as copy } from "@/lib/copy";
 import { cn } from "@/lib/utils";
 
 type MatchPairsControlProps = {
@@ -29,7 +30,7 @@ export function MatchPairsControl({
   item,
   disabled = false,
   showIntro = true,
-  submitLabel = "Проверить",
+  submitLabel = copy.common.check,
   onSubmit,
 }: MatchPairsControlProps) {
   const { leftOptions, rightOptions } = getMatchPairSides(item);
@@ -104,9 +105,9 @@ export function MatchPairsControl({
         className="rounded-lg border border-dashed border-[#b6c6bf] bg-[#f8faf7] p-4"
         data-testid="match-pairs-unavailable"
       >
-        <p className="text-sm font-semibold">Этот формат скоро появится</p>
+        <p className="text-sm font-semibold">{copy.common.comingSoonTitle}</p>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Продолжайте урок, это задание откроется позже.
+          {copy.common.comingSoonBody}
         </p>
       </div>
     );
@@ -116,9 +117,9 @@ export function MatchPairsControl({
     <div className="space-y-3" data-testid="match-pairs-control">
       {showIntro ? (
         <div>
-          <p className="text-sm font-semibold">Соедините пары</p>
+          <p className="text-sm font-semibold">{copy.exercise.matchIntroTitle}</p>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
-            Выберите одну фразу и одно значение.
+            {copy.exercise.matchIntroBody}
           </p>
         </div>
       ) : null}
@@ -151,7 +152,7 @@ export function MatchPairsControl({
                 </span>
                 {!disabled ? (
                   <span className="text-xs font-medium text-muted-foreground">
-                    Убрать
+                    {copy.exercise.remove}
                   </span>
                 ) : null}
               </button>
@@ -164,7 +165,7 @@ export function MatchPairsControl({
           data-testid="match-pairs-empty"
         >
           <p className="text-sm font-medium text-muted-foreground">
-            Нажмите элементы, чтобы соединить пару
+            {copy.exercise.matchEmpty}
           </p>
         </div>
       )}
@@ -172,7 +173,7 @@ export function MatchPairsControl({
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-2" data-testid="match-pairs-left">
           <p className="text-xs font-semibold text-muted-foreground">
-            Фразы
+            {copy.exercise.matchLeft}
           </p>
           {leftOptions.map((option) => {
             const isSelected = selectedLeftId === option.id;
@@ -199,7 +200,7 @@ export function MatchPairsControl({
 
         <div className="space-y-2" data-testid="match-pairs-right">
           <p className="text-xs font-semibold text-muted-foreground">
-            Значения
+            {copy.exercise.matchRight}
           </p>
           {rightOptions.map((option) => {
             const isSelected = selectedRightId === option.id;
@@ -235,7 +236,7 @@ export function MatchPairsControl({
           type="button"
           variant="outline"
         >
-          Сбросить
+          {copy.exercise.reset}
         </Button>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { Flame, Settings2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useLocalProgress } from "@/hooks/use-local-progress";
+import { defaultUiCopy as copy } from "@/lib/copy";
 
 export function TopHeader() {
   const { progress } = useLocalProgress();
@@ -13,10 +14,10 @@ export function TopHeader() {
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-semibold text-muted-foreground">
-            Кыргызский K0/K1
+            {copy.app.levelLabel}
           </p>
           <h1 className="truncate text-xl font-bold tracking-normal">
-            Кыргызча
+            {copy.app.title}
           </h1>
         </div>
         <div className="flex items-center gap-2">
@@ -24,7 +25,7 @@ export function TopHeader() {
             <Flame className="h-4 w-4" aria-hidden="true" />
             {progress.streakDays}
           </div>
-          <Button variant="outline" size="icon" aria-label="Настройки">
+          <Button variant="outline" size="icon" aria-label={copy.app.settings}>
             <Settings2 className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>

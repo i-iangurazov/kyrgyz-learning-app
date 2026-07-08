@@ -19,6 +19,7 @@ import {
   isCorrectSentenceBuilder,
   isCorrectTextAnswer,
 } from "@/lib/exercise-checking";
+import { defaultUiCopy as copy } from "@/lib/copy";
 import {
   emptyLessonPracticeProgress,
   type ExerciseAttempt,
@@ -104,7 +105,7 @@ function MissedRetryCard({
     });
 
     if (!correct) {
-      setRetryFeedback("Почти. Посмотрите на ответ и попробуйте ещё раз.");
+      setRetryFeedback(copy.practice.retryFeedback);
       return;
     }
 
@@ -151,11 +152,13 @@ function MissedRetryCard({
         />
         <div className="min-w-0 flex-1">
           <p className="text-xs font-semibold text-[#9b5b35]">
-            Повторить ошибки
+            {copy.practice.missedTitle}
           </p>
-          <h3 className="mt-1 text-base font-semibold">Быстро закрепим</h3>
+          <h3 className="mt-1 text-base font-semibold">
+            {copy.practice.missedHeading}
+          </h3>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            Ошибок: {totalMissedCount}. Осталось повторить: {remainingCount}.
+            {copy.practice.missedCount(totalMissedCount, remainingCount)}
           </p>
           <Button
             className="mt-2 px-0 text-[#27645a] hover:bg-transparent"
@@ -165,7 +168,7 @@ function MissedRetryCard({
             type="button"
             variant="ghost"
           >
-            Продолжить сейчас
+            {copy.practice.continueAnyway}
           </Button>
         </div>
       </div>
@@ -176,19 +179,19 @@ function MissedRetryCard({
       >
         <div>
           <p className="text-xs font-semibold text-muted-foreground">
-            Ещё раз
+            {copy.common.again}
           </p>
           <p className="mt-1 text-sm font-semibold">{item.question.ru}</p>
         </div>
         <div className="grid gap-2 text-sm">
           <p>
-            <span className="font-medium">Ваш ответ: </span>
+            <span className="font-medium">{copy.common.yourAnswer}: </span>
             <span className="text-muted-foreground">
               {missedItem.submittedAnswerDisplay}
             </span>
           </p>
           <p>
-            <span className="font-medium">Правильный ответ: </span>
+            <span className="font-medium">{copy.common.correctAnswer}: </span>
             <span className="text-muted-foreground">
               {missedItem.correctAnswerDisplay || getCorrectAnswerText(item)}
             </span>
@@ -224,14 +227,14 @@ function MissedRetryCard({
               className="block text-sm font-semibold"
               htmlFor={`retry-${item.id}`}
             >
-              Введите ответ ещё раз
+              {copy.practice.repeatFillBlank}
             </label>
             <input
               className="min-h-12 w-full rounded-lg border border-border bg-background px-4 py-3 text-base font-medium outline-none transition focus:border-[#27645a] focus:ring-2 focus:ring-[#27645a]/18"
               id={`retry-${item.id}`}
               inputMode="text"
               onChange={(event) => setDraftAnswer(event.target.value)}
-              placeholder="Введите ответ"
+              placeholder={copy.exercise.answerInputPlaceholder}
               value={draftAnswer}
             />
             <Button
@@ -239,7 +242,7 @@ function MissedRetryCard({
               disabled={draftAnswer.trim().length === 0}
               type="submit"
             >
-              Проверить
+              {copy.common.check}
             </Button>
           </form>
         ) : null}
@@ -247,9 +250,11 @@ function MissedRetryCard({
         {exercise.kind === "sentence_builder" && item.options?.length ? (
           <form className="space-y-3" onSubmit={handleSentenceBuilderRetry}>
             <div>
-              <p className="text-sm font-semibold">Соберите фразу ещё раз</p>
+              <p className="text-sm font-semibold">
+                {copy.practice.repeatSentence}
+              </p>
               <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                Нажимайте слова по порядку.
+                {copy.exercise.sentenceBuilderEmpty}.
               </p>
             </div>
             <div
@@ -266,7 +271,7 @@ function MissedRetryCard({
 
                     return (
                       <button
-                        aria-label={`Убрать ${optionText}`}
+                        aria-label={copy.exercise.removeTile(optionText)}
                         className="min-h-10 rounded-full bg-[#27645a] px-3 py-2 text-sm font-semibold text-white"
                         key={`${optionId}-${index}`}
                         onClick={() =>
@@ -283,7 +288,7 @@ function MissedRetryCard({
                 </div>
               ) : (
                 <p className="text-sm font-medium text-muted-foreground">
-                  Нажимайте слова по порядку
+                  {copy.exercise.sentenceBuilderEmpty}
                 </p>
               )}
             </div>
@@ -293,7 +298,7 @@ function MissedRetryCard({
 
                 return (
                   <button
-                    aria-label={`Добавить ${optionText}`}
+                    aria-label={copy.exercise.addTile(optionText)}
                     className="min-h-11 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition hover:bg-accent disabled:cursor-default disabled:bg-muted disabled:text-muted-foreground"
                     disabled={selectedSentenceTiles.includes(option.id)}
                     key={option.id}
@@ -313,7 +318,7 @@ function MissedRetryCard({
                 disabled={selectedSentenceTiles.length === 0}
                 type="submit"
               >
-                Проверить
+                {copy.common.check}
               </Button>
               <Button
                 disabled={selectedSentenceTiles.length === 0}
@@ -321,7 +326,7 @@ function MissedRetryCard({
                 type="button"
                 variant="outline"
               >
-                Очистить
+                {copy.common.clear}
               </Button>
             </div>
           </form>
@@ -333,7 +338,7 @@ function MissedRetryCard({
             onSubmit={({ answer, answerDisplay, correct }) =>
               submitRetry(answer, answerDisplay, correct)
             }
-            submitLabel="Проверить"
+            submitLabel={copy.common.check}
           />
         ) : null}
 
@@ -343,7 +348,7 @@ function MissedRetryCard({
             onSubmit={({ answer, answerDisplay, correct }) =>
               submitRetry(answer, answerDisplay, correct)
             }
-            submitLabel="Проверить"
+            submitLabel={copy.common.check}
           />
         ) : null}
 
@@ -423,12 +428,12 @@ export function PracticeSection({
       ? Math.round((completedCount / totalSupportedItems) * 100)
       : 0;
   const statusCopy = practiceComplete
-    ? "Практика завершена"
+    ? copy.practice.complete
     : totalSupportedItems === 0
-      ? "Практика готовится"
+      ? copy.practice.preparing
       : completedCount > 0
-        ? "Хорошо, продолжайте"
-        : "Делайте по одному заданию";
+        ? copy.practice.titleInProgress
+        : copy.practice.titleIdle;
 
   useEffect(() => {
     if (!practiceComplete || uncorrectedMissedItems.length === 0) {
@@ -460,21 +465,23 @@ export function PracticeSection({
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs font-semibold text-muted-foreground">
-              {practiceComplete ? "Практика завершена" : null}
+              {practiceComplete ? copy.practice.complete : null}
               {!practiceComplete && totalSupportedItems > 0
-                ? `Практика ${activeStep} из ${totalSupportedItems}`
+                ? copy.practice.step(activeStep, totalSupportedItems)
                 : null}
-              {!practiceComplete && totalSupportedItems === 0 ? "Практика" : null}
+              {!practiceComplete && totalSupportedItems === 0
+                ? copy.lesson.steps[6].label
+                : null}
             </p>
             <p className="mt-1 text-sm font-semibold">{statusCopy}</p>
           </div>
           <div className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#27645a] shadow-sm">
-            Готово: {completedCount}
+            {copy.practice.completedLabel}: {completedCount}
           </div>
         </div>
 
         <div
-          aria-label="Прогресс практики"
+          aria-label={copy.practice.progressAria}
           aria-valuemax={totalSupportedItems}
           aria-valuemin={0}
           aria-valuenow={completedCount}
@@ -537,11 +544,13 @@ export function PracticeSection({
             />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold">
-                Можно идти дальше
+                {copy.practice.completeCanContinue}
               </p>
               <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                Верно: {correctSupportedCount} из {totalSupportedItems}. Держите
-                фразу в памяти.
+                {copy.practice.completeScore(
+                  correctSupportedCount,
+                  totalSupportedItems,
+                )}
               </p>
             </div>
           </div>
@@ -551,7 +560,7 @@ export function PracticeSection({
             onClick={handleContinue}
             type="button"
           >
-            Продолжить
+            {copy.common.continue}
           </Button>
         </div>
       ) : null}
@@ -582,9 +591,9 @@ export function PracticeSection({
               className="mt-0.5 h-5 w-5 shrink-0 text-[#2b8a68]"
             />
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold">Исправлено</p>
+              <p className="text-sm font-semibold">{copy.common.corrected}</p>
               <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                Исправлено ошибок: {correctedMissedCount}. Можно идти дальше.
+                {copy.practice.correctedCount(correctedMissedCount)}
               </p>
             </div>
           </div>
@@ -594,15 +603,14 @@ export function PracticeSection({
             onClick={handleContinue}
             type="button"
           >
-            Продолжить
+            {copy.common.continue}
           </Button>
         </div>
       ) : null}
 
       {practiceProgress.practiceComplete && !practiceComplete ? (
         <p className="text-xs text-muted-foreground">
-          Прошлая практика сохранена. Закончите текущие задания, чтобы обновить
-          урок.
+          {copy.practice.savedPrevious}
         </p>
       ) : null}
     </div>

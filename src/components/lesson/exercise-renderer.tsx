@@ -15,6 +15,7 @@ import {
   isCorrectSentenceBuilder,
   isCorrectTextAnswer,
 } from "@/lib/exercise-checking";
+import { defaultUiCopy as copy } from "@/lib/copy";
 import { cn } from "@/lib/utils";
 
 type Exercise = Lesson["exercises"][number];
@@ -45,7 +46,7 @@ type ExerciseRendererProps = {
 };
 
 function FeedbackPanel({
-  correctAnswerLabel = "Ответ",
+  correctAnswerLabel = copy.common.answer,
   item,
   submittedAnswer,
 }: {
@@ -80,7 +81,7 @@ function FeedbackPanel({
         )}
         <div className="space-y-2">
           <p className="font-semibold">
-            {submittedAnswer.correct ? item.feedback.correct.ru : "Почти."}
+            {submittedAnswer.correct ? item.feedback.correct.ru : copy.exercise.almost}
           </p>
           {!submittedAnswer.correct ? (
             <p className="leading-6 text-muted-foreground">
@@ -105,9 +106,9 @@ function UnsupportedPractice() {
       className="rounded-lg border border-dashed border-[#b6c6bf] bg-[#f8faf7] p-4"
       data-testid="unsupported-exercise"
     >
-      <p className="text-sm font-semibold">Этот формат скоро появится</p>
+      <p className="text-sm font-semibold">{copy.common.comingSoonTitle}</p>
       <p className="mt-2 text-sm leading-6 text-muted-foreground">
-        Продолжайте урок, это задание откроется позже.
+        {copy.common.comingSoonBody}
       </p>
     </div>
   );
@@ -319,7 +320,7 @@ export function ExerciseRenderer({
 
                       return (
                         <button
-                          aria-label={`Убрать ${optionText}`}
+                          aria-label={copy.exercise.removeTile(optionText)}
                           className="min-h-10 rounded-full bg-[#27645a] px-3 py-2 text-sm font-semibold text-white disabled:opacity-80"
                           disabled={Boolean(submittedAnswer)}
                           key={`${optionId}-${index}`}
@@ -333,13 +334,13 @@ export function ExerciseRenderer({
                   </div>
                 ) : (
                   <p className="text-sm font-medium text-muted-foreground">
-                    Нажимайте слова по порядку
+                    {copy.exercise.sentenceBuilderEmpty}
                   </p>
                 )}
               </div>
 
               <div
-                aria-label="Доступные слова"
+                aria-label={copy.exercise.sentenceBuilderAvailableWords}
                 className="flex flex-wrap gap-2"
                 data-testid="sentence-builder-tiles"
               >
@@ -349,7 +350,7 @@ export function ExerciseRenderer({
 
                   return (
                     <button
-                      aria-label={`Добавить ${optionText}`}
+                      aria-label={copy.exercise.addTile(optionText)}
                       className="min-h-11 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition hover:bg-accent disabled:cursor-default disabled:bg-muted disabled:text-muted-foreground"
                       disabled={Boolean(submittedAnswer) || isSelected}
                       key={option.id}
@@ -369,7 +370,7 @@ export function ExerciseRenderer({
                   }
                   type="submit"
                 >
-                  Проверить
+                  {copy.common.check}
                 </Button>
                 <Button
                   disabled={
@@ -379,7 +380,7 @@ export function ExerciseRenderer({
                   type="button"
                   variant="outline"
                 >
-                  Очистить
+                  {copy.common.clear}
                 </Button>
               </div>
 
@@ -435,7 +436,7 @@ export function ExerciseRenderer({
               />
               {submittedAnswer ? (
                 <FeedbackPanel
-                  correctAnswerLabel="Правильный вариант"
+                  correctAnswerLabel={copy.exercise.correctVersion}
                   item={item}
                   submittedAnswer={submittedAnswer}
                 />
@@ -479,7 +480,7 @@ export function ExerciseRenderer({
                   [item.id]: event.target.value,
                 }))
               }
-              placeholder="Введите слово"
+              placeholder={copy.exercise.wordInputPlaceholder}
               value={draftAnswer}
             />
             <p className="text-xs leading-5 text-muted-foreground" id={`${item.id}-hint`}>
@@ -490,7 +491,7 @@ export function ExerciseRenderer({
               disabled={Boolean(submittedAnswer) || draftAnswer.trim().length === 0}
               type="submit"
             >
-              Проверить
+              {copy.common.check}
             </Button>
             {submittedAnswer ? (
               <FeedbackPanel item={item} submittedAnswer={submittedAnswer} />

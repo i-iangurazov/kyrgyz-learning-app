@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Lesson, Level, Unit } from "@/content/schemas";
 import { useLocalProgress } from "@/hooks/use-local-progress";
+import { defaultUiCopy as copy } from "@/lib/copy";
 import { cn } from "@/lib/utils";
 
 type LevelMapProps = {
@@ -27,9 +28,9 @@ export function LevelMap({ levels, units, lessons }: LevelMapProps) {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-2xl font-bold tracking-normal">Маршрут</h2>
+        <h2 className="text-2xl font-bold tracking-normal">{copy.learn.title}</h2>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Идите от первых звуков к простым фразам на каждый день.
+          {copy.learn.description}
         </p>
       </div>
 
@@ -42,7 +43,7 @@ export function LevelMap({ levels, units, lessons }: LevelMapProps) {
                 <CardTitle className="mt-3">{level.title.ru}</CardTitle>
               </div>
               <span className="rounded-full bg-[#e8f7ee] px-3 py-1 text-xs font-semibold text-[#27645a]">
-                Старт
+                {copy.learn.startBadge}
               </span>
             </div>
             <p className="text-sm leading-6 text-muted-foreground">

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { Progress } from "@/components/ui/progress";
+import { defaultUiCopy as copy } from "@/lib/copy";
 
 export type LessonStep = {
   id: string;
@@ -92,7 +93,7 @@ export function LessonStepProgress({ steps }: { steps: LessonStep[] }) {
 
   return (
     <nav
-      aria-label="Прогресс урока"
+      aria-label={copy.lesson.progressAria}
       className="sticky top-[76px] z-30 -mx-1 rounded-lg border border-border/80 bg-background/95 p-2 shadow-sm backdrop-blur-xl"
       data-testid="lesson-step-progress"
     >
@@ -107,7 +108,7 @@ export function LessonStepProgress({ steps }: { steps: LessonStep[] }) {
           </a>
           {nextStep ? (
             <span className="truncate text-[11px] font-medium text-muted-foreground">
-              Далее: {nextStep.label}
+              {copy.lesson.nextStep}: {nextStep.label}
             </span>
           ) : null}
         </div>

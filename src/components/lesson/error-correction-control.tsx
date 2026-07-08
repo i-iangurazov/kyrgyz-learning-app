@@ -5,6 +5,7 @@ import { FormEvent, useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { ExerciseItem } from "@/lib/exercise-checking";
 import { isCorrectErrorCorrection } from "@/lib/exercise-checking";
+import { defaultUiCopy as copy } from "@/lib/copy";
 
 type ErrorCorrectionControlProps = {
   item: ExerciseItem;
@@ -20,7 +21,7 @@ type ErrorCorrectionControlProps = {
 export function ErrorCorrectionControl({
   item,
   disabled = false,
-  submitLabel = "Проверить",
+  submitLabel = copy.common.check,
   onSubmit,
 }: ErrorCorrectionControlProps) {
   const generatedInputId = useId();
@@ -49,7 +50,7 @@ export function ErrorCorrectionControl({
       onSubmit={handleSubmit}
     >
       <div>
-        <p className="text-sm font-semibold">Исправьте фразу</p>
+        <p className="text-sm font-semibold">{copy.exercise.fixPhrase}</p>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
           {item.feedback.hint.ru}
         </p>
@@ -60,13 +61,13 @@ export function ErrorCorrectionControl({
         data-testid="error-correction-source"
       >
         <p className="text-xs font-semibold text-muted-foreground">
-          Как будет правильно?
+          {copy.exercise.whatIsCorrect}
         </p>
         <p className="mt-2 text-base font-semibold">{item.question.ky}</p>
       </div>
 
       <label className="block text-sm font-semibold" htmlFor={inputId}>
-        Правильный вариант
+        {copy.exercise.correctVersion}
       </label>
       <input
         aria-describedby={`${inputId}-hint`}
@@ -75,11 +76,11 @@ export function ErrorCorrectionControl({
         id={inputId}
         inputMode="text"
         onChange={(event) => setDraftAnswer(event.target.value)}
-        placeholder="Введите исправленную фразу"
+        placeholder={copy.exercise.correctionInputPlaceholder}
         value={draftAnswer}
       />
       <p className="text-xs leading-5 text-muted-foreground" id={`${inputId}-hint`}>
-        Пишите коротко и точно по-кыргызски.
+        {copy.exercise.correctionHint}
       </p>
       <Button
         className="w-full"

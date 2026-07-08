@@ -4,14 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, Dumbbell, Gamepad2, Home, UserRound } from "lucide-react";
 
+import { defaultUiCopy as copy } from "@/lib/copy";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { label: "Главная", href: "/", icon: Home },
-  { label: "Учиться", href: "/learn", icon: BookOpen },
-  { label: "Практика", href: "/practice", icon: Dumbbell },
-  { label: "Игры", href: "/games", icon: Gamepad2 },
-  { label: "Профиль", href: "/profile", icon: UserRound },
+  { label: copy.app.tabs.home, href: "/", icon: Home },
+  { label: copy.app.tabs.learn, href: "/learn", icon: BookOpen },
+  { label: copy.app.tabs.practice, href: "/practice", icon: Dumbbell },
+  { label: copy.app.tabs.games, href: "/games", icon: Gamepad2 },
+  { label: copy.app.tabs.profile, href: "/profile", icon: UserRound },
 ];
 
 export function BottomTabBar() {
@@ -19,7 +20,7 @@ export function BottomTabBar() {
 
   return (
     <nav
-      aria-label="Основная навигация"
+      aria-label={copy.app.navigationLabel}
       className="fixed bottom-4 left-1/2 z-50 w-[calc(100%-2rem)] max-w-[398px] -translate-x-1/2 rounded-full border border-white/70 bg-[#101714]/92 px-2 py-2 shadow-island backdrop-blur-xl"
     >
       <div className="grid grid-cols-5">
