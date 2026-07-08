@@ -99,6 +99,7 @@ Use this checklist before any lesson is treated as final learner-facing content.
 - [ ] TTS audio has been reviewed by a Kyrgyz speaker or qualified reviewer before any beta-approved use.
 - [ ] Attachment map links generated audio files only to known stable audio IDs.
 - [ ] Missing generated audio files are tracked rather than silently ignored.
+- [ ] Voice comparison QA report is completed before choosing a temporary synthetic voice for wider MVP use.
 - [ ] Pronunciation coaching text is approved.
 
 ## AI Roleplay Safety

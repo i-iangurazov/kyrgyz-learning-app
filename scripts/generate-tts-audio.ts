@@ -16,6 +16,8 @@ type CliOptions = {
   manifestPath: string;
   outputDir: string;
   lessonId?: string;
+  voice?: string;
+  voiceFolder: boolean;
 };
 
 const defaultManifestPath = fileURLToPath(
@@ -35,9 +37,10 @@ const apiKey = process.env.TTS_API_KEY ?? process.env.OPENAI_API_KEY;
 const plan = createTtsGenerationPlan(manifest, {
   dryRun: cliOptions.dryRun,
   outputDir: cliOptions.outputDir,
-  voice: process.env.TTS_VOICE,
+  voice: cliOptions.voice,
   model: process.env.TTS_MODEL,
   endpoint: process.env.TTS_API_URL,
+  voiceFolder: cliOptions.voiceFolder,
 });
 
 console.log(
@@ -103,6 +106,8 @@ function parseCliOptions(args: string[]): CliOptions {
   let manifestPath = defaultManifestPath;
   let outputDir = defaultOutputDir;
   let lessonId = process.env.TTS_LESSON_ID;
+  let voice = process.env.TTS_VOICE;
+  let voiceFolder = false;
 
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
@@ -130,10 +135,28 @@ function parseCliOptions(args: string[]): CliOptions {
       continue;
     }
 
+    if (arg === "--voice") {
+      voice = requireValue(args[index + 1], "--voice");
+      index += 1;
+      continue;
+    }
+
+    if (arg === "--voice-folder") {
+      voiceFolder = true;
+      continue;
+    }
+
     throw new Error(`Unknown argument: ${arg}`);
   }
 
-  return { dryRun, manifestPath, outputDir, ...(lessonId ? { lessonId } : {}) };
+  return {
+    dryRun,
+    manifestPath,
+    outputDir,
+    voiceFolder,
+    ...(lessonId ? { lessonId } : {}),
+    ...(voice ? { voice } : {}),
+  };
 }
 
 function requireValue(value: string | undefined, flag: string) {

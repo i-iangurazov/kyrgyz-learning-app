@@ -138,6 +138,23 @@ describe("TTS audio manifest", () => {
     ).toBe(true);
   });
 
+  it("can place pilot dry-run files under a voice-specific folder", () => {
+    const manifest = buildTtsManifest(lessons, { lessonId: "k0-u1-l1" });
+    const plan = createTtsGenerationPlan(manifest, {
+      dryRun: true,
+      outputDir: "public/generated-audio/voice-comparison",
+      voice: "Echo Voice",
+      voiceFolder: true,
+    });
+
+    expect(plan.outputDir).toBe("public/generated-audio/voice-comparison/echo-voice");
+    expect(
+      plan.files.every((file) =>
+        file.outputPath.includes("voice-comparison/echo-voice/k0-u1-l1"),
+      ),
+    ).toBe(true);
+  });
+
   it("requires an API key for real generation only", () => {
     const manifest = buildTtsManifest(lessons);
     const plan = createTtsGenerationPlan(manifest, {

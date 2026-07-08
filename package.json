@@ -22,12 +22,16 @@
     "audio:manifest:pilot": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-manifest.ts --lesson k0-u1-l1 --output test-results/audio/pilot/tts-manifest-k0-u1-l1.json",
     "audio:generate": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts",
     "audio:generate:pilot": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts --lesson k0-u1-l1 --manifest test-results/audio/pilot/tts-manifest-k0-u1-l1.json --output-dir public/generated-audio",
+    "audio:generate:pilot:voice": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts --lesson k0-u1-l1 --manifest test-results/audio/pilot/tts-manifest-k0-u1-l1.json --output-dir public/generated-audio/voice-comparison --voice-folder",
     "audio:generate:dry-run": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts --dry-run",
     "audio:generate:pilot:dry-run": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts --dry-run --lesson k0-u1-l1 --manifest test-results/audio/pilot/tts-manifest-k0-u1-l1.json --output-dir public/generated-audio",
+    "audio:generate:pilot:voice:dry-run": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-tts-audio.ts --dry-run --lesson k0-u1-l1 --manifest test-results/audio/pilot/tts-manifest-k0-u1-l1.json --output-dir public/generated-audio/voice-comparison --voice-folder",
     "audio:attachment-map": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-audio-attachment-map.ts",
     "audio:attachment-map:pilot": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-audio-attachment-map.ts --lesson k0-u1-l1 --manifest test-results/audio/pilot/tts-manifest-k0-u1-l1.json --output test-results/audio/pilot/audio-attachment-map-k0-u1-l1.json --audio-dir public/generated-audio",
+    "audio:attachment-map:pilot:voice": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-audio-attachment-map.ts --lesson k0-u1-l1 --manifest test-results/audio/pilot/tts-manifest-k0-u1-l1.json --audio-dir public/generated-audio/voice-comparison --voice-folder",
     "audio:apply-attachments:dry-run": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/apply-audio-attachments-dry-run.ts",
     "audio:apply-attachments:pilot:dry-run": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/apply-audio-attachments-dry-run.ts --attachment-map test-results/audio/pilot/audio-attachment-map-k0-u1-l1.json --output test-results/audio/pilot/audio-apply-plan-k0-u1-l1.json --public-dir public/generated-audio",
+    "audio:qa-report:pilot:voice": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-audio-qa-report.ts --voice-output-defaults",
     "format": "prettier --write ."
   },
   "dependencies": {

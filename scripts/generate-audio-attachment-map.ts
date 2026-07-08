@@ -7,6 +7,10 @@ import {
   validateAudioAttachmentMap,
 } from "../src/content/audio/audio-attachment.ts";
 import {
+  defaultTtsVoice,
+  sanitizeVoiceForPath,
+} from "../src/content/audio/tts-generation.ts";
+import {
   buildTtsManifest,
   filterTtsManifestByLesson,
   type TtsManifest,
@@ -19,6 +23,8 @@ type CliOptions = {
   outputPath: string;
   audioDir: string;
   lessonId?: string;
+  voice?: string;
+  voiceFolder: boolean;
 };
 
 const defaultManifestPath = fileURLToPath(
@@ -32,12 +38,23 @@ const defaultAudioDir = fileURLToPath(
 );
 
 const cliOptions = parseCliOptions(process.argv.slice(2));
+if (cliOptions.voiceFolder && cliOptions.outputPath === defaultOutputPath) {
+  const voicePath = sanitizeVoiceForPath(cliOptions.voice ?? defaultTtsVoice);
+  cliOptions.outputPath = fileURLToPath(
+    new URL(
+      `../test-results/audio/voices/${voicePath}/audio-attachment-map.json`,
+      import.meta.url,
+    ),
+  );
+}
 const { manifest, source } = await loadOrGenerateManifest(cliOptions.manifestPath);
 const filteredManifest = filterTtsManifestByLesson(manifest, cliOptions.lessonId);
 assertManifestHasItems(filteredManifest, cliOptions.lessonId);
 const attachmentMap = await buildAudioAttachmentMap(filteredManifest, {
   generatedFromManifest: source,
   generatedAudioDir: cliOptions.audioDir,
+  voice: cliOptions.voice,
+  voiceFolder: cliOptions.voiceFolder,
 });
 const validation = validateAudioAttachmentMap(attachmentMap, filteredManifest);
 
@@ -63,6 +80,9 @@ console.log(`Exported audio attachment map to ${cliOptions.outputPath}`);
 console.log(`Manifest source: ${source}`);
 if (cliOptions.lessonId) {
   console.log(`Lesson filter: ${cliOptions.lessonId}`);
+}
+if (cliOptions.voice) {
+  console.log(`Voice: ${cliOptions.voice}`);
 }
 console.table(attachmentMap.summary);
 
@@ -105,6 +125,8 @@ function parseCliOptions(args: string[]): CliOptions {
   let outputPath = defaultOutputPath;
   let audioDir = defaultAudioDir;
   let lessonId = process.env.TTS_LESSON_ID;
+  let voice = process.env.TTS_VOICE;
+  let voiceFolder = false;
 
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
@@ -133,10 +155,29 @@ function parseCliOptions(args: string[]): CliOptions {
       continue;
     }
 
+    if (arg === "--voice") {
+      voice = requireValue(args[index + 1], "--voice");
+      index += 1;
+      continue;
+    }
+
+    if (arg === "--voice-folder") {
+      voiceFolder = true;
+      voice ??= defaultTtsVoice;
+      continue;
+    }
+
     throw new Error(`Unknown argument: ${arg}`);
   }
 
-  return { manifestPath, outputPath, audioDir, ...(lessonId ? { lessonId } : {}) };
+  return {
+    manifestPath,
+    outputPath,
+    audioDir,
+    voiceFolder,
+    ...(lessonId ? { lessonId } : {}),
+    ...(voice ? { voice } : {}),
+  };
 }
 
 function requireValue(value: string | undefined, flag: string) {

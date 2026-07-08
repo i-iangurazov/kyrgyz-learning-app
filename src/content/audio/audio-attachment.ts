@@ -3,6 +3,7 @@ import { isAbsolute, join, relative, resolve } from "node:path";
 
 import type { TtsManifest, TtsManifestItem } from "@/content/audio/tts-manifest";
 import type { AudioAsset, Lesson } from "@/content/schemas";
+import { resolveVoiceScopedOutputDir } from "./tts-generation.ts";
 
 export type AudioAttachmentStatus = "attached" | "missing";
 
@@ -14,6 +15,7 @@ export type AudioAttachmentMapItem = {
   sourceId: string;
   transcript: string;
   language: "ky";
+  voice?: string;
   voiceType: "synthetic";
   reviewStatus: "needs_audio_review";
   expectedFilename: string;
@@ -38,6 +40,8 @@ export type AudioAttachmentMap = {
 export type BuildAudioAttachmentMapOptions = {
   generatedFromManifest?: string;
   generatedAudioDir: string;
+  voice?: string;
+  voiceFolder?: boolean;
   fileExists?: (filePath: string) => Promise<boolean>;
 };
 
@@ -87,12 +91,13 @@ export async function buildAudioAttachmentMap(
 ): Promise<AudioAttachmentMap> {
   const fileExists = options.fileExists ?? localFileExists;
   const items: AudioAttachmentMapItem[] = [];
+  const generatedAudioDir =
+    options.voice && options.voiceFolder
+      ? resolveVoiceScopedOutputDir(options.generatedAudioDir, options.voice)
+      : options.generatedAudioDir;
 
   for (const manifestItem of manifest.items) {
-    const expectedPath = join(
-      options.generatedAudioDir,
-      manifestItem.suggestedFilename,
-    );
+    const expectedPath = join(generatedAudioDir, manifestItem.suggestedFilename);
     const hasFile = await fileExists(expectedPath);
 
     items.push({
@@ -103,6 +108,7 @@ export async function buildAudioAttachmentMap(
       sourceId: manifestItem.sourceId,
       transcript: manifestItem.textToSpeak,
       language: manifestItem.language,
+      ...(options.voice ? { voice: options.voice } : {}),
       voiceType: "synthetic",
       reviewStatus: "needs_audio_review",
       expectedFilename: manifestItem.suggestedFilename,
@@ -115,7 +121,7 @@ export async function buildAudioAttachmentMap(
     schemaVersion: "audio-attachment-map-v1",
     generatedFromManifest:
       options.generatedFromManifest ?? manifest.generatedFrom,
-    generatedAudioDir: options.generatedAudioDir,
+    generatedAudioDir,
     items,
     summary: summarizeAttachmentItems(items),
   };

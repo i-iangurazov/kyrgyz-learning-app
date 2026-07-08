@@ -217,6 +217,8 @@ Actions:
 - Do not apply generated audio attachments to seed or database content automatically; attachment updates require an explicit reviewed task.
 - Use the one-lesson pilot commands in `docs/TTS_AUDIO_PIPELINE.md` before expanding generated audio coverage beyond `k0-u1-l1`.
 - `LOCAL_AUDIO_PILOT=1` may be used for local playback validation only; production and normal builds must not depend on generated local files.
+- Use voice-specific pilot attachment maps and QA reports before selecting any temporary synthetic voice for broader MVP use.
+- Voice comparison QA reports must keep `approved_for_beta` false until a reviewer explicitly changes it after listening.
 
 Exit criteria:
 

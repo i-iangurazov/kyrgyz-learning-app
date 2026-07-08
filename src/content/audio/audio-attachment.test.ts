@@ -88,6 +88,32 @@ describe("audio attachment mapping", () => {
     ).toBe(true);
   });
 
+  it("can build a voice-specific pilot attachment map", async () => {
+    const manifest = filterTtsManifestByLesson(
+      buildTtsManifest(lessons),
+      "k0-u1-l1",
+    );
+    const audioDir = await mkdtemp(join(tmpdir(), "kyrgyz-audio-map-"));
+    const attachmentMap = await buildAudioAttachmentMap(manifest, {
+      generatedAudioDir: audioDir,
+      voice: "Echo Voice",
+      voiceFolder: true,
+    });
+
+    expect(attachmentMap.generatedAudioDir).toBe(
+      join(audioDir, "echo-voice"),
+    );
+    expect(attachmentMap.items[0]).toEqual(
+      expect.objectContaining({
+        lessonId: "k0-u1-l1",
+        voice: "Echo Voice",
+        generatedFilePath: null,
+        status: "missing",
+      }),
+    );
+  });
+
+
   it("fails validation for unknown audio IDs", async () => {
     const manifest = buildTtsManifest([lessons[0]]);
     const audioDir = await mkdtemp(join(tmpdir(), "kyrgyz-audio-map-"));

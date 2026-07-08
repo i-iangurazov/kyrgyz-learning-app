@@ -12,6 +12,7 @@ export type TtsGenerationOptions = {
   voice?: string;
   model?: string;
   endpoint?: string;
+  voiceFolder?: boolean;
 };
 
 export type TtsGenerationPlan = {
@@ -33,20 +34,39 @@ export function createTtsGenerationPlan(
   manifest: TtsManifest,
   options: TtsGenerationOptions,
 ): TtsGenerationPlan {
+  const voice = options.voice ?? defaultTtsVoice;
+  const outputDir = options.voiceFolder
+    ? resolveVoiceScopedOutputDir(options.outputDir, voice)
+    : options.outputDir;
+
   return {
     dryRun: options.dryRun,
     itemCount: manifest.items.length,
-    outputDir: options.outputDir,
-    voice: options.voice ?? defaultTtsVoice,
+    outputDir,
+    voice,
     model: options.model ?? defaultTtsModel,
     endpoint: options.endpoint ?? defaultTtsEndpoint,
     requiresApiKey: !options.dryRun,
     files: manifest.items.map((item) => ({
       audioId: item.audioId,
       textToSpeak: item.textToSpeak,
-      outputPath: join(options.outputDir, item.suggestedFilename),
+      outputPath: join(outputDir, item.suggestedFilename),
     })),
   };
+}
+
+export function resolveVoiceScopedOutputDir(outputDir: string, voice: string) {
+  return join(outputDir, sanitizeVoiceForPath(voice));
+}
+
+export function sanitizeVoiceForPath(voice: string) {
+  const sanitized = voice
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return sanitized || "voice";
 }
 
 export function validateTtsGenerationPlan(

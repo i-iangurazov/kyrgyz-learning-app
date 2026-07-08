@@ -217,6 +217,72 @@ Optional local playback env vars:
 
 When `LOCAL_AUDIO_PILOT` is not set, the app keeps the normal placeholder behavior.
 
+## Voice Comparison Workflow
+
+The pilot lesson can be generated into voice-specific folders so reviewers can compare built-in TTS voices before choosing a temporary MVP voice.
+
+Generate or refresh the pilot manifest first:
+
+```bash
+pnpm audio:manifest:pilot
+```
+
+Preview one voice without making API calls:
+
+```bash
+TTS_VOICE=alloy pnpm audio:generate:pilot:voice:dry-run
+```
+
+Run paid generation for one selected voice only when intentional:
+
+```bash
+TTS_API_KEY=... TTS_VOICE=alloy pnpm audio:generate:pilot:voice
+```
+
+Voice-specific generated files are written under:
+
+```text
+public/generated-audio/voice-comparison/<voice>/
+```
+
+`<voice>` is sanitized for file paths. This folder is ignored by Git.
+
+Create a voice-specific attachment map:
+
+```bash
+TTS_VOICE=alloy pnpm audio:attachment-map:pilot:voice
+```
+
+Create a voice-specific QA report:
+
+```bash
+TTS_VOICE=alloy pnpm audio:qa-report:pilot:voice
+```
+
+The QA report writes ignored files under:
+
+```text
+test-results/audio/voices/<voice>/audio-qa-report.json
+test-results/audio/voices/<voice>/audio-qa-report.md
+```
+
+Every QA report item includes:
+
+- audio ID
+- lesson ID
+- content type
+- source ID
+- voice
+- generated file path
+- transcript
+- file status
+- `pronunciation_ok`
+- `kyrgyz_accent_quality`
+- `notes`
+- `approved_for_beta`
+
+Manual review fields are initialized blank or false. Nothing is approved automatically.
+
 ## Metadata Update Strategy
 
 The current scripts do not automatically mutate seed lessons.
